@@ -14,6 +14,11 @@ Application for managing your budget
   docker compose up
 ```
 
+## Development
+
+### App url
+`http://localhost:8000/`
+
 ## Authors
 
 | Riccardo Giovarelli | [![LinkedIn](https://img.shields.io/badge/Linkedin-%230077B5.svg?logo=linkedin&logoColor=white)](https://linkedin.com/in/riccardo-giovarelli) [![github](https://img.shields.io/badge/github-181717.svg?logo=github&logoColor=white)](https://github.com/riccardo-giovarelli)  |

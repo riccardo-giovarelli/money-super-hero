@@ -16,8 +16,8 @@ Application for managing your budget
 
 ## Authors
 
-- [Riccardo Giovarelli](https://www.github.com/riccardo-giovarelli)
-
+| Riccardo Giovarelli | [![LinkedIn](https://img.shields.io/badge/Linkedin-%230077B5.svg?logo=linkedin&logoColor=white)](https://linkedin.com/in/riccardo-giovarelli) [![github](https://img.shields.io/badge/github-181717.svg?logo=github&logoColor=white)](https://github.com/riccardo-giovarelli)  |
+|---|---|
 
 ## License
 

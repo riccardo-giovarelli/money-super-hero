@@ -1,6 +1,6 @@
 # Money Super Hero
 
-A brief description of what this project does and who it's for
+Application for managing your budget
 
 ## Installation
 

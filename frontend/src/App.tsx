@@ -1,8 +1,8 @@
-import './App.css';
+import './App.scss';
+
+import AppRouter from '@/components/app-router/AppRouter';
 
 
-function App() {
-  return <h1>Money Super Hero</h1>;
-}
+const App = () => <AppRouter />;
 
 export default App;

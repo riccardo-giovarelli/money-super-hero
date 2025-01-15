@@ -7,7 +7,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon index.js",
-    "migrate": "node-pg-migrate -f \"config/default.json\""
+    "migrate": "node-pg-migrate"
   },
   "keywords": [],
   "dependencies": {

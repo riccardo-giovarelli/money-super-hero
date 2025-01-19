@@ -2,6 +2,10 @@
 
 Application for managing your budget
 
+## Prerequisites
+- Node.js
+- Docker
+
 ## Installation
 
 ```bash

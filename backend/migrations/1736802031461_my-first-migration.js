@@ -15,5 +15,33 @@ exports.up = (pgm) => {
             notNull: true,
             default: pgm.func('current_timestamp'),
         },
+        updatedAt: {
+            type: 'timestamp',
+            notNull: true,
+            default: pgm.func('current_timestamp'),
+        },
     });
+
+    pgm.createFunction('update_updated_at_timestamp', [], {
+        returns: 'trigger',
+        language: 'plpgsql',
+    }, `
+        BEGIN
+            NEW."updatedAt" = CURRENT_TIMESTAMP;
+            RETURN NEW;
+        END;
+    `);
+
+    pgm.createTrigger('users', 'set_updated_at', {
+        when: 'BEFORE',
+        operation: 'UPDATE',
+        level: 'ROW',
+        function: 'update_updated_at_timestamp',
+    });
+};
+
+exports.down = (pgm) => {
+    pgm.dropTrigger('users', 'set_updated_at');
+    pgm.dropFunction('update_updated_at_timestamp');
+    pgm.dropTable('users');
 };

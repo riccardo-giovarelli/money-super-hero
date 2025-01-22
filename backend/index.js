@@ -1,9 +1,31 @@
+import cors from 'cors';
 import express from 'express';
+import NodeCache from 'node-cache';
 
 const app = express();
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.get('/api', (req, res) => res.send('Hello Fucking World!'));
 
-app.listen(3000, () => console.log(`Server running on port 3000`));
+
+// Bad Request
+app.use((req, res) => {
+    res.status(400).json({
+        id: 400,
+        status: 400,
+        code: 'BAD_REQUEST',
+        title: 'Bad Request',
+    });
+});
+
+// Express goes live
+app.listen(3000, () => {
+    console.log(`Server running on port 3000`);
+});
+
+// Server cache init
+export const serverCache = new NodeCache({ stdTTL: 100, checkperiod: 120 });
+
+export default app;

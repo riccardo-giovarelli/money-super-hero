@@ -1,15 +1,22 @@
+import axios from 'axios';
 import React, { useState } from 'react';
 import PasswordChecklist from 'react-password-checklist';
+import { useNavigate } from 'react-router';
 
 import { Box, Button, TextField, Typography } from '@mui/material';
 
+import { isFormFilled } from './Register.lib';
+
 
 const Register = () => {
+  const navigate = useNavigate();
+
   const [firstName, setFirstName] = useState<string>('');
   const [lastName, setLastName] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [rePassword, setRePassword] = useState<string>('');
+  const [passwordIsValid, setPasswordIsValid] = useState<boolean>(false);
 
   /**
    * @function handleSubmit
@@ -17,9 +24,14 @@ const Register = () => {
    * @description Handle the submit of the register form
    * @param event Submit event of form
    */
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
-    // Handle form submission logic here
+    if (isFormFilled(firstName, lastName, email, passwordIsValid && import.meta.env.VITE_API_BASE_URL)) {
+      axios
+        .post(`${import.meta.env.VITE_API_BASE_URL}/users`, { firstName, lastName, email, password })
+        .then(() => navigate('/'))
+        .catch((error) => console.log(error));
+    }
   };
 
   /**
@@ -28,7 +40,7 @@ const Register = () => {
    * @description Handle changes of form fields
    * @param event Change event of fields
    */
-  const handleFormChange = (event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleFormChange = (event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
     switch ((event.target as HTMLInputElement).id) {
       case 'first-name':
         setFirstName((event.target as HTMLInputElement).value);
@@ -36,7 +48,7 @@ const Register = () => {
       case 'last-name':
         setLastName((event.target as HTMLInputElement).value);
         break;
-      case 'email-name':
+      case 'email':
         setEmail((event.target as HTMLInputElement).value);
         break;
       case 'password':
@@ -113,7 +125,7 @@ const Register = () => {
             value={password}
             valueAgain={rePassword}
             onChange={(isValid) => {
-              console.log(isValid);
+              setPasswordIsValid(isValid);
             }}
           />
         )}

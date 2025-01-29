@@ -3,32 +3,20 @@ import 'dotenv/config';
 import cors from 'cors';
 import express from 'express';
 import NodeCache from 'node-cache';
-import pg from 'pg';
+
+import usersRoutes from './routes/users.ts';
 
 
-const { Client } = pg;
-
-const client = new Client();
-
-client.connect();
-
+// New Express
 const app = express();
-
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.get('/api', (req, res) => res.send('Hello Fucking World!'));
-
-// Bad Request
-app.use((req, res) => {
-  res.status(400).json({
-    id: 400,
-    status: 400,
-    code: 'BAD_REQUEST',
-    title: 'Bad Request',
-  });
-});
+/**
+ * Route -> USERS
+ */
+app.use('/api/users', usersRoutes);
 
 // Express goes live
 app.listen(3000, () => {

@@ -7,16 +7,14 @@ import { Box, Button, TextField, Typography } from '@mui/material';
 
 import { isFormFilled } from './Register.lib';
 
-
 const Register = () => {
-  const navigate = useNavigate();
-
   const [firstName, setFirstName] = useState<string>('');
   const [lastName, setLastName] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [rePassword, setRePassword] = useState<string>('');
   const [passwordIsValid, setPasswordIsValid] = useState<boolean>(false);
+  const navigate = useNavigate();
 
   /**
    * @function handleSubmit

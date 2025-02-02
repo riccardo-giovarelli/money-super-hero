@@ -3,7 +3,8 @@ import React, { useState } from 'react';
 import PasswordChecklist from 'react-password-checklist';
 import { useNavigate } from 'react-router';
 
-import { Box, Button, TextField, Typography } from '@mui/material';
+import { MessageType } from '@/types/generic';
+import { Alert, Box, Button, TextField, Typography } from '@mui/material';
 
 import { isFormFilled } from './Register.lib';
 
@@ -15,6 +16,7 @@ const Register = () => {
   const [password, setPassword] = useState<string>('');
   const [rePassword, setRePassword] = useState<string>('');
   const [passwordIsValid, setPasswordIsValid] = useState<boolean>(false);
+  const [message, setMessage] = useState<MessageType | null>(null);
   const navigate = useNavigate();
 
   /**
@@ -28,8 +30,18 @@ const Register = () => {
     if (isFormFilled(firstName, lastName, email, passwordIsValid && import.meta.env.VITE_API_BASE_URL)) {
       axios
         .post(`${import.meta.env.VITE_API_BASE_URL}/users`, { firstName, lastName, email, password })
-        .then(() => navigate('/'))
-        .catch((error) => console.log(error));
+        .then((results) => {
+          if (results?.data?.code === 'REGISTRATION_SUCCESSFUL') {
+            navigate('/');
+          }
+        })
+        .catch((error) => {
+          setMessage({
+            type: 'error',
+            text:
+              error?.response?.data?.code === 'USER_EXISTS' ? 'User already exists' : 'Error while inserting new user',
+          });
+        });
     }
   };
 
@@ -131,6 +143,11 @@ const Register = () => {
         <Button type='submit' fullWidth variant='contained' color='primary' sx={{ mt: 2 }}>
           Register
         </Button>
+        {message && (
+          <Alert sx={{ marginTop: 3 }} severity={message.type}>
+            {message.text}
+          </Alert>
+        )}
       </form>
     </Box>
   );

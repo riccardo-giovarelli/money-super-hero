@@ -21,11 +21,13 @@ router.post('', async (req, res) => {
     if (results?.rows?.[0]?.exists) {
       res
         .status(422)
-        .json({ code: 'USER_EXISTS', Message: 'Error while inserting new user', Details: 'User already exists' });
+        .json({ code: 'USER_EXISTS', message: 'Error while inserting new user', details: 'User already exists' });
+      return;
     }
   } catch (err) {
-    res.status(422).json({ code: 'REGISTRATION_ERROR', Message: 'Error while inserting new user', Details: err });
     await client.end();
+    res.status(422).json({ code: 'REGISTRATION_ERROR', message: 'Error while inserting new user', details: err });
+    return;
   }
 
   // Insert new user
@@ -45,9 +47,9 @@ router.post('', async (req, res) => {
       }
       res
         .status(200)
-        .json({ code: 'REGISTRATION_SUCCESSFUL', Message: 'New user saved successfully', Details: results });
+        .json({ code: 'REGISTRATION_SUCCESSFUL', message: 'New user saved successfully', details: results });
     } catch (err) {
-      res.status(422).json({ code: 'REGISTRATION_ERROR', Message: 'Error while inserting new user', Details: err });
+      res.status(422).json({ code: 'REGISTRATION_ERROR', message: 'Error while inserting new user', details: err });
     } finally {
       await client.end();
     }

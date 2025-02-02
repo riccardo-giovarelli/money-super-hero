@@ -1,3 +1,6 @@
+
+
+
 /**
  * Checks if the registration form is completely filled.
  *

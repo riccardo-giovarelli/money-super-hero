@@ -7,6 +7,7 @@ import { Box, Button, TextField, Typography } from '@mui/material';
 
 import { isFormFilled } from './Register.lib';
 
+
 const Register = () => {
   const [firstName, setFirstName] = useState<string>('');
   const [lastName, setLastName] = useState<string>('');

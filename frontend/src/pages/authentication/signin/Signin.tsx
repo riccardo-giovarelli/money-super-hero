@@ -2,7 +2,8 @@ import React from 'react';
 
 import { Box, Button, TextField, Typography } from '@mui/material';
 
-const Login = () => {
+
+const Signin = () => {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
   };
@@ -10,7 +11,7 @@ const Login = () => {
   return (
     <Box display='flex' flexDirection='column' alignItems='center' justifyContent='center' minHeight='100vh'>
       <Typography variant='h4' component='h1' gutterBottom>
-        Login
+        Signin
       </Typography>
       <form onSubmit={handleSubmit}>
         <TextField label='Email' variant='outlined' margin='normal' required fullWidth type='email' />
@@ -23,4 +24,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Signin;

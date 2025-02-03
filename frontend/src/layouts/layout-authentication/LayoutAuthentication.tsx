@@ -2,7 +2,8 @@ import { Outlet } from 'react-router';
 
 import { Container } from '@mui/material';
 
-const LayoutLogin = () => {
+
+const LayoutAuthentication = () => {
   return (
     <Container maxWidth='xs'>
       <Outlet />
@@ -10,4 +11,4 @@ const LayoutLogin = () => {
   );
 };
 
-export default LayoutLogin;
+export default LayoutAuthentication;

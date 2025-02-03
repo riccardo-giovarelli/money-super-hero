@@ -7,9 +7,9 @@ import client from '../utils/db/client.ts';
 const router = express.Router();
 
 /**
- * POST
+ * SIGN UP
  */
-router.post('', async (req, res) => {
+router.post('signup', async (req, res) => {
   // Check if the user already exists
   try {
     const query = {
@@ -55,5 +55,10 @@ router.post('', async (req, res) => {
     }
   });
 });
+
+/**
+ * SIGN IN
+ */
+router.post('signin', async (req, res) => {});
 
 export default router;

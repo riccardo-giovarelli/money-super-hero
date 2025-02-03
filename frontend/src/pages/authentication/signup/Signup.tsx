@@ -7,10 +7,10 @@ import { useNavigate } from 'react-router';
 import { MessageType } from '@/types/generic';
 import { Alert, Box, Button, TextField, Typography } from '@mui/material';
 
-import { isFormFilled } from './Register.lib';
+import { isFormFilled } from './Signup.lib';
 
 
-const Register = () => {
+const Signup = () => {
   const [firstName, setFirstName] = useState<string>('');
   const [lastName, setLastName] = useState<string>('');
   const [email, setEmail] = useState<string>('');
@@ -31,7 +31,7 @@ const Register = () => {
     event.preventDefault();
     if (isFormFilled(firstName, lastName, email, passwordIsValid && import.meta.env.VITE_API_BASE_URL)) {
       axios
-        .post(`${import.meta.env.VITE_API_BASE_URL}/users`, { firstName, lastName, email, password })
+        .post(`${import.meta.env.VITE_API_BASE_URL}/users/signup`, { firstName, lastName, email, password })
         .then((results) => {
           if (results?.data?.code === 'REGISTRATION_SUCCESSFUL') {
             navigate('/');
@@ -157,4 +157,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default Signup;

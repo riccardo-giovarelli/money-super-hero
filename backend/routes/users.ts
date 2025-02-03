@@ -9,7 +9,7 @@ const router = express.Router();
 /**
  * SIGN UP
  */
-router.post('signup', async (req, res) => {
+router.post('/signup', async (req, res) => {
   // Check if the user already exists
   try {
     const query = {
@@ -59,6 +59,33 @@ router.post('signup', async (req, res) => {
 /**
  * SIGN IN
  */
-router.post('signin', async (req, res) => {});
+router.post('/signin', async (req, res) => {
+  try {
+    const query = {
+      name: 'get-user-by-email',
+      text: 'SELECT * FROM users WHERE "email" = $1',
+      values: [req.body.email.trim()],
+    };
+    const results = await client.query(query);
+    if (results?.rowCount !== 1) {
+      res.status(422).json({ code: 'USER_NOT_FOUND', message: 'Error while logging in', details: 'User not found' });
+      return;
+    }
+    bcrypt.compare(req.body.password, results.rows[0].password, (err: Error, result: boolean) => {
+      if (err) {
+        throw err;
+      }
+      if (!result) {
+        res.status(422).json({ code: 'WRONG_PASSWORD', message: 'Error while logging in', details: 'Wrong password' });
+        return;
+      }
+      res.status(200).json({ code: 'LOGIN_SUCCESSFUL', message: 'User logged in successfully', details: results });
+    });
+  } catch (err) {
+    res.status(422).json({ code: 'LOGIN_ERROR', message: 'Error while logging in', details: err });
+  } finally {
+    await client.end();
+  }
+});
 
 export default router;

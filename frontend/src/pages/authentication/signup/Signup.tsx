@@ -34,7 +34,7 @@ const Signup = () => {
         .post(`${import.meta.env.VITE_API_BASE_URL}/users/signup`, { firstName, lastName, email, password })
         .then((results) => {
           if (results?.data?.code === 'REGISTRATION_SUCCESSFUL') {
-            navigate('/');
+            navigate('/signin');
           }
         })
         .catch((error) => {
@@ -78,7 +78,7 @@ const Signup = () => {
   return (
     <Box display='flex' flexDirection='column' alignItems='center' justifyContent='center' minHeight='100vh'>
       <Typography variant='h4' component='h1' gutterBottom>
-        Register
+        {t('authentication.registration')}
       </Typography>
       <form onSubmit={handleSubmit}>
         <TextField
@@ -145,7 +145,7 @@ const Signup = () => {
           />
         )}
         <Button type='submit' fullWidth variant='contained' color='primary' sx={{ mt: 2 }}>
-          Register
+          {t('authentication.register')}
         </Button>
         {message && (
           <Alert sx={{ marginTop: 3 }} severity={message.type}>

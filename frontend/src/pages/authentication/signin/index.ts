@@ -1,4 +1,4 @@
-import Login from './Signin';
+import Signin from './Signin';
 
 
-export default Login;
+export default Signin;

@@ -19,6 +19,7 @@ export default defineConfig({
       '@style': path.resolve(__dirname, './src/style'),
       '@layouts': path.resolve(__dirname, './src/layouts'),
       '@types': path.resolve(__dirname, './src/types'),
+      '@languages': path.resolve(__dirname, './src/languages'),
     },
   },
 });

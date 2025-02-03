@@ -1,5 +1,6 @@
 import axios from 'axios';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import PasswordChecklist from 'react-password-checklist';
 import { useNavigate } from 'react-router';
 
@@ -18,6 +19,7 @@ const Register = () => {
   const [passwordIsValid, setPasswordIsValid] = useState<boolean>(false);
   const [message, setMessage] = useState<MessageType | null>(null);
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   /**
    * @function handleSubmit
@@ -39,7 +41,9 @@ const Register = () => {
           setMessage({
             type: 'error',
             text:
-              error?.response?.data?.code === 'USER_EXISTS' ? 'User already exists' : 'Error while inserting new user',
+              error?.response?.data?.code === 'USER_EXISTS'
+                ? t('authentication.user_already_exists')
+                : t('authentication.error_inserting_user'),
           });
         });
     }
@@ -79,7 +83,7 @@ const Register = () => {
       <form onSubmit={handleSubmit}>
         <TextField
           id='first-name'
-          label='First name'
+          label={t('authentication.first_name')}
           onChange={handleFormChange}
           value={firstName}
           variant='outlined'
@@ -89,7 +93,7 @@ const Register = () => {
         />
         <TextField
           id='last-name'
-          label='Last name'
+          label={t('authentication.last_name')}
           onChange={handleFormChange}
           value={lastName}
           variant='outlined'
@@ -98,7 +102,7 @@ const Register = () => {
         />
         <TextField
           id='email'
-          label='Email'
+          label={t('authentication.email')}
           onChange={handleFormChange}
           value={email}
           variant='outlined'
@@ -109,7 +113,7 @@ const Register = () => {
         />
         <TextField
           id='password'
-          label='Password'
+          label={t('authentication.password')}
           onChange={handleFormChange}
           value={password}
           variant='outlined'
@@ -120,7 +124,7 @@ const Register = () => {
         />
         <TextField
           id='re-password'
-          label='Repeat password'
+          label={t('authentication.repeat_password')}
           onChange={handleFormChange}
           value={rePassword}
           variant='outlined'
@@ -132,7 +136,7 @@ const Register = () => {
         {password.length > 0 && (
           <PasswordChecklist
             rules={['minLength', 'specialChar', 'number', 'capital', 'match']}
-            minLength={5}
+            minLength={8}
             value={password}
             valueAgain={rePassword}
             onChange={(isValid) => {

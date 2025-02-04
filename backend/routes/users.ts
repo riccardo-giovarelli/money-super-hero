@@ -3,7 +3,6 @@ import express from 'express';
 
 import client from '../utils/db/client.ts';
 
-
 const router = express.Router();
 
 /**
@@ -79,7 +78,8 @@ router.post('/signin', async (req, res) => {
         res.status(422).json({ code: 'WRONG_PASSWORD', message: 'Error while logging in', details: 'Wrong password' });
         return;
       }
-      res.status(200).json({ code: 'LOGIN_SUCCESSFUL', message: 'User logged in successfully', details: results });
+      req.session['username'] = results.rows[0].email;
+      res.status(200).json({ code: 'LOGIN_SUCCESSFUL', message: 'User logged in successfully', details: '' });
     });
   } catch (err) {
     res.status(422).json({ code: 'LOGIN_ERROR', message: 'Error while logging in', details: err });

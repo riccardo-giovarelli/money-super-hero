@@ -14,5 +14,6 @@ export const authentication = {
     'authentication.error_signing_in': "Errore durante l'accesso",
     'authentication.user_does_not_exist': 'Utente non esistente',
     'authentication.wrong_password': 'Password errata',
+    'authentication.email_invalid': 'Indirizzo email non valido',
   },
 };

@@ -9,11 +9,11 @@ import { Alert, Box, Button, TextField, Typography } from '@mui/material';
 
 import { isFormFilled } from './Signup.lib';
 
-
 const Signup = () => {
   const [firstName, setFirstName] = useState<string>('');
   const [lastName, setLastName] = useState<string>('');
   const [email, setEmail] = useState<string>('');
+  const [emailErrorMessage, setEmailErrorMessage] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [rePassword, setRePassword] = useState<string>('');
   const [passwordIsValid, setPasswordIsValid] = useState<boolean>(false);
@@ -31,7 +31,11 @@ const Signup = () => {
     event.preventDefault();
     if (isFormFilled(firstName, lastName, email, passwordIsValid && import.meta.env.VITE_API_BASE_URL)) {
       axios
-        .post(`${import.meta.env.VITE_API_BASE_URL}/users/signup`, { firstName, lastName, email, password })
+        .post(
+          `${import.meta.env.VITE_API_BASE_URL}/users/signup`,
+          { firstName, lastName, email, password },
+          { withCredentials: true }
+        )
         .then((results) => {
           if (results?.data?.code === 'REGISTRATION_SUCCESSFUL') {
             navigate('/signin');
@@ -64,7 +68,13 @@ const Signup = () => {
         setLastName((event.target as HTMLInputElement).value);
         break;
       case 'email':
-        setEmail((event.target as HTMLInputElement).value);
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test((event.target as HTMLInputElement).value)) {
+          setEmailErrorMessage(t('authentication.email_invalid'));
+          setEmail((event.target as HTMLInputElement).value);
+        } else {
+          setEmailErrorMessage('');
+          setEmail((event.target as HTMLInputElement).value);
+        }
         break;
       case 'password':
         setPassword((event.target as HTMLInputElement).value);
@@ -103,6 +113,8 @@ const Signup = () => {
         <TextField
           id='email'
           label={t('authentication.email')}
+          error={emailErrorMessage.length > 0}
+          helperText={emailErrorMessage}
           onChange={handleFormChange}
           value={email}
           variant='outlined'

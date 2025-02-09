@@ -6,7 +6,18 @@ import client from '../utils/db/client.ts';
 const router = express.Router();
 
 /**
- * SIGN UP
+ * GET: Check if user is logged in
+ */
+router.get('/', (req, res) => {
+  if (req.session['username']) {
+    res.json({ code: 'LOGGED_IN', message: 'User logged in', details: '' });
+  } else {
+    res.json({ code: 'LOGGED_OUT', message: 'User logged out', details: '' });
+  }
+});
+
+/**
+ * POST: Sign up
  */
 router.post('/signup', async (req, res) => {
   // Check if the user already exists
@@ -56,13 +67,13 @@ router.post('/signup', async (req, res) => {
 });
 
 /**
- * SIGN IN
+ * POST: Sign in
  */
 router.post('/signin', async (req, res) => {
   try {
     const query = {
       name: 'get-user-by-email',
-      text: 'SELECT * FROM users WHERE "email" = $1',
+      text: 'SELECT "firstName", "lastName", "email", "password" FROM users WHERE "email" = $1;',
       values: [req.body.email.trim()],
     };
     const results = await client.query(query);
@@ -79,7 +90,15 @@ router.post('/signin', async (req, res) => {
         return;
       }
       req.session['username'] = results.rows[0].email;
-      res.status(200).json({ code: 'LOGIN_SUCCESSFUL', message: 'User logged in successfully', details: '' });
+      res.status(200).json({
+        code: 'LOGIN_SUCCESSFUL',
+        message: 'User logged in successfully',
+        details: {
+          firstName: results.rows[0].firstName,
+          lastName: results.rows[0].lastName,
+          email: results.rows[0].email,
+        },
+      });
     });
   } catch (err) {
     res.status(422).json({ code: 'LOGIN_ERROR', message: 'Error while logging in', details: err });

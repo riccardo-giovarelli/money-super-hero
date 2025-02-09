@@ -1,13 +1,14 @@
 import axios from 'axios';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 
+import { isAuthenticated } from '@/authentication/AuthenticationProvider.lib';
+import { useAuthenticationStore } from '@/authentication/AuthenticationStore/AuthenticationStore';
 import { MessageType } from '@/types/generic';
 import { Alert, Box, Button, TextField, Typography } from '@mui/material';
 
 import { isFormFilled } from './Signin.lib';
-
 
 const Signin = () => {
   const [email, setEmail] = useState<string>('');
@@ -15,6 +16,18 @@ const Signin = () => {
   const [message, setMessage] = useState<MessageType | null>(null);
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const setFirstNameStore = useAuthenticationStore((state) => state.setFirstName);
+  const setLastNameStore = useAuthenticationStore((state) => state.setLastName);
+  const setEmailStore = useAuthenticationStore((state) => state.setEmail);
+
+  useEffect(() => {
+    (async () => {
+      const authentication = await isAuthenticated();
+      if (authentication) {
+        navigate('/');
+      }
+    })();
+  }, [navigate]);
 
   /**
    * @function handleFormChange
@@ -37,10 +50,18 @@ const Signin = () => {
     event.preventDefault();
     if (isFormFilled(email, password && import.meta.env.VITE_API_BASE_URL)) {
       axios
-        .post(`${import.meta.env.VITE_API_BASE_URL}/users/signin`, { email, password })
+        .post(`${import.meta.env.VITE_API_BASE_URL}/users/signin`, { email, password }, { withCredentials: true })
         .then((results) => {
-          if (results?.data?.code === 'LOGIN_SUCCESSFUL') {
+          if (results?.data?.code === 'LOGIN_SUCCESSFUL' && results?.data?.details) {
+            setFirstNameStore(results.data.details.firstName);
+            setLastNameStore(results.data.details.lastName);
+            setEmailStore(results.data.details.email);
             navigate('/');
+          } else {
+            setMessage({
+              type: 'error',
+              text: t('authentication.error_signing_in'),
+            });
           }
         })
         .catch((error) => {

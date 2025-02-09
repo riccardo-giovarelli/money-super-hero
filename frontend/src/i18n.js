@@ -5,10 +5,10 @@ import { it } from "@languages/it";
 import { en } from "@languages/en";
 
 i18n
-.use(LanguageDetector)
+    .use(LanguageDetector)
     .use(initReactI18next)
     .init({
-        debug: true,
+        debug: false,
         fallbackLng: 'en',
         resources: { en, it },
         interpolation: {

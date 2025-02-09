@@ -3,7 +3,7 @@
  * @param run {() => void | undefined}
  * @returns {Promise<void> | void}
  */
-exports.up = (pgm) => {
+export function up(pgm) {
     pgm.createTable('users', {
         id: 'id',
         firstName: { type: 'varchar(100)' },
@@ -22,6 +22,8 @@ exports.up = (pgm) => {
         },
     });
 
+    pgm.createIndex('users', 'email', { name: 'users_email_unique', unique: true });
+
     pgm.createFunction('update_updated_at_timestamp', [], {
         returns: 'trigger',
         language: 'plpgsql',
@@ -38,10 +40,11 @@ exports.up = (pgm) => {
         level: 'ROW',
         function: 'update_updated_at_timestamp',
     });
-};
+}
 
-exports.down = (pgm) => {
+export function down(pgm) {
     pgm.dropTrigger('users', 'set_updated_at');
     pgm.dropFunction('update_updated_at_timestamp');
+    pgm.dropIndex('users', 'email', { name: 'users_email_unique' });
     pgm.dropTable('users');
-};
+}

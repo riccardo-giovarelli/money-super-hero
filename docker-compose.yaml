@@ -1,35 +1,34 @@
-services: 
-
+services:
   backend:
-    build: 
+    build:
       context: backend
     container_name: backend
     working_dir: /usr/src/app
-    networks: 
+    networks:
       - backend-network
-    volumes: 
+    volumes:
       - ./backend:/usr/src/app
       - /usr/src/app/node_modules
     tty: true
-    ports: 
-      - "3000:3000"
+    ports:
+      - '3000:3000'
     command: yarn run start
     depends_on:
-       - database
+      - database
 
   frontend:
-    build: 
+    build:
       context: frontend
     container_name: frontend
     working_dir: /usr/src/app
-    networks: 
+    networks:
       - backend-network
-    volumes: 
+    volumes:
       - ./frontend:/usr/src/app
       - /usr/src/app/node_modules
     tty: true
-    ports: 
-      - "5173:5173"
+    ports:
+      - '5173:5173'
     command: yarn run dev
 
   database:
@@ -39,40 +38,42 @@ services:
     tty: true
     volumes:
       - ./data:/var/lib/postgresql/data
-    environment: 
+    environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 1234
       POSTGRES_DB: postgres
-    ports: 
-      - "5432:5432"
-    networks: 
+    ports:
+      - '5432:5432'
+    networks:
       - backend-network
 
   server:
-    build: 
+    build:
       context: server
     container_name: server
     restart: always
     tty: true
-    ports: 
-      - "8000:80"
-    networks: 
+    ports:
+      - '8000:80'
+    networks:
       - backend-network
     depends_on:
-       - backend
-       - frontend
+      backend:
+        condition: service_started
+      frontend:
+        condition: service_started
 
   adminer:
     container_name: adminer
     image: adminer
     restart: always
     ports:
-      - "8080:8080"
-    depends_on: 
+      - '8080:8080'
+    depends_on:
       - database
-    networks: 
+    networks:
       - backend-network
-  
-networks: 
+
+networks:
   backend-network:
-    driver: bridge    
+    driver: bridge

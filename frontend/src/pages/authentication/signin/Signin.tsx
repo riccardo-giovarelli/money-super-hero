@@ -10,6 +10,7 @@ import { Alert, Box, Button, TextField, Typography } from '@mui/material';
 
 import { isFormFilled } from './Signin.lib';
 
+
 const Signin = () => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
@@ -32,8 +33,10 @@ const Signin = () => {
   /**
    * @function handleFormChange
    *
-   * @description Handle changes of form fields
-   * @param event Change event of fields
+   * @description Handles changes to form fields. Updates the corresponding state based on the field's id.
+   * Specifically, it updates the email and password state variables when the respective input fields change.
+   *
+   * @param {React.FormEvent<HTMLInputElement | HTMLTextAreaElement>} event - The change event of the form fields.
    */
   const handleFormChange = (event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
     switch ((event.target as HTMLInputElement).id) {
@@ -46,6 +49,16 @@ const Signin = () => {
     }
   };
 
+  /**
+   * @function handleSubmit
+   *
+   * @description Handles the submission of the sign-in form. Prevents the default form submission behavior,
+   * checks if the form is filled correctly, and sends a POST request to the signin endpoint with the user's email and password.
+   * If the sign-in is successful, updates the authentication store with the user's details and navigates to the home page.
+   * If there is an error, sets an appropriate error message based on the error response.
+   *
+   * @param {React.FormEvent<HTMLFormElement>} event - The submit event of the form.
+   */
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (isFormFilled(email, password && import.meta.env.VITE_API_BASE_URL)) {

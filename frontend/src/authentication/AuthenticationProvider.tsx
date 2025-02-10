@@ -1,21 +1,24 @@
 import { useEffect } from 'react';
-import { Outlet, useNavigate } from 'react-router';
+import { useNavigate } from 'react-router';
 
-import { isAuthenticated } from './AuthenticationProvider.lib';
+import { checkAuthentication } from './AuthenticationProvider.lib';
+import { AuthenticationProviderPropsType } from './AuthenticationProvider.type';
+import { useAuthenticationStore } from './AuthenticationStore/AuthenticationStore';
 
-const AuthenticationProvider = () => {
+
+const AuthenticationProvider = ({ children }: AuthenticationProviderPropsType) => {
   const navigate = useNavigate();
+  const email = useAuthenticationStore((state) => state.email);
+
+  if (!email) {
+    navigate('/signin');
+  }
 
   useEffect(() => {
-    (async () => {
-      const authentication = await isAuthenticated();
-      if (!authentication) {
-        navigate('/signin');
-      }
-    })();
+    checkAuthentication(navigate);
   }, [navigate]);
 
-  return <Outlet />;
+  return children;
 };
 
 export default AuthenticationProvider;

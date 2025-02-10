@@ -4,6 +4,7 @@ import { useLocation } from 'react-router';
 
 import { getRouteByField } from '@/routing/routes/routes.lib';
 import { RoutesIndoorType } from '@/routing/routes/routes.type';
+import { useAppStore } from '@/stores/app-store/AppStore';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import MenuIcon from '@mui/icons-material/Menu';
 import AppBar from '@mui/material/AppBar';
@@ -20,6 +21,7 @@ export default function MenuAppBar() {
   const location = useLocation();
   const [pageName, setPageName] = useState<string>('');
   const { t } = useTranslation();
+  const setAppDrawerOpen = useAppStore((state) => state.setAppDrawerOpen);
 
   useEffect(() => {
     const name = getRouteByField('path', location.pathname, 'indoor') as RoutesIndoorType;
@@ -30,7 +32,16 @@ export default function MenuAppBar() {
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position='static'>
         <Toolbar>
-          <IconButton size='large' edge='start' color='inherit' aria-label='menu' sx={{ mr: 2 }}>
+          <IconButton
+            size='large'
+            edge='start'
+            color='inherit'
+            aria-label='menu'
+            sx={{ mr: 2 }}
+            onClick={() => {
+              setAppDrawerOpen(true);
+            }}
+          >
             <MenuIcon />
           </IconButton>
           <Typography variant='h6' component='div' sx={{ flexGrow: 1 }}>

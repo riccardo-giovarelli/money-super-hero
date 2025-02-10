@@ -9,6 +9,7 @@ import { Alert, Box, Button, TextField, Typography } from '@mui/material';
 
 import { isFormFilled } from './Signup.lib';
 
+
 const Signup = () => {
   const [firstName, setFirstName] = useState<string>('');
   const [lastName, setLastName] = useState<string>('');
@@ -24,8 +25,11 @@ const Signup = () => {
   /**
    * @function handleSubmit
    *
-   * @description Handle the submit of the register form
-   * @param event Submit event of form
+   * @description Handles the submission of the registration form. Prevents the default form submission behavior,
+   * checks if the form is filled correctly, and sends a POST request to the signup endpoint with the user's details.
+   * If the registration is successful, navigates to the signin page. If there is an error, sets an appropriate error message.
+   *
+   * @param {React.FormEvent<HTMLFormElement>} event - The submit event of the form.
    */
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
@@ -56,8 +60,10 @@ const Signup = () => {
   /**
    * @function handleFormChange
    *
-   * @description Handle changes of form fields
-   * @param event Change event of fields
+   * @description Handles changes to form fields. Updates the corresponding state based on the field's id.
+   * Validates the email format and sets an error message if the email is invalid.
+   *
+   * @param {React.FormEvent<HTMLInputElement | HTMLTextAreaElement>} event - The change event of the form fields.
    */
   const handleFormChange = (event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
     switch ((event.target as HTMLInputElement).id) {

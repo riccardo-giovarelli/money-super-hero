@@ -1,25 +1,22 @@
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
+import { userDataInitialState } from './AuthenticationStore.lib';
 import { AuthenticationAction, AuthenticationState } from './AuthenticationStore.type';
+
 
 export const useAuthenticationStore = create<AuthenticationState & AuthenticationAction>()(
   persist(
     (set) => ({
-      firstName: '',
-      lastName: '',
-      email: '',
-      setFirstName: (firstName) => set(() => ({ firstName: firstName })),
-      setLastName: (lastName) => set(() => ({ lastName: lastName })),
-      setEmail: (email) => set(() => ({ email: email })),
+      userData: userDataInitialState,
+      setUserData: (newUserData) => set((state) => ({ userData: { ...state.userData, ...newUserData } })),
+      setLogout: () => set({ userData: userDataInitialState }),
     }),
     {
       name: 'authentication-storage',
       storage: createJSONStorage(() => sessionStorage),
       partialize: (state) => ({
-        firstName: state.firstName,
-        lastName: state.lastName,
-        email: state.email,
+        userData: state.userData,
       }),
     }
   )

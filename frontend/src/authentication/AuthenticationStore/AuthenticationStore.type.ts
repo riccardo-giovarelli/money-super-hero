@@ -1,11 +1,14 @@
-export interface AuthenticationState {
+export interface UserDataType {
   firstName: string;
   lastName: string;
   email: string;
 }
 
+export interface AuthenticationState {
+  userData: UserDataType | null;
+}
+
 export interface AuthenticationAction {
-  setFirstName: (username: AuthenticationState['firstName']) => void;
-  setLastName: (username: AuthenticationState['lastName']) => void;
-  setEmail: (username: AuthenticationState['email']) => void;
+  setUserData: (newUserData: UserDataType) => void;
+  setLogout: () => void;
 }

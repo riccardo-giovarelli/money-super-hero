@@ -7,7 +7,7 @@ import express from 'express';
 import session from 'express-session';
 import NodeCache from 'node-cache';
 
-import usersRoutes from './routes/users.ts';
+import usersRoutes from './routes/users/users.ts';
 
 
 // New Express
@@ -25,12 +25,12 @@ app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(
   session({
+    name: 'money-super-hero-session',
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     cookie: {
       secure: false,
-      httpOnly: true,
       maxAge: 1000 * 60 * 60 * 24,
     },
   })

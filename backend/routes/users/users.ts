@@ -1,27 +1,62 @@
 import bcrypt from 'bcryptjs';
 import express from 'express';
+import pg from 'pg';
 
-import client from '../utils/db/client.ts';
+import { authenticationMiddleware } from './users.lib.ts';
+
 
 const router = express.Router();
+const { Client } = pg;
 
 /**
  * GET: Check if user is logged in
+ *
+ * @description Checks if the user is currently logged in by verifying the session.
+ * If the user is logged in, it responds with a success message.
+ *
+ * @route GET /
+ * @returns {Object} A JSON object with a code and message indicating the login status.
  */
-router.get('/', (req, res) => {
-  if (req.session['username']) {
-    res.json({ code: 'LOGGED_IN', message: 'User logged in', details: '' });
-  } else {
-    res.json({ code: 'LOGGED_OUT', message: 'User logged out', details: '' });
-  }
+router.get('/', authenticationMiddleware, (req, res) => {
+  res.json({ code: 'LOGGED_IN', message: 'User logged in', details: '' });
+});
+
+/**
+ * GET: Logout
+ *
+ * @description Handles the logout process by destroying the user's session and clearing the session cookie.
+ * If the session is successfully destroyed, it responds with a success message. If there is an error during
+ * the session destruction, it responds with an error message.
+ *
+ * @route GET /logout
+ * @returns {Object} A JSON object with a code and message indicating the result of the logout process.
+ */
+router.get('/logout', (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      res.status(422).json({ code: 'LOGOUT_ERROR', message: 'Error while logging out', details: err });
+    } else {
+      res.clearCookie('money-super-hero-session');
+      res.json({ code: 'LOGGED_OUT', message: 'User logged out', details: '' });
+    }
+  });
 });
 
 /**
  * POST: Sign up
+ *
+ * @description Handles the user registration process. Checks if the user already exists,
+ * hashes the password, and inserts the new user into the database. If the registration is successful,
+ * it responds with a success message. If there is an error, it responds with an error message.
+ *
+ * @route POST /signup
+ * @returns {Object} A JSON object with a code and message indicating the result of the registration process.
  */
 router.post('/signup', async (req, res) => {
   // Check if the user already exists
+  const client = new Client();
   try {
+    client.connect();
     const query = {
       name: 'get-user-by-email',
       text: 'SELECT EXISTS(SELECT 1 FROM users WHERE "email" = $1)',
@@ -42,7 +77,9 @@ router.post('/signup', async (req, res) => {
 
   // Insert new user
   bcrypt.hash(req.body.password, 10, async (err: Error, hash: string) => {
+    const client = new Client();
     try {
+      client.connect();
       if (err) {
         throw err;
       }
@@ -68,9 +105,18 @@ router.post('/signup', async (req, res) => {
 
 /**
  * POST: Sign in
+ *
+ * @description Handles the user login process. Checks if the user exists, verifies the password,
+ * and creates a session for the user. If the login is successful, it responds with a success message
+ * and the user's details. If there is an error, it responds with an error message.
+ *
+ * @route POST /signin
+ * @returns {Object} A JSON object with a code and message indicating the result of the login process.
  */
 router.post('/signin', async (req, res) => {
+  const client = new Client();
   try {
+    client.connect();
     const query = {
       name: 'get-user-by-email',
       text: 'SELECT "firstName", "lastName", "email", "password" FROM users WHERE "email" = $1;',

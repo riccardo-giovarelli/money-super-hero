@@ -1,9 +1,18 @@
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router';
+
+import useAuthentication from '@/authentication/hooks/useAuthentication/useAuthentication';
 import { Menu, MenuItem } from '@mui/material';
 
+import { handleLogoutClick } from './MenuUser.lib';
 import { MenuUserProps } from './MenuUser.type';
 
 
 const MenuUser = ({ anchorEl, handleClose }: MenuUserProps) => {
+  const { logout } = useAuthentication();
+  const navigate = useNavigate();
+  const { t } = useTranslation();
+
   return (
     <Menu
       id='menu-appbar'
@@ -20,8 +29,8 @@ const MenuUser = ({ anchorEl, handleClose }: MenuUserProps) => {
       open={Boolean(anchorEl)}
       onClose={handleClose}
     >
-      <MenuItem onClick={handleClose}>Profile</MenuItem>
-      <MenuItem onClick={handleClose}>My account</MenuItem>
+      <MenuItem onClick={handleClose}>{t('user_menu.profile')}</MenuItem>
+      <MenuItem onClick={() => handleLogoutClick(logout, navigate)}>{t('user_menu.logout')}</MenuItem>
     </Menu>
   );
 };

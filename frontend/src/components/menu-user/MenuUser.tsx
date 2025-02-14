@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router';
 import useAuthentication from '@/authentication/hooks/useAuthentication/useAuthentication';
 import { Menu, MenuItem } from '@mui/material';
 
-import { handleLogoutClick } from './MenuUser.lib';
+import { handleLogoutClick, handleProfileClick } from './MenuUser.lib';
 import { MenuUserProps } from './MenuUser.type';
 
 
@@ -29,8 +29,8 @@ const MenuUser = ({ anchorEl, handleClose }: MenuUserProps) => {
       open={Boolean(anchorEl)}
       onClose={handleClose}
     >
-      <MenuItem onClick={handleClose}>{t('user_menu.profile')}</MenuItem>
-      <MenuItem onClick={() => handleLogoutClick(logout, navigate)}>{t('user_menu.logout')}</MenuItem>
+      <MenuItem onClick={() => handleProfileClick(navigate, handleClose)}>{t('user_menu.profile')}</MenuItem>
+      <MenuItem onClick={() => handleLogoutClick(logout, navigate, handleClose)}>{t('user_menu.logout')}</MenuItem>
     </Menu>
   );
 };

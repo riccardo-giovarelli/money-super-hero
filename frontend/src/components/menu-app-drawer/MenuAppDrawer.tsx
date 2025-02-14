@@ -27,18 +27,21 @@ const MenuAppDrawer = () => {
       }}
     >
       <List>
-        {routesIndoor.map((route) => (
-          <ListItem key={route.id} disablePadding onClick={() => navigate(route.path)}>
-            <ListItemButton>
-              {route.icon && (
-                <ListItemIcon>
-                  <route.icon />
-                </ListItemIcon>
-              )}
-              <ListItemText primary={t(route.labelLangCode)} />
-            </ListItemButton>
-          </ListItem>
-        ))}
+        {routesIndoor.map(
+          (route) =>
+            !route.hideInMenu && (
+              <ListItem key={route.id} disablePadding onClick={() => navigate(route.path)}>
+                <ListItemButton>
+                  {route.icon && (
+                    <ListItemIcon>
+                      <route.icon />
+                    </ListItemIcon>
+                  )}
+                  <ListItemText primary={t(route.labelLangCode)} />
+                </ListItemButton>
+              </ListItem>
+            )
+        )}
       </List>
     </Box>
   );

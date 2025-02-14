@@ -8,17 +8,13 @@ import { MessageType } from '@/types/generic';
 import { Alert, Box, Button, TextField, Typography } from '@mui/material';
 
 import { isFormFilled } from './Signup.lib';
+import { ProfileDataType } from './Signup.type';
 
 
 const Signup = () => {
-  const [firstName, setFirstName] = useState<string>('');
-  const [lastName, setLastName] = useState<string>('');
-  const [email, setEmail] = useState<string>('');
-  const [emailErrorMessage, setEmailErrorMessage] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
-  const [rePassword, setRePassword] = useState<string>('');
   const [passwordIsValid, setPasswordIsValid] = useState<boolean>(false);
   const [message, setMessage] = useState<MessageType | null>(null);
+  const [profileData, setProfileData] = useState<ProfileDataType | null>(null);
   const navigate = useNavigate();
   const { t } = useTranslation();
 
@@ -33,11 +29,19 @@ const Signup = () => {
    */
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
-    if (isFormFilled(firstName, lastName, email, passwordIsValid && import.meta.env.VITE_API_BASE_URL)) {
+    if (
+      isFormFilled(passwordIsValid, profileData?.firstName, profileData?.lastName, profileData?.email) &&
+      import.meta.env.VITE_API_BASE_URL
+    ) {
       axios
         .post(
           `${import.meta.env.VITE_API_BASE_URL}/users/signup`,
-          { firstName, lastName, email, password },
+          {
+            firstName: profileData?.firstName,
+            lastName: profileData?.lastName,
+            email: profileData?.email,
+            password: profileData?.password,
+          },
           { withCredentials: true }
         )
         .then((results) => {
@@ -57,38 +61,11 @@ const Signup = () => {
     }
   };
 
-  /**
-   * @function handleFormChange
-   *
-   * @description Handles changes to form fields. Updates the corresponding state based on the field's id.
-   * Validates the email format and sets an error message if the email is invalid.
-   *
-   * @param {React.FormEvent<HTMLInputElement | HTMLTextAreaElement>} event - The change event of the form fields.
-   */
   const handleFormChange = (event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
-    switch ((event.target as HTMLInputElement).id) {
-      case 'first-name':
-        setFirstName((event.target as HTMLInputElement).value);
-        break;
-      case 'last-name':
-        setLastName((event.target as HTMLInputElement).value);
-        break;
-      case 'email':
-        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test((event.target as HTMLInputElement).value)) {
-          setEmailErrorMessage(t('authentication.email_invalid'));
-          setEmail((event.target as HTMLInputElement).value);
-        } else {
-          setEmailErrorMessage('');
-          setEmail((event.target as HTMLInputElement).value);
-        }
-        break;
-      case 'password':
-        setPassword((event.target as HTMLInputElement).value);
-        break;
-      case 're-password':
-        setRePassword((event.target as HTMLInputElement).value);
-        break;
-    }
+    setProfileData({
+      ...profileData,
+      [(event.target as HTMLInputElement).name]: (event.target as HTMLInputElement).value,
+    } as ProfileDataType);
   };
 
   return (
@@ -101,7 +78,7 @@ const Signup = () => {
           id='first-name'
           label={t('authentication.first_name')}
           onChange={handleFormChange}
-          value={firstName}
+          value={profileData?.firstName}
           variant='outlined'
           margin='normal'
           required
@@ -111,7 +88,7 @@ const Signup = () => {
           id='last-name'
           label={t('authentication.last_name')}
           onChange={handleFormChange}
-          value={lastName}
+          value={profileData?.lastName}
           variant='outlined'
           margin='normal'
           fullWidth
@@ -119,10 +96,8 @@ const Signup = () => {
         <TextField
           id='email'
           label={t('authentication.email')}
-          error={emailErrorMessage.length > 0}
-          helperText={emailErrorMessage}
           onChange={handleFormChange}
-          value={email}
+          value={profileData?.email}
           variant='outlined'
           margin='normal'
           required
@@ -133,7 +108,7 @@ const Signup = () => {
           id='password'
           label={t('authentication.password')}
           onChange={handleFormChange}
-          value={password}
+          value={profileData?.password}
           variant='outlined'
           margin='normal'
           required
@@ -144,19 +119,19 @@ const Signup = () => {
           id='re-password'
           label={t('authentication.repeat_password')}
           onChange={handleFormChange}
-          value={rePassword}
+          value={profileData?.rePassword}
           variant='outlined'
           margin='normal'
           required
           fullWidth
           type='password'
         />
-        {password.length > 0 && (
+        {profileData && profileData?.password?.length > 0 && (
           <PasswordChecklist
             rules={['minLength', 'specialChar', 'number', 'capital', 'match']}
             minLength={8}
-            value={password}
-            valueAgain={rePassword}
+            value={profileData?.password}
+            valueAgain={profileData?.rePassword}
             onChange={(isValid) => {
               setPasswordIsValid(isValid);
             }}

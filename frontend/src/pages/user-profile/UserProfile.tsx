@@ -80,7 +80,7 @@ const UserProfile = () => {
                 {t('user_profile.profile')}
               </Typography>
             </Grid>
-            <Grid size={6}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <TextField
                 id='first-name'
                 name='firstName'
@@ -93,7 +93,7 @@ const UserProfile = () => {
                 fullWidth
               />
             </Grid>
-            <Grid size={6}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <TextField
                 id='last-name'
                 name='lastName'
@@ -119,8 +119,8 @@ const UserProfile = () => {
                 type='email'
               />
             </Grid>
-            <Grid size={12}>
-              <Button type='submit' fullWidth variant='contained' color='primary' sx={{ mt: 2 }}>
+            <Grid size={12} sx={{ textAlign: 'right' }}>
+              <Button type='submit' variant='contained' color='primary' sx={{ mt: 2 }}>
                 {t('user_profile.save')}
               </Button>
               {message && (
@@ -140,7 +140,7 @@ const UserProfile = () => {
                 {t('user_profile.password')}
               </Typography>
             </Grid>
-            <Grid size={6}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <TextField
                 id='password'
                 label={t('authentication.password')}
@@ -164,7 +164,7 @@ const UserProfile = () => {
                 />
               )}
             </Grid>
-            <Grid size={6}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <TextField
                 id='re-password'
                 label={t('authentication.repeat_password')}
@@ -177,8 +177,8 @@ const UserProfile = () => {
                 type='password'
               />
             </Grid>
-            <Grid size={12}>
-              <Button type='submit' fullWidth variant='contained' color='primary' sx={{ mt: 2 }}>
+            <Grid size={12} sx={{ textAlign: 'right' }}>
+              <Button type='submit' variant='contained' color='primary' sx={{ mt: 2 }}>
                 {t('user_profile.save')}
               </Button>
               {message && (

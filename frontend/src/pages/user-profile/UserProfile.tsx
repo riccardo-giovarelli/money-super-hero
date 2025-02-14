@@ -2,17 +2,14 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import PasswordChecklist from 'react-password-checklist';
 
-import { MessageType } from '@/types/generic';
-import { Alert, Button, Container, Paper, TextField, Typography } from '@mui/material';
+import { Box, Button, Card, CardActions, CardContent, CardHeader, Container, TextField } from '@mui/material';
 import Grid from '@mui/material/Grid2';
 
 import { isFormFilled } from './UserProfile.lib';
 import { PasswordDataType, ProfileDataType } from './UserProfile.type';
 
-
 const UserProfile = () => {
   const [passwordIsValid, setPasswordIsValid] = useState<boolean>(false);
-  const [message, setMessage] = useState<MessageType | null>(null);
   const [profileData, setProfileData] = useState<ProfileDataType | null>(null);
   const [passwordData, setPasswordData] = useState<PasswordDataType | null>(null);
   const { t } = useTranslation();
@@ -20,10 +17,6 @@ const UserProfile = () => {
   const handleProfileSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (isFormFilled(profileData?.firstName, profileData?.lastName, profileData?.email)) {
-      setMessage({
-        type: 'info',
-        text: 'Form is filled',
-      });
       console.log('Form is filled');
     }
   };
@@ -31,10 +24,6 @@ const UserProfile = () => {
   const handlePasswordSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (passwordIsValid) {
-      setMessage({
-        type: 'info',
-        text: 'Password is valid',
-      });
       console.log('Password is valid');
     }
   };
@@ -72,124 +61,120 @@ const UserProfile = () => {
 
   return (
     <Container>
-      <form onSubmit={handleProfileSubmit}>
-        <Paper elevation={3} sx={{ padding: 2, marginTop: 4 }}>
-          <Grid container spacing={1} sx={{ mt: 1 }}>
-            <Grid size={12}>
-              <Typography variant='h5' component='h5' gutterBottom>
-                {t('user_profile.profile')}
-              </Typography>
-            </Grid>
-            <Grid size={{ xs: 12, md: 6 }}>
-              <TextField
-                id='first-name'
-                name='firstName'
-                label={t('authentication.first_name')}
-                onChange={handleProfileFormChange}
-                value={profileData?.firstName}
-                variant='outlined'
-                margin='normal'
-                required
-                fullWidth
-              />
-            </Grid>
-            <Grid size={{ xs: 12, md: 6 }}>
-              <TextField
-                id='last-name'
-                name='lastName'
-                label={t('authentication.last_name')}
-                onChange={handleProfileFormChange}
-                value={profileData?.lastName}
-                variant='outlined'
-                margin='normal'
-                fullWidth
-              />
-            </Grid>
-            <Grid size={12}>
-              <TextField
-                id='email'
-                name='email'
-                label={t('authentication.email')}
-                onChange={handleProfileFormChange}
-                value={profileData?.email}
-                variant='outlined'
-                margin='normal'
-                required
-                fullWidth
-                type='email'
-              />
-            </Grid>
-            <Grid size={12} sx={{ textAlign: 'right' }}>
-              <Button type='submit' variant='contained' color='primary' sx={{ mt: 2 }}>
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'flex-start',
+          flexDirection: 'column',
+        }}
+      >
+        <Card sx={{ width: '100%', marginTop: 4 }}>
+          <CardHeader title={t('user_profile.personal_info')} />
+          <form onSubmit={handleProfileSubmit}>
+            <CardContent>
+              <Grid container spacing={1}>
+                <Grid size={{ xs: 12, md: 6 }}>
+                  <TextField
+                    id='first-name'
+                    name='firstName'
+                    label={t('authentication.first_name')}
+                    onChange={handleProfileFormChange}
+                    value={profileData?.firstName}
+                    variant='outlined'
+                    margin='normal'
+                    required
+                    fullWidth
+                  />
+                </Grid>
+                <Grid size={{ xs: 12, md: 6 }}>
+                  <TextField
+                    id='last-name'
+                    name='lastName'
+                    label={t('authentication.last_name')}
+                    onChange={handleProfileFormChange}
+                    value={profileData?.lastName}
+                    variant='outlined'
+                    margin='normal'
+                    fullWidth
+                  />
+                </Grid>
+                <Grid size={12}>
+                  <TextField
+                    id='email'
+                    name='email'
+                    label={t('authentication.email')}
+                    onChange={handleProfileFormChange}
+                    value={profileData?.email}
+                    variant='outlined'
+                    margin='normal'
+                    required
+                    fullWidth
+                    type='email'
+                  />
+                </Grid>
+              </Grid>
+            </CardContent>
+            <CardActions sx={{ justifyContent: 'flex-end' }}>
+              <Button type='submit' color='primary'>
                 {t('user_profile.save')}
               </Button>
-              {message && (
-                <Alert sx={{ marginTop: 3 }} severity={message.type}>
-                  {message.text}
-                </Alert>
-              )}
-            </Grid>
-          </Grid>
-        </Paper>
-      </form>
-      <form onSubmit={handlePasswordSubmit}>
-        <Paper elevation={3} sx={{ padding: 2, marginTop: 4 }}>
-          <Grid container spacing={1} sx={{ mt: 1 }}>
-            <Grid size={12}>
-              <Typography variant='h5' component='h5' gutterBottom>
-                {t('user_profile.password')}
-              </Typography>
-            </Grid>
-            <Grid size={{ xs: 12, md: 6 }}>
-              <TextField
-                id='password'
-                label={t('authentication.password')}
-                onChange={handlePasswordFormChange}
-                value={passwordData?.password}
-                variant='outlined'
-                margin='normal'
-                required
-                fullWidth
-                type='password'
-              />
-              {passwordData && passwordData?.password?.length > 0 && (
-                <PasswordChecklist
-                  rules={['minLength', 'specialChar', 'number', 'capital', 'match']}
-                  minLength={8}
-                  value={passwordData?.password}
-                  valueAgain={passwordData?.rePassword}
-                  onChange={(isValid) => {
-                    setPasswordIsValid(isValid);
-                  }}
-                />
-              )}
-            </Grid>
-            <Grid size={{ xs: 12, md: 6 }}>
-              <TextField
-                id='re-password'
-                label={t('authentication.repeat_password')}
-                onChange={handlePasswordFormChange}
-                value={passwordData?.rePassword}
-                variant='outlined'
-                margin='normal'
-                required
-                fullWidth
-                type='password'
-              />
-            </Grid>
-            <Grid size={12} sx={{ textAlign: 'right' }}>
-              <Button type='submit' variant='contained' color='primary' sx={{ mt: 2 }}>
+            </CardActions>
+          </form>
+        </Card>
+        <Card sx={{ width: '100%', marginTop: 4 }}>
+          <CardHeader title={t('user_profile.password')} />
+          <form onSubmit={handlePasswordSubmit}>
+            <CardContent>
+              <Grid container spacing={1} sx={{ mt: 1 }}>
+                <Grid size={{ xs: 12, md: 6 }}>
+                  <TextField
+                    id='password'
+                    name='password'
+                    label={t('authentication.password')}
+                    onChange={handlePasswordFormChange}
+                    value={passwordData?.password}
+                    variant='outlined'
+                    margin='normal'
+                    required
+                    fullWidth
+                    type='password'
+                  />
+                  {passwordData && passwordData?.password?.length > 0 && (
+                    <PasswordChecklist
+                      rules={['minLength', 'specialChar', 'number', 'capital', 'match']}
+                      minLength={8}
+                      value={passwordData?.password}
+                      valueAgain={passwordData?.rePassword}
+                      onChange={(isValid) => {
+                        setPasswordIsValid(isValid);
+                      }}
+                    />
+                  )}
+                </Grid>
+                <Grid size={{ xs: 12, md: 6 }}>
+                  <TextField
+                    id='re-password'
+                    name='rePassword'
+                    label={t('authentication.repeat_password')}
+                    onChange={handlePasswordFormChange}
+                    value={passwordData?.rePassword}
+                    variant='outlined'
+                    margin='normal'
+                    required
+                    fullWidth
+                    type='password'
+                  />
+                </Grid>
+              </Grid>
+            </CardContent>
+            <CardActions sx={{ justifyContent: 'flex-end' }}>
+              <Button type='submit' color='primary'>
                 {t('user_profile.save')}
               </Button>
-              {message && (
-                <Alert sx={{ marginTop: 3 }} severity={message.type}>
-                  {message.text}
-                </Alert>
-              )}
-            </Grid>
-          </Grid>
-        </Paper>
-      </form>
+            </CardActions>
+          </form>
+        </Card>
+      </Box>
     </Container>
   );
 };

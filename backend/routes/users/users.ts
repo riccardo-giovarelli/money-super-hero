@@ -4,6 +4,7 @@ import pg from 'pg';
 
 import { authenticationMiddleware } from './users.lib.ts';
 
+
 const router = express.Router();
 const { Client } = pg;
 
@@ -50,16 +51,25 @@ router.get('/myself', authenticationMiddleware, async (req, res) => {
 });
 
 /**
- * GET: Check if user is logged in
+ * GET: Check Authentication Status
  *
- * @description Checks if the user is currently logged in by verifying the session.
- * If the user is logged in, it responds with a success message.
+ * @description Checks if the user is currently authenticated by verifying the presence of the 'username' in the session.
+ * If the user is authenticated, it responds with a success message indicating that the user is logged in.
+ * If the user is not authenticated, it responds with a message indicating that the user is not logged in.
  *
  * @route GET /check
- * @returns {Object} A JSON object with a code and message indicating the login status.
+ * @returns {Object} A JSON object with a code and message indicating the authentication status.
  */
-router.get('/check', authenticationMiddleware, (req, res) => {
-  res.json({ code: 'LOGGED_IN', message: 'User logged in', details: '' });
+router.get('/check', (req, res) => {
+  if (req.session['username']) {
+    res
+      .status(200)
+      .json({ code: 'LOGGED_IN', message: 'User authenticated', details: 'Current user is authenticated' });
+  } else {
+    res
+      .status(200)
+      .json({ code: 'LOGGED_OUT', message: 'User non authenticated', details: 'Current user is not authenticated' });
+  }
 });
 
 /**

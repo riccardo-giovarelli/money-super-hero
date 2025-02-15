@@ -1,14 +1,17 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import PasswordChecklist from 'react-password-checklist';
 
 import useUserData from '@/hooks/useUserData/useUserData';
 import { UsersType } from '@/models/users';
-import { Box, Button, Card, CardActions, CardContent, CardHeader, Container, TextField } from '@mui/material';
+import {
+    Box, Button, Card, CardActions, CardContent, CardHeader, Container, TextField
+} from '@mui/material';
 import Grid from '@mui/material/Grid2';
 
 import { isFormFilled } from './UserProfile.lib';
 import { PasswordDataType } from './UserProfile.type';
+
 
 const UserProfile = () => {
   const [passwordIsValid, setPasswordIsValid] = useState<boolean>(false);
@@ -18,6 +21,12 @@ const UserProfile = () => {
   const { t } = useTranslation();
 
   console.log('userData', userData);
+
+  useEffect(() => {
+    if (userData) {
+      setProfileData(userData);
+    }
+  }, [userData]);
 
   const handleProfileSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -84,7 +93,7 @@ const UserProfile = () => {
                     name='firstName'
                     label={t('authentication.first_name')}
                     onChange={handleProfileFormChange}
-                    value={profileData?.firstName}
+                    value={profileData?.firstName || ''}
                     variant='outlined'
                     margin='normal'
                     required
@@ -97,7 +106,7 @@ const UserProfile = () => {
                     name='lastName'
                     label={t('authentication.last_name')}
                     onChange={handleProfileFormChange}
-                    value={profileData?.lastName}
+                    value={profileData?.lastName || ''}
                     variant='outlined'
                     margin='normal'
                     fullWidth
@@ -109,7 +118,7 @@ const UserProfile = () => {
                     name='email'
                     label={t('authentication.email')}
                     onChange={handleProfileFormChange}
-                    value={profileData?.email}
+                    value={profileData?.email || ''}
                     variant='outlined'
                     margin='normal'
                     required

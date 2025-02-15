@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 
 import { UsersType } from '@/models/users';
 
+
 const useUserData = () => {
   const [userData, setUserData] = useState<UsersType | null>(null);
 

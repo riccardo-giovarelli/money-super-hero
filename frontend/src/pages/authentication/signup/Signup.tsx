@@ -4,12 +4,11 @@ import { useTranslation } from 'react-i18next';
 import PasswordChecklist from 'react-password-checklist';
 import { useNavigate } from 'react-router';
 
-import { MessageType } from '@/types/generic';
+import { MessageType } from '@/types/generic.type';
 import { Alert, Box, Button, TextField, Typography } from '@mui/material';
 
 import { isFormFilled } from './Signup.lib';
 import { ProfileDataType } from './Signup.type';
-
 
 const Signup = () => {
   const [passwordIsValid, setPasswordIsValid] = useState<boolean>(false);

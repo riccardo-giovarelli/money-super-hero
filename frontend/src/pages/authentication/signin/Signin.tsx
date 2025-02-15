@@ -5,11 +5,10 @@ import { useNavigate } from 'react-router';
 
 import { useAuthenticationStore } from '@/authentication/AuthenticationStore/AuthenticationStore';
 import useAuthentication from '@/authentication/hooks/useAuthentication/useAuthentication';
-import { MessageType } from '@/types/generic';
+import { MessageType } from '@/types/generic.type';
 import { Alert, Box, Button, TextField, Typography } from '@mui/material';
 
 import { isFormFilled } from './Signin.lib';
-
 
 const Signin = () => {
   const [email, setEmail] = useState<string>('');

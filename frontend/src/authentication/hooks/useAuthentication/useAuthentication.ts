@@ -3,7 +3,6 @@ import { NavigateFunction } from 'react-router';
 
 import { useAuthenticationStore } from '@/authentication/AuthenticationStore/AuthenticationStore';
 
-
 const useAuthentication = () => {
   const setLogout = useAuthenticationStore((state) => state.setLogout);
   /**
@@ -19,7 +18,7 @@ const useAuthentication = () => {
    */
   const isAuthenticated = async (): Promise<boolean> => {
     try {
-      const results = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/users`, { withCredentials: true });
+      const results = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/users/check`, { withCredentials: true });
       return results?.data?.code === 'LOGGED_IN';
     } catch (error) {
       console.log('Authentication error', error);

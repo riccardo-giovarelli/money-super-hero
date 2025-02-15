@@ -2,17 +2,22 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import PasswordChecklist from 'react-password-checklist';
 
+import useUserData from '@/hooks/useUserData/useUserData';
+import { UsersType } from '@/models/users';
 import { Box, Button, Card, CardActions, CardContent, CardHeader, Container, TextField } from '@mui/material';
 import Grid from '@mui/material/Grid2';
 
 import { isFormFilled } from './UserProfile.lib';
-import { PasswordDataType, ProfileDataType } from './UserProfile.type';
+import { PasswordDataType } from './UserProfile.type';
 
 const UserProfile = () => {
   const [passwordIsValid, setPasswordIsValid] = useState<boolean>(false);
-  const [profileData, setProfileData] = useState<ProfileDataType | null>(null);
+  const [profileData, setProfileData] = useState<UsersType | null>(null);
   const [passwordData, setPasswordData] = useState<PasswordDataType | null>(null);
+  const userData = useUserData();
   const { t } = useTranslation();
+
+  console.log('userData', userData);
 
   const handleProfileSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -40,7 +45,7 @@ const UserProfile = () => {
     setProfileData({
       ...profileData,
       [(event.target as HTMLInputElement).name]: (event.target as HTMLInputElement).value,
-    } as ProfileDataType);
+    } as UsersType);
   };
 
   /**

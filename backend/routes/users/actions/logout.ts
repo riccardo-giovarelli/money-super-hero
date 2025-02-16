@@ -1,5 +1,7 @@
 import express from 'express';
 
+import { authenticationMiddleware } from '../users.lib.ts';
+
 
 const router = express.Router();
 
@@ -13,7 +15,7 @@ const router = express.Router();
  * @route GET /
  * @returns {Object} A JSON object with a code and message indicating the result of the logout process.
  */
-router.get('/', (req, res) => {
+router.get('/', authenticationMiddleware, (req, res) => {
   req.session.destroy((err) => {
     if (err) {
       res.status(422).json({ code: 'LOGOUT_ERROR', message: 'Error while logging out', details: err });

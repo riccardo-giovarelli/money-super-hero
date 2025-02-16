@@ -15,5 +15,6 @@ export const authentication = {
     'authentication.user_does_not_exist': 'User does not exist',
     'authentication.wrong_password': 'Wrong password',
     'authentication.email_invalid': 'Invalid email address',
+    'authentication.session_expired': 'Session expired',
   },
 };

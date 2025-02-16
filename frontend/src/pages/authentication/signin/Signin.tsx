@@ -1,14 +1,14 @@
-import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router';
+import { useNavigate, useSearchParams } from 'react-router';
 
 import { useAuthenticationStore } from '@/authentication/AuthenticationStore/AuthenticationStore';
-import useAuthentication from '@/authentication/hooks/useAuthentication/useAuthentication';
 import { MessageType } from '@/types/generic.type';
+import tank from '@/utils/axios';
 import { Alert, Box, Button, TextField, Typography } from '@mui/material';
 
 import { isFormFilled } from './Signin.lib';
+
 
 const Signin = () => {
   const [email, setEmail] = useState<string>('');
@@ -17,16 +17,25 @@ const Signin = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const setUserData = useAuthenticationStore((state) => state.setUserData);
-  const { isAuthenticated } = useAuthentication();
+  const [searchParams] = useSearchParams();
 
   useEffect(() => {
-    (async () => {
-      const authentication = await isAuthenticated();
-      if (authentication) {
+    (async function () {
+      const results = await tank.get('/users/check');
+      if (results?.data?.code === 'LOGGED_IN') {
         navigate('/');
       }
     })();
-  }, [navigate, isAuthenticated]);
+  }, []);
+
+  useEffect(() => {
+    if (searchParams.get('sessionExpired') === 'true') {
+      setMessage({
+        type: 'error',
+        text: t('authentication.session_expired'),
+      });
+    }
+  }, [searchParams]);
 
   /**
    * @function handleFormChange
@@ -59,9 +68,9 @@ const Signin = () => {
    */
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (isFormFilled(email, password && import.meta.env.VITE_API_BASE_URL)) {
-      axios
-        .post(`${import.meta.env.VITE_API_BASE_URL}/users/signin`, { email, password })
+    if (isFormFilled(email, password)) {
+      tank
+        .post('/users/signin', { email, password })
         .then((results) => {
           if (results?.data?.code === 'LOGIN_SUCCESSFUL' && results?.data?.details) {
             setUserData({

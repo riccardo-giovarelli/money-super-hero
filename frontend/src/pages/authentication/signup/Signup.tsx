@@ -10,6 +10,7 @@ import { Alert, Box, Button, TextField, Typography } from '@mui/material';
 import { isFormFilled } from './Signup.lib';
 import { ProfileDataType } from './Signup.type';
 
+
 const Signup = () => {
   const [passwordIsValid, setPasswordIsValid] = useState<boolean>(false);
   const [message, setMessage] = useState<MessageType | null>(null);
@@ -28,21 +29,14 @@ const Signup = () => {
    */
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
-    if (
-      isFormFilled(passwordIsValid, profileData?.firstName, profileData?.lastName, profileData?.email) &&
-      import.meta.env.VITE_API_BASE_URL
-    ) {
+    if (isFormFilled(passwordIsValid, profileData?.firstName, profileData?.lastName, profileData?.email)) {
       axios
-        .post(
-          `${import.meta.env.VITE_API_BASE_URL}/users/signup`,
-          {
-            firstName: profileData?.firstName,
-            lastName: profileData?.lastName,
-            email: profileData?.email,
-            password: profileData?.password,
-          },
-          { withCredentials: true }
-        )
+        .post('/users/signup', {
+          firstName: profileData?.firstName,
+          lastName: profileData?.lastName,
+          email: profileData?.email,
+          password: profileData?.password,
+        })
         .then((results) => {
           if (results?.data?.code === 'REGISTRATION_SUCCESSFUL') {
             navigate('/signin');

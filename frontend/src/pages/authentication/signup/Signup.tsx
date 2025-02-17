@@ -38,18 +38,30 @@ const Signup = () => {
           password: profileData?.password,
         })
         .then((results) => {
-          if (results?.data?.code === 'REGISTRATION_SUCCESSFUL') {
-            navigate('/signin');
+          if (!results?.data?.code) {
+            setMessage({
+              type: 'error',
+              text: t('authentication.error_inserting_user'),
+            });
+          } else {
+            switch (results.data.code) {
+              case 'REGISTRATION_SUCCESSFUL':
+                navigate('/signin');
+                break;
+              case 'USER_EXISTS':
+                setMessage({
+                  type: 'error',
+                  text: t('authentication.user_already_exists'),
+                });
+                break;
+              case 'REGISTRATION_ERROR':
+                setMessage({
+                  type: 'error',
+                  text: t('authentication.error_inserting_user'),
+                });
+                break;
+            }
           }
-        })
-        .catch((error) => {
-          setMessage({
-            type: 'error',
-            text:
-              error?.response?.data?.code === 'USER_EXISTS'
-                ? t('authentication.user_already_exists')
-                : t('authentication.error_inserting_user'),
-          });
         });
     }
   };

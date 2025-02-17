@@ -69,52 +69,43 @@ const Signin = () => {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (isFormFilled(email, password)) {
-      tank
-        .post('/users/signin', { email, password })
-        .then((results) => {
-          if (results?.data?.code === 'LOGIN_SUCCESSFUL' && results?.data?.details) {
-            setUserData({
-              firstName: results.data.details.firstName,
-              lastName: results.data.details.lastName,
-              email: results.data.details.email,
-            });
-            navigate('/');
-          } else {
-            setMessage({
-              type: 'error',
-              text: t('authentication.error_signing_in'),
-            });
+      tank.post('/users/signin', { email, password }).then((results) => {
+        if (!results?.data?.code) {
+          setMessage({
+            type: 'error',
+            text: t('authentication.error_signing_in'),
+          });
+        } else {
+          switch (results.data.code) {
+            case 'LOGIN_SUCCESSFUL':
+              setUserData({
+                firstName: results.data.details.firstName,
+                lastName: results.data.details.lastName,
+                email: results.data.details.email,
+              });
+              navigate('/');
+              break;
+            case 'USER_NOT_FOUND':
+              setMessage({
+                type: 'error',
+                text: t('authentication.user_does_not_exist'),
+              });
+              break;
+            case 'WRONG_PASSWORD':
+              setMessage({
+                type: 'error',
+                text: t('authentication.wrong_password'),
+              });
+              break;
+            default:
+              setMessage({
+                type: 'error',
+                text: t('authentication.error_signing_in'),
+              });
+              break;
           }
-        })
-        .catch((error) => {
-          if (!error?.response?.data?.code) {
-            setMessage({
-              type: 'error',
-              text: t('authentication.error_signing_in'),
-            });
-          } else {
-            switch (error.response.data.code) {
-              case 'USER_NOT_FOUND':
-                setMessage({
-                  type: 'error',
-                  text: t('authentication.user_does_not_exist'),
-                });
-                break;
-              case 'WRONG_PASSWORD':
-                setMessage({
-                  type: 'error',
-                  text: t('authentication.wrong_password'),
-                });
-                break;
-              default:
-                setMessage({
-                  type: 'error',
-                  text: t('authentication.error_signing_in'),
-                });
-                break;
-            }
-          }
-        });
+        }
+      });
     }
   };
 

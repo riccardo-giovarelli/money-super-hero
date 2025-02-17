@@ -29,13 +29,13 @@ router.post('/', async (req, res) => {
     const results = await client.query(query);
     if (results?.rows?.[0]?.exists) {
       res
-        .status(422)
+        .status(200)
         .json({ code: 'USER_EXISTS', message: 'Error while inserting new user', details: 'User already exists' });
       return;
     }
   } catch (err) {
     await client.end();
-    res.status(422).json({ code: 'REGISTRATION_ERROR', message: 'Error while inserting new user', details: err });
+    res.status(200).json({ code: 'REGISTRATION_ERROR', message: 'Error while inserting new user', details: err });
     return;
   }
 
@@ -60,7 +60,7 @@ router.post('/', async (req, res) => {
         .status(200)
         .json({ code: 'REGISTRATION_SUCCESSFUL', message: 'New user saved successfully', details: results });
     } catch (err) {
-      res.status(422).json({ code: 'REGISTRATION_ERROR', message: 'Error while inserting new user', details: err });
+      res.status(200).json({ code: 'REGISTRATION_ERROR', message: 'Error while inserting new user', details: err });
     } finally {
       await client.end();
     }

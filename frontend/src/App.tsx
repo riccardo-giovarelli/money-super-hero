@@ -15,20 +15,17 @@ const App = () => {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuthentication();
 
+  /**
+   * Check if the user is authenticated
+   */
   useEffect(() => {
-    // Do not redirect to the signin page if the user is
-    // already on the signin page
     if (location.pathname === '/signin') {
       return;
     }
-    // Redirect to the signin page if the user is not
-    // authenticated
     if (!isAuthenticated) {
       navigate('/signin');
       return;
     }
-    // Check if the user is authenticated by making a
-    // request to the server
     (async function () {
       const results = await tank.get('/users/check');
       if (results?.data?.code !== 'LOGGED_IN') {
@@ -37,6 +34,9 @@ const App = () => {
     })();
   }, [location.pathname, isAuthenticated]);
 
+  /**
+   * Theme configuration
+   */
   const theme = createTheme({
     colorSchemes: {
       dark: true,

@@ -2,8 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import PasswordChecklist from 'react-password-checklist';
 
+import { useAuthenticationStore } from '@/authentication/AuthenticationStore/AuthenticationStore';
+import AlertSnackbar from '@/components/alert-snackbar/AlertSnackbar';
 import useUserData from '@/hooks/useUserData/useUserData';
 import { UsersType } from '@/models/users';
+import { MessageType } from '@/types/generic.type';
+import tank from '@/utils/axios';
 import {
     Box, Button, Card, CardActions, CardContent, CardHeader, Container, TextField
 } from '@mui/material';
@@ -17,10 +21,10 @@ const UserProfile = () => {
   const [passwordIsValid, setPasswordIsValid] = useState<boolean>(false);
   const [profileData, setProfileData] = useState<UsersType | null>(null);
   const [passwordData, setPasswordData] = useState<PasswordDataType | null>(null);
+  const [message, setMessage] = useState<MessageType | null>(null);
+  const setUserData = useAuthenticationStore((state) => state.setUserData);
   const userData = useUserData();
   const { t } = useTranslation();
-
-  console.log('userData', userData);
 
   useEffect(() => {
     if (userData) {
@@ -31,7 +35,36 @@ const UserProfile = () => {
   const handleProfileSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (isFormFilled(profileData?.firstName, profileData?.lastName, profileData?.email)) {
-      console.log('Form is filled');
+      tank.put('/users/myself', profileData).then((results) => {
+        if (!results?.data?.code) {
+          setMessage({
+            type: 'error',
+            text: t('user_profile.update_error'),
+          });
+        } else {
+          switch (results.data.code) {
+            case 'UPDATE_USER_SUCCESS':
+              setUserData(results.data.details);
+              setMessage({
+                type: 'success',
+                text: t('user_profile.update_success'),
+              });
+              break;
+            case 'UPDATE_USER_ERROR':
+              setMessage({
+                type: 'error',
+                text: t('user_profile.update_error'),
+              });
+              break;
+            default:
+              setMessage({
+                type: 'error',
+                text: t('user_profile.update_error'),
+              });
+              break;
+          }
+        }
+      });
     }
   };
 
@@ -87,11 +120,24 @@ const UserProfile = () => {
           <form onSubmit={handleProfileSubmit}>
             <CardContent>
               <Grid container spacing={1}>
+                <Grid size={12} sx={{ cursor: 'not-allowed' }}>
+                  <TextField
+                    id='email'
+                    name='email'
+                    label={t('user_profile.email')}
+                    value={profileData?.email || ''}
+                    variant='outlined'
+                    margin='normal'
+                    fullWidth
+                    type='email'
+                    disabled
+                  />
+                </Grid>
                 <Grid size={{ xs: 12, md: 6 }}>
                   <TextField
                     id='first-name'
                     name='firstName'
-                    label={t('authentication.first_name')}
+                    label={t('user_profile.first_name')}
                     onChange={handleProfileFormChange}
                     value={profileData?.firstName || ''}
                     variant='outlined'
@@ -104,26 +150,12 @@ const UserProfile = () => {
                   <TextField
                     id='last-name'
                     name='lastName'
-                    label={t('authentication.last_name')}
+                    label={t('user_profile.last_name')}
                     onChange={handleProfileFormChange}
                     value={profileData?.lastName || ''}
                     variant='outlined'
                     margin='normal'
                     fullWidth
-                  />
-                </Grid>
-                <Grid size={12}>
-                  <TextField
-                    id='email'
-                    name='email'
-                    label={t('authentication.email')}
-                    onChange={handleProfileFormChange}
-                    value={profileData?.email || ''}
-                    variant='outlined'
-                    margin='normal'
-                    required
-                    fullWidth
-                    type='email'
                   />
                 </Grid>
               </Grid>
@@ -144,7 +176,7 @@ const UserProfile = () => {
                   <TextField
                     id='password'
                     name='password'
-                    label={t('authentication.password')}
+                    label={t('user_profile.password')}
                     onChange={handlePasswordFormChange}
                     value={passwordData?.password}
                     variant='outlined'
@@ -169,7 +201,7 @@ const UserProfile = () => {
                   <TextField
                     id='re-password'
                     name='rePassword'
-                    label={t('authentication.repeat_password')}
+                    label={t('user_profile.repeat_password')}
                     onChange={handlePasswordFormChange}
                     value={passwordData?.rePassword}
                     variant='outlined'
@@ -189,6 +221,13 @@ const UserProfile = () => {
           </form>
         </Card>
       </Box>
+      <AlertSnackbar
+        message={message?.text ? message.text : ''}
+        autoHideDuration={5000}
+        severity={message?.type}
+        open={message !== null}
+        onClose={() => setMessage(null)}
+      />
     </Container>
   );
 };

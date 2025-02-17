@@ -27,7 +27,7 @@ router.post('/', async (req, res) => {
     };
     const results = await client.query(query);
     if (results?.rowCount !== 1) {
-      res.status(422).json({ code: 'USER_NOT_FOUND', message: 'Error while logging in', details: 'User not found' });
+      res.status(200).json({ code: 'USER_NOT_FOUND', message: 'Error while logging in', details: 'User not found' });
       return;
     }
     bcrypt.compare(req.body.password, results.rows[0].password, (err: Error, result: boolean) => {
@@ -35,7 +35,7 @@ router.post('/', async (req, res) => {
         throw err;
       }
       if (!result) {
-        res.status(422).json({ code: 'WRONG_PASSWORD', message: 'Error while logging in', details: 'Wrong password' });
+        res.status(200).json({ code: 'WRONG_PASSWORD', message: 'Error while logging in', details: 'Wrong password' });
         return;
       }
       req.session['username'] = results.rows[0].email;
@@ -50,7 +50,7 @@ router.post('/', async (req, res) => {
       });
     });
   } catch (err) {
-    res.status(422).json({ code: 'LOGIN_ERROR', message: 'Error while logging in', details: err });
+    res.status(200).json({ code: 'LOGIN_ERROR', message: 'Error while logging in', details: err });
   } finally {
     await client.end();
   }

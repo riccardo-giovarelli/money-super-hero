@@ -18,7 +18,7 @@ const router = express.Router();
 router.get('/', authenticationMiddleware, (req, res) => {
   req.session.destroy((err) => {
     if (err) {
-      res.status(422).json({ code: 'LOGOUT_ERROR', message: 'Error while logging out', details: err });
+      res.status(200).json({ code: 'LOGOUT_ERROR', message: 'Error while logging out', details: err });
     } else {
       res.clearCookie('money-super-hero-session');
       res.json({ code: 'LOGGED_OUT', message: 'User logged out', details: '' });

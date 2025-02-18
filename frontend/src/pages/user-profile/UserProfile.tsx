@@ -32,6 +32,16 @@ const UserProfile = () => {
     }
   }, [userData]);
 
+  /**
+   * @function handleProfileSubmit
+   *
+   * @description Handles the submission of the profile form. Prevents the default form submission behavior,
+   * checks if the form is filled correctly, and sends a PUT request to the `/users/myself` endpoint with the user's profile data.
+   * If the update is successful, updates the user data in the authentication store and sets a success message.
+   * If there is an error, sets an appropriate error message.
+   *
+   * @param {React.FormEvent<HTMLFormElement>} event - The submit event of the form.
+   */
   const handleProfileSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (isFormFilled(profileData?.firstName, profileData?.lastName, profileData?.email)) {
@@ -68,10 +78,47 @@ const UserProfile = () => {
     }
   };
 
+  /**
+   * @function handlePasswordSubmit
+   *
+   * @description Handles the submission of the password update form. Prevents the default form submission behavior,
+   * checks if the password is valid, and sends a PUT request to the `/users/password` endpoint with the new password.
+   * If the update is successful, sets a success message. If there is an error, sets an appropriate error message.
+   *
+   * @param {React.FormEvent<HTMLFormElement>} event - The submit event of the form.
+   */
   const handlePasswordSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (passwordIsValid) {
-      console.log('Password is valid');
+      tank.put('/users/password', { password: passwordData?.password }).then((results) => {
+        if (!results?.data?.code) {
+          setMessage({
+            type: 'error',
+            text: t('user_profile.update_error'),
+          });
+        } else {
+          switch (results.data.code) {
+            case 'UPDATE_PASSWORD_SUCCESS':
+              setMessage({
+                type: 'success',
+                text: t('user_profile.update_success'),
+              });
+              break;
+            case 'UPDATE_PASSWORD_ERROR':
+              setMessage({
+                type: 'error',
+                text: t('user_profile.update_error'),
+              });
+              break;
+            default:
+              setMessage({
+                type: 'error',
+                text: t('user_profile.update_error'),
+              });
+              break;
+          }
+        }
+      });
     }
   };
 
@@ -120,7 +167,7 @@ const UserProfile = () => {
           <form onSubmit={handleProfileSubmit}>
             <CardContent>
               <Grid container spacing={1}>
-                <Grid size={12} sx={{ cursor: 'not-allowed' }}>
+                <Grid size={12} sx={{ input: { cursor: 'not-allowed' } }}>
                   <TextField
                     id='email'
                     name='email'

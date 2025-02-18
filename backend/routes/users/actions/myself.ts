@@ -3,7 +3,6 @@ import pg from 'pg';
 
 import { authenticationMiddleware } from '../users.lib.ts';
 
-
 const router = express.Router();
 const { Client } = pg;
 

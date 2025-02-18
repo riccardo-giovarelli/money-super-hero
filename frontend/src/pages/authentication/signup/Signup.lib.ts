@@ -10,6 +10,11 @@
  * @param {boolean} passwordIsValid - A boolean indicating if the password meets validation criteria.
  * @returns {boolean} A boolean indicating whether all form fields are filled and the password is valid.
  */
-export const isFormFilled = (firstName: string, lastName: string, email: string, passwordIsValid: boolean): boolean => {
+export const isFormFilled = (
+  passwordIsValid: boolean,
+  firstName?: string,
+  lastName?: string,
+  email?: string
+): boolean => {
   return !!firstName && !!lastName && !!email && !!passwordIsValid;
 };

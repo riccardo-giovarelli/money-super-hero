@@ -9,6 +9,7 @@ export interface RoutesIndoorType {
   index?: boolean;
   labelLangCode: string;
   icon?: OverridableComponent<SvgIconTypeMap<object, 'svg'>>;
+  hideInMenu?: boolean;
 }
 
 export interface RoutesOutdoorType {

@@ -1,15 +1,14 @@
-import axios from 'axios';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import PasswordChecklist from 'react-password-checklist';
 import { useNavigate } from 'react-router';
 
 import { MessageType } from '@/types/generic.type';
+import tank from '@/utils/axios';
 import { Alert, Box, Button, TextField, Typography } from '@mui/material';
 
 import { isFormFilled } from './Signup.lib';
 import { ProfileDataType } from './Signup.type';
-
 
 const Signup = () => {
   const [passwordIsValid, setPasswordIsValid] = useState<boolean>(false);
@@ -30,7 +29,7 @@ const Signup = () => {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
     if (isFormFilled(passwordIsValid, profileData?.firstName, profileData?.lastName, profileData?.email)) {
-      axios
+      tank
         .post('/users/signup', {
           firstName: profileData?.firstName,
           lastName: profileData?.lastName,
@@ -81,9 +80,10 @@ const Signup = () => {
       <form onSubmit={handleSubmit}>
         <TextField
           id='first-name'
+          name='firstName'
           label={t('authentication.first_name')}
           onChange={handleFormChange}
-          value={profileData?.firstName}
+          value={profileData?.firstName || ''}
           variant='outlined'
           margin='normal'
           required
@@ -91,18 +91,20 @@ const Signup = () => {
         />
         <TextField
           id='last-name'
+          name='lastName'
           label={t('authentication.last_name')}
           onChange={handleFormChange}
-          value={profileData?.lastName}
+          value={profileData?.lastName || ''}
           variant='outlined'
           margin='normal'
           fullWidth
         />
         <TextField
           id='email'
+          name='email'
           label={t('authentication.email')}
           onChange={handleFormChange}
-          value={profileData?.email}
+          value={profileData?.email || ''}
           variant='outlined'
           margin='normal'
           required
@@ -111,9 +113,10 @@ const Signup = () => {
         />
         <TextField
           id='password'
+          name='password'
           label={t('authentication.password')}
           onChange={handleFormChange}
-          value={profileData?.password}
+          value={profileData?.password || ''}
           variant='outlined'
           margin='normal'
           required
@@ -122,9 +125,10 @@ const Signup = () => {
         />
         <TextField
           id='re-password'
+          name='rePassword'
           label={t('authentication.repeat_password')}
           onChange={handleFormChange}
-          value={profileData?.rePassword}
+          value={profileData?.rePassword || ''}
           variant='outlined'
           margin='normal'
           required

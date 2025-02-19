@@ -9,7 +9,6 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import useAuthentication from './authentication/hooks/useAuthentication/useAuthentication';
 import tank from './utils/axios';
 
-
 const App = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -19,7 +18,7 @@ const App = () => {
    * Check if the user is authenticated
    */
   useEffect(() => {
-    if (location.pathname === '/signin') {
+    if (location.pathname === '/signin' || location.pathname === '/signup') {
       return;
     }
     if (!isAuthenticated) {

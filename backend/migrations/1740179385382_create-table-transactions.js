@@ -13,6 +13,16 @@ export function up(pgm) {
         category: { type: 'integer', references: 'categories' },
         sub_category: { type: 'integer', references: 'sub_categories' },
         notes: { type: 'text' },
+        createdAt: {
+            type: 'timestamp',
+            notNull: true,
+            default: pgm.func('current_timestamp'),
+        },
+        updatedAt: {
+            type: 'timestamp',
+            notNull: true,
+            default: pgm.func('current_timestamp'),
+        },
     });
 }
 

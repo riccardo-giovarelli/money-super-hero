@@ -27,4 +27,6 @@ export function up(pgm) {
  * @param run {() => void | undefined}
  * @returns {Promise<void> | void}
  */
-export function down(pgm) { }
+export function down(pgm) {
+    pgm.dropTable('sub_categories');
+}

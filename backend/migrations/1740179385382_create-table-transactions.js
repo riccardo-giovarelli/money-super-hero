@@ -4,14 +4,17 @@
  * @returns {Promise<void> | void}
  */
 export function up(pgm) {
+
+    pgm.createType('direction', ['IN', 'OUT']);
+
     pgm.createTable('transactions', {
         id: 'id',
-        user_id: { type: 'integer', notNull: true, references: 'users' },
+        user_id: { type: 'integer', notNull: true, references: 'users', onDelete: 'NO ACTION', onUpdate: 'NO ACTION' },
         timestamp: { type: 'timestamp', notNull: true, default: pgm.func('current_timestamp') },
         amount: { type: 'decimal', notNull: true },
-        direction: { type: 'enum', notNull: true, values: ['IN', 'OUT'] },
-        category: { type: 'integer', references: 'categories' },
-        sub_category: { type: 'integer', references: 'sub_categories' },
+        direction: { type: 'direction', notNull: true, defaultValue: 'IN' },
+        category: { type: 'integer', references: 'categories', onDelete: 'NO ACTION', onUpdate: 'NO ACTION' },
+        sub_category: { type: 'integer', references: 'sub_categories', onDelete: 'NO ACTION', onUpdate: 'NO ACTION' },
         notes: { type: 'text' },
         createdAt: {
             type: 'timestamp',
@@ -33,4 +36,6 @@ export function up(pgm) {
  */
 export function down(pgm) {
     pgm.dropTable('transactions');
+    pgm.dropType('direction');
+
 }

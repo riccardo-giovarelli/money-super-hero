@@ -6,7 +6,7 @@
 export function up(pgm) {
     pgm.createTable('sub_categories', {
         id: 'id',
-        category_id: { type: 'integer', notNull: true, references: 'categories' },
+        category_id: { type: 'integer', notNull: true, references: 'categories', onDelete: 'NO ACTION', onUpdate: 'NO ACTION' },
         name: { type: 'varchar(100)', notNull: true },
         notes: { type: 'varchar(255)' },
         createdAt: {

@@ -1,10 +1,10 @@
 import { SvgIconTypeMap } from '@mui/material';
 import { OverridableComponent } from '@mui/material/OverridableComponent';
 
-
 export interface RoutesIndoorType {
   id: string;
   path: string;
+  name: string;
   element: () => JSX.Element;
   index?: boolean;
   labelLangCode: string;
@@ -15,6 +15,7 @@ export interface RoutesIndoorType {
 export interface RoutesOutdoorType {
   id: string;
   path: string;
+  name: string;
   element: () => JSX.Element;
   icon?: OverridableComponent<SvgIconTypeMap<object, 'svg'>>;
 }

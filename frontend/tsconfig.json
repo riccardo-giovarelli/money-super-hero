@@ -13,7 +13,7 @@
       "@style/*": ["./src/style/*"],
       "@layouts/*": ["./src/layouts/*"],
       "@types/*": ["./src/types/*"],
-      "@languages/*": ["./src/languages/*"]
+      "@languages/*": ["./src/languages/*"],
     }
  }
 }

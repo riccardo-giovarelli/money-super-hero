@@ -4,5 +4,6 @@ export const indoorMenu = {
     'indoor_menu.no_name': '-',
     'indoor_menu.dashboard': 'Dashboard',
     'indoor_menu.user_profile': 'Profilo',
+    'indoor_menu.transactions': 'Transazioni',
   },
 };

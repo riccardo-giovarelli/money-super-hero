@@ -11,7 +11,6 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 
-
 const MenuAppDrawer = () => {
   const setAppDrawerOpen = useAppStore((state) => state.setAppDrawerOpen);
   const appDrawerOpen = useAppStore((state) => state.appDrawerOpen);
@@ -30,7 +29,7 @@ const MenuAppDrawer = () => {
         {routesIndoor.map(
           (route) =>
             !route.hideInMenu && (
-              <ListItem key={route.id} disablePadding onClick={() => navigate(route.path)}>
+              <ListItem key={route.id} disablePadding onClick={() => navigate(route.menuPath)}>
                 <ListItemButton>
                   {route.icon && (
                     <ListItemIcon>

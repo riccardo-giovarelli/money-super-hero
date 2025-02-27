@@ -12,7 +12,8 @@ export const routesIndoor: readonly RoutesIndoorType[] = Object.freeze([
   {
     id: 'indoor-home-page',
     path: '/',
-    name: 'home',
+    menuPath: '/',
+    name: '/',
     element: Home,
     index: true,
     labelLangCode: 'indoor_menu.home_page',
@@ -21,6 +22,7 @@ export const routesIndoor: readonly RoutesIndoorType[] = Object.freeze([
   {
     id: 'indor-dashboard',
     path: '/dashboard',
+    menuPath: '/dashboard',
     name: 'dashboard',
     element: Dashboard,
     labelLangCode: 'indoor_menu.dashboard',
@@ -29,6 +31,7 @@ export const routesIndoor: readonly RoutesIndoorType[] = Object.freeze([
   {
     id: 'indor-user-profile',
     path: '/profile',
+    menuPath: '/profile',
     name: 'profile',
     element: UserProfile,
     labelLangCode: 'indoor_menu.user_profile',
@@ -37,6 +40,7 @@ export const routesIndoor: readonly RoutesIndoorType[] = Object.freeze([
   {
     id: 'indor-transactions',
     path: '/transactions/:trsId?',
+    menuPath: '/transactions',
     name: 'transactions',
     element: Transactions,
     labelLangCode: 'indoor_menu.transactions',

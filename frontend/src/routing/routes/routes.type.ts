@@ -4,6 +4,7 @@ import { OverridableComponent } from '@mui/material/OverridableComponent';
 export interface RoutesIndoorType {
   id: string;
   path: string;
+  menuPath: string;
   name: string;
   element: () => JSX.Element;
   index?: boolean;

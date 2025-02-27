@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 
@@ -8,21 +7,19 @@ import TransactionsShow from '../transactions-show/TransactionsShow.tsx';
 
 const Transactions = () => {
   const params = useParams();
-  const [component, setComponent] = useState<JSX.Element>(<></>);
+  const [component, setComponent] = useState<JSX.Element>(TransactionsList);
 
   useEffect(() => {
     if (!params.trsId) {
       setComponent(TransactionsList);
-    }
-    if (params.trsId === 'new') {
+    } else if (params.trsId === 'new') {
       setComponent(TransactionsNew);
-    }
-    if (_.isNumber(params.trsId)) {
+    } else if (/^\d+$/.test(params.trsId)) {
       setComponent(TransactionsShow);
     }
   }, [params]);
 
-  return { component };
+  return component;
 };
 
 export default Transactions;

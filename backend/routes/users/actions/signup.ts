@@ -2,7 +2,6 @@ import bcrypt from 'bcryptjs';
 import express from 'express';
 import pg from 'pg';
 
-
 const router = express.Router();
 const { Client } = pg;
 
@@ -35,7 +34,7 @@ router.post('/', async (req, res) => {
     }
   } catch (err) {
     await client.end();
-    res.status(200).json({ code: 'REGISTRATION_ERROR', message: 'Error while inserting new user', details: err });
+    res.status(500).json({ code: 'REGISTRATION_ERROR', message: 'Error while inserting new user', details: err });
     return;
   }
 
@@ -60,7 +59,7 @@ router.post('/', async (req, res) => {
         .status(200)
         .json({ code: 'REGISTRATION_SUCCESSFUL', message: 'New user saved successfully', details: results });
     } catch (err) {
-      res.status(200).json({ code: 'REGISTRATION_ERROR', message: 'Error while inserting new user', details: err });
+      res.status(500).json({ code: 'REGISTRATION_ERROR', message: 'Error while inserting new user', details: err });
     } finally {
       await client.end();
     }

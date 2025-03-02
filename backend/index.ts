@@ -7,8 +7,8 @@ import express from 'express';
 import session from 'express-session';
 import NodeCache from 'node-cache';
 
+import categoriesRoutes from './routes/categories/categories.ts';
 import usersRoutes from './routes/users/users.ts';
-
 
 // New Express
 const app = express();
@@ -40,6 +40,11 @@ app.use(
  * Route -> USERS
  */
 app.use('/api/users', usersRoutes);
+
+/**
+ * Route -> CATEGORIES
+ */
+app.use('/api/categories', categoriesRoutes);
 
 // Express goes live
 app.listen(3000, () => {

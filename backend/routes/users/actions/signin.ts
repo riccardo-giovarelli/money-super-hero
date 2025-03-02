@@ -2,7 +2,6 @@ import bcrypt from 'bcryptjs';
 import express from 'express';
 import pg from 'pg';
 
-
 const router = express.Router();
 const { Client } = pg;
 
@@ -50,7 +49,7 @@ router.post('/', async (req, res) => {
       });
     });
   } catch (err) {
-    res.status(200).json({ code: 'LOGIN_ERROR', message: 'Error while logging in', details: err });
+    res.status(500).json({ code: 'LOGIN_ERROR', message: 'Error while logging in', details: err });
   } finally {
     await client.end();
   }

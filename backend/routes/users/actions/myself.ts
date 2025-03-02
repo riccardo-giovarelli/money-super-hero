@@ -42,7 +42,7 @@ router.get('/', authenticationMiddleware, async (req, res) => {
       });
     }
   } catch (err) {
-    res.status(200).json({ code: 'LOGIN_ERROR', message: 'Error while logging in', details: err });
+    res.status(500).json({ code: 'LOGIN_ERROR', message: 'Error while logging in', details: err });
   } finally {
     await client.end();
   }
@@ -85,7 +85,7 @@ router.put('/', authenticationMiddleware, async (req, res) => {
       });
     }
   } catch (err) {
-    res.status(200).json({ code: 'UPDATE_USER_ERROR', message: 'Error while updating user information', details: err });
+    res.status(500).json({ code: 'UPDATE_USER_ERROR', message: 'Error while updating user information', details: err });
   } finally {
     await client.end();
   }

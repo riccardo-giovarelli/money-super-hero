@@ -4,7 +4,6 @@ import pg from 'pg';
 
 import { authenticationMiddleware } from '../users.lib.ts';
 
-
 const router = express.Router();
 const { Client } = pg;
 
@@ -43,7 +42,7 @@ router.put('/', authenticationMiddleware, async (req, res) => {
         });
       }
     } catch (err) {
-      res.status(200).json({ code: 'UPDATE_ERROR', message: 'Error while updating user password', details: err });
+      res.status(500).json({ code: 'UPDATE_ERROR', message: 'Error while updating user password', details: err });
     } finally {
       await client.end();
     }

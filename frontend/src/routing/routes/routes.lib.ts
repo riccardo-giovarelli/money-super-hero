@@ -2,6 +2,7 @@ import { routesIndoor } from './routes-indoor';
 import { routesOutdoor } from './routes-outdoor';
 import { RoutesIndoorType, RoutesOutdoorType } from './routes.type';
 
+
 /**
  * @function getIndoorRouteByField
  *

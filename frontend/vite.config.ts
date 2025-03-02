@@ -20,6 +20,7 @@ export default defineConfig({
       '@layouts': path.resolve(__dirname, './src/layouts'),
       '@types': path.resolve(__dirname, './src/types'),
       '@languages': path.resolve(__dirname, './src/languages'),
+      '@settings': path.resolve(__dirname, './src/pages/settings'),
     },
   },
 });

@@ -1,15 +1,18 @@
+import { LazyExoticComponent } from 'react';
+
 import { SvgIconTypeMap } from '@mui/material';
 import { OverridableComponent } from '@mui/material/OverridableComponent';
+
 
 export interface RoutesIndoorType {
   id: string;
   path: string;
   menuPath: string;
   name: string;
-  element: () => JSX.Element;
-  index?: boolean;
+  element: LazyExoticComponent<() => JSX.Element> | (() => JSX.Element);
   labelLangCode: string;
-  icon?: OverridableComponent<SvgIconTypeMap<object, 'svg'>>;
+  icon?: OverridableComponent<SvgIconTypeMap<{}, 'svg'>>;
+  index?: boolean;
   hideInMenu?: boolean;
 }
 

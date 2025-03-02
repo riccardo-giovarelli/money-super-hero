@@ -1,8 +1,5 @@
-import Dashboard from '@/pages/dashboard/Dashboard';
-import Home from '@/pages/home';
-import Settings from '@/pages/settings/Settings';
-import Transactions from '@/pages/transactions/transactions/Transactions';
-import UserProfile from '@/pages/user-profile/UserProfile';
+import { lazy } from 'react';
+
 import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchange';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import MailIcon from '@mui/icons-material/Mail';
@@ -10,6 +7,12 @@ import TuneIcon from '@mui/icons-material/Tune';
 
 import { RoutesIndoorType } from './routes.type';
 
+
+const Home = lazy(() => import('@/pages/home/Home'));
+const Dashboard = lazy(() => import('@/pages/dashboard/Dashboard'));
+const Settings = lazy(() => import('@/pages/settings/Settings'));
+const Transactions = lazy(() => import('@/pages/transactions/transactions/Transactions'));
+const UserProfile = lazy(() => import('@/pages/user-profile/UserProfile'));
 
 export const routesIndoor: readonly RoutesIndoorType[] = Object.freeze([
   {

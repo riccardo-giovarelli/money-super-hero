@@ -15,7 +15,7 @@ router.get('/', authenticationMiddleware, async (req, res) => {
     await client.connect();
     const query = {
       name: 'get-categories-with-pagination',
-      text: 'SELECT "name", "notes" FROM categories LIMIT $1 OFFSET $2;',
+      text: 'SELECT "id", "name", "notes" FROM categories LIMIT $1 OFFSET $2;',
       values: [Number(limit), offset],
     };
     const results = await client.query(query);

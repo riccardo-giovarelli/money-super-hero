@@ -1,11 +1,10 @@
 import { useEffect, useState } from 'react';
 
-import { UsersType } from '@/models/users';
+import { UserType } from '@/models/users';
 import tank from '@/utils/axios';
 
-
 const useUserData = () => {
-  const [userData, setUserData] = useState<UsersType | null>(null);
+  const [userData, setUserData] = useState<UserType | null>(null);
 
   useEffect(() => {
     (async () => {

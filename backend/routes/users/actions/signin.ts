@@ -12,7 +12,7 @@ const { Client } = pg;
  * and creates a session for the user. If the login is successful, it responds with a success message
  * and the user's details. If there is an error, it responds with an error message.
  *
- * @route POST /
+ * @access Protected (requires authentication)
  * @returns {Object} A JSON object with a code and message indicating the result of the login process.
  */
 router.post('/', async (req, res) => {

@@ -55,7 +55,7 @@ router.get('/', authenticationMiddleware, async (req, res) => {
  * the `authenticationMiddleware`, which ensures that only authenticated users can access it. If the update is successful,
  * it responds with a success message. If there is an error, it responds with an error message.
  *
- * @route PUT /
+ * @access Protected (requires authentication)
  * @returns {Object} A JSON object with a code and message indicating the result of the update process.
  */
 router.put('/', authenticationMiddleware, async (req, res) => {

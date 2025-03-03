@@ -2,38 +2,50 @@ import { useEffect, useState } from 'react';
 
 import { CategoryType } from '@/models/categories';
 import tank from '@/utils/axios';
-import { GridColDef } from '@mui/x-data-grid';
+import { GridColDef, GridSortModel } from '@mui/x-data-grid';
 
-const useCategoriesData = () => {
-  const [categories, setCategories] = useState<CategoryType[]>([]);
+import { CategoriesResultsType } from './useCategoriesData.type';
 
+const useCategoriesData = (page: number, pageSize: number, sortModel: GridSortModel = []) => {
+  const [categoriesResults, setCategoriesResults] = useState<CategoriesResultsType>();
   const columns: GridColDef<CategoryType>[] = [
-    { field: 'id', headerName: 'ID', width: 90, sortable: false },
+    { field: 'id', headerName: 'ID', width: 90, sortable: true },
     {
       field: 'name',
       headerName: 'Name',
-      width: 150,
+      minWidth: 150,
       editable: true,
-      sortable: false,
+      sortable: true,
     },
     {
       field: 'notes',
       headerName: 'Notes',
-      width: 150,
+      minWidth: 150,
       editable: true,
-      sortable: false,
+      sortable: true,
     },
   ];
 
   useEffect(() => {
-    tank.get('/categories').then((results) => {
+    const parameters: string[] = [];
+    parameters.push(`page=${page}`);
+    parameters.push(`limit=${pageSize}`);
+    if (sortModel.length > 0) {
+      parameters.push(`sortColumn=${sortModel[0].field}`);
+      parameters.push(`sortDirection=${sortModel[0].sort}`);
+    }
+    tank.get(`/categories?${parameters.join('&')}`).then((results) => {
       if (results?.data?.code === 'GET_CATEGORIES_SUCCESS') {
-        setCategories(results?.data?.details ? results.data.details : []);
+        setCategoriesResults(results?.data?.details ? results.data.details : []);
       }
     });
-  }, []);
+  }, [page, pageSize, sortModel]);
 
-  return { categories, columns };
+  return {
+    categories: categoriesResults?.results ? categoriesResults.results : [],
+    count: categoriesResults?.count ? categoriesResults.count : 0,
+    columns,
+  };
 };
 
 export default useCategoriesData;

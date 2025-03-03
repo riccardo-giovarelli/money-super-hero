@@ -1,28 +1,53 @@
+import { useState } from 'react';
+
 import { Box } from '@mui/material';
-import { DataGrid } from '@mui/x-data-grid';
+import Grid from '@mui/material/Grid2';
+import { DataGrid, GridSortModel } from '@mui/x-data-grid';
 
 import useCategoriesData from '../../hooks/useCategoriesData/useCategoriesData';
 
 const TabCategories = () => {
-  const { categories, columns } = useCategoriesData();
-
+  const DEFAULT_PAGE_SIZE = 10;
+  const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: DEFAULT_PAGE_SIZE });
+  const [sortModel, setSortModel] = useState<GridSortModel>([]);
+  const { categories, count, columns } = useCategoriesData(
+    paginationModel.page + 1,
+    paginationModel.pageSize,
+    sortModel
+  );
   return (
-    <Box sx={{ width: '100%' }}>
-      <DataGrid
-        rows={categories}
-        columns={columns}
-        initialState={{
-          pagination: {
-            paginationModel: {
-              pageSize: 5,
-            },
-          },
-        }}
-        pageSizeOptions={[5, 10, 20]}
-        checkboxSelection
-        disableRowSelectionOnClick
-      />
-    </Box>
+    <Grid
+      container
+      spacing={1}
+      sx={{
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}
+    >
+      <Grid size={{ xs: 12, md: 10, lg: 8, xl: 6 }}>
+        <Box sx={{ width: '100%' }}>
+          <DataGrid
+            rows={categories}
+            columns={columns}
+            initialState={{
+              pagination: {
+                paginationModel: {
+                  pageSize: DEFAULT_PAGE_SIZE,
+                },
+              },
+            }}
+            disableColumnFilter
+            pageSizeOptions={[5, 10, 20]}
+            disableRowSelectionOnClick
+            onPaginationModelChange={setPaginationModel}
+            onSortModelChange={setSortModel}
+            sortingMode='server'
+            paginationMode='server'
+            rowCount={count}
+          />
+        </Box>
+      </Grid>
+    </Grid>
   );
 };
 

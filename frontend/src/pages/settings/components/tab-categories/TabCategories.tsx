@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import { Box } from '@mui/material';
 import Grid from '@mui/material/Grid2';
-import { DataGrid, GridSortModel } from '@mui/x-data-grid';
+import { DataGrid, GridColDef, GridRowId, GridRowModel, GridSortModel, GridValidRowModel } from '@mui/x-data-grid';
 
 import useCategoriesData from '../../hooks/useCategoriesData/useCategoriesData';
 
@@ -15,6 +15,12 @@ const TabCategories = () => {
     paginationModel.pageSize,
     sortModel
   );
+
+  const handleRowUpdate = async (newRow: GridRowModel, previousRow: GridRowModel, properties: { rowId: GridRowId }) => {
+    console.log(newRow, previousRow, properties);
+    return newRow;
+  };
+
   return (
     <Grid
       container
@@ -28,7 +34,7 @@ const TabCategories = () => {
         <Box sx={{ width: '100%' }}>
           <DataGrid
             rows={categories}
-            columns={columns}
+            columns={columns as GridColDef<GridValidRowModel>[]}
             initialState={{
               pagination: {
                 paginationModel: {
@@ -43,7 +49,9 @@ const TabCategories = () => {
             onSortModelChange={setSortModel}
             sortingMode='server'
             paginationMode='server'
-            rowCount={count}
+            rowCount={Number(count)}
+            editMode='row'
+            processRowUpdate={handleRowUpdate}
           />
         </Box>
       </Grid>

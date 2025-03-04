@@ -2,6 +2,7 @@ import express from 'express';
 import pg from 'pg';
 
 import { authenticationMiddleware } from '../users/users.lib.ts';
+import { CategoriesGetPayload } from './categories.type.ts';
 
 const router = express.Router();
 const { Client } = pg;
@@ -21,7 +22,7 @@ const { Client } = pg;
  */
 router.get('/', authenticationMiddleware, async (req, res) => {
   const client = new Client();
-  const { page = 1, limit = 10, sortColumn = 'id', sortDirection = 'asc' } = req.query;
+  const { page = 1, limit = 10, sortColumn = 'id', sortDirection = 'asc' } = req.query as CategoriesGetPayload;
   const offset = (Number(page) - 1) * Number(limit);
 
   try {
@@ -37,14 +38,18 @@ router.get('/', authenticationMiddleware, async (req, res) => {
     // Query to get categories with pagination and sorting
     const categoriesQuery = {
       name: 'get-categories-with-pagination',
-      text: `SELECT "id", "name", "notes" FROM categories ORDER BY "${sortColumn}" ${sortDirection} LIMIT $1 OFFSET $2;`,
+      text: `SELECT "id", "name", "notes" FROM categories ORDER BY "${sortColumn}" ${sortDirection.toUpperCase()} LIMIT $1 OFFSET $2;`,
       values: [Number(limit), offset],
     };
     const categoriesResults = await client.query(categoriesQuery);
 
     // Handle results
     if (countResults?.rowCount < 1 || categoriesResults?.rowCount < 1) {
-      res.status(200).json({ code: 'GET_CATEGORIES_ERROR', message: 'No categories found', details: '' });
+      res.status(200).json({
+        code: 'GET_CATEGORIES_ERROR',
+        message: 'Unable to get categories',
+        details: 'No results retrieving categories',
+      });
     } else {
       res.status(200).json({
         code: 'GET_CATEGORIES_SUCCESS',
@@ -57,6 +62,55 @@ router.get('/', authenticationMiddleware, async (req, res) => {
     }
   } catch (err) {
     res.status(500).json({ code: 'GET_CATEGORIES_ERROR', message: 'Error retrieving categories', details: err });
+  } finally {
+    await client.end();
+  }
+});
+
+/**
+ * PUT: Update Category by ID
+ *
+ * @description Updates a category's information based on the provided ID. The route is protected by
+ * the `authenticationMiddleware`, which ensures that only authenticated users can access it. If the update is successful,
+ * it responds with a success message. If there is an error, it responds with an error message.
+ *
+ * @route PUT /:id
+ * @access Protected (requires authentication)
+ * @param {string} id - The ID of the category to update.
+ * @param {string} name - The new name of the category.
+ * @param {string} notes - The new notes for the category.
+ * @returns {Object} A JSON object with a code and message indicating the result of the update process.
+ */
+router.put('/:id', authenticationMiddleware, async (req, res) => {
+  const client = new Client();
+  const { id } = req.params;
+  const { name, notes } = req.body;
+
+  try {
+    await client.connect();
+    const query = {
+      name: 'update-category-by-id',
+      text: 'UPDATE categories SET "name" = $1, "notes" = $2 WHERE "id" = $3;',
+      values: [name, notes, id],
+    };
+    const results = await client.query(query);
+    if (results?.rowCount < 1) {
+      res
+        .status(200)
+        .json({ code: 'UPDATE_CATEGORY_ERROR', message: 'Error updating category', details: 'Unknown error' });
+    } else {
+      res.status(200).json({
+        code: 'UPDATE_CATEGORY_SUCCESS',
+        message: 'Successfully updated category',
+        details: {
+          id,
+          name,
+          notes,
+        },
+      });
+    }
+  } catch (err) {
+    res.status(500).json({ code: 'UPDATE_CATEGORY_ERROR', message: 'Error while updating category', details: err });
   } finally {
     await client.end();
   }

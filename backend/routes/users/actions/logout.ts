@@ -11,6 +11,7 @@ const router = express.Router();
  * If the session is successfully destroyed, it responds with a success message. If there is an error during
  * the session destruction, it responds with an error message.
  *
+ * @route GET /
  * @access Protected (requires authentication)
  * @returns {Object} A JSON object with a code and message indicating the result of the logout process.
  */

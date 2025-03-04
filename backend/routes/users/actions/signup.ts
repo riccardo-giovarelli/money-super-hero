@@ -12,6 +12,7 @@ const { Client } = pg;
  * hashes the password, and inserts the new user into the database. If the registration is successful,
  * it responds with a success message. If there is an error, it responds with an error message.
  *
+ * @route POST /
  * @access Protected (requires authentication)
  * @returns {Object} A JSON object with a code and message indicating the result of the registration process.
  */

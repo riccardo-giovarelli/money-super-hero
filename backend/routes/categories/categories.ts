@@ -2,7 +2,8 @@ import express from 'express';
 import pg from 'pg';
 
 import { authenticationMiddleware } from '../users/users.lib.ts';
-import { CategoriesGetPayload } from './categories.type.ts';
+
+import type { CategoriesGetPayload } from './categories.type.ts';
 
 const router = express.Router();
 const { Client } = pg;

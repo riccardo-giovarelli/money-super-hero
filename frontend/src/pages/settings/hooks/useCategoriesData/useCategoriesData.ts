@@ -1,18 +1,20 @@
 import { useEffect, useState } from 'react';
 
 import tank from '@/utils/axios';
-import { GridColDef, GridSortModel, GridValidRowModel } from '@mui/x-data-grid';
+import { GridSortModel } from '@mui/x-data-grid';
 
 import { CategoriesResultsType } from './useCategoriesData.type';
 
+
 const useCategoriesData = (page: number, pageSize: number, sortModel: GridSortModel = []) => {
   const [categoriesResults, setCategoriesResults] = useState<CategoriesResultsType>();
-  const columns: GridColDef<GridValidRowModel>[] = [
-    { field: 'id', headerName: 'ID', width: 90, sortable: true },
+  const columns = [
+    { field: 'id', headerName: 'ID', width: 50, sortable: true },
     {
       field: 'name',
       headerName: 'Name',
       minWidth: 150,
+      flex: 1,
       editable: true,
       sortable: true,
     },
@@ -20,6 +22,7 @@ const useCategoriesData = (page: number, pageSize: number, sortModel: GridSortMo
       field: 'notes',
       headerName: 'Notes',
       minWidth: 150,
+      flex: 1,
       editable: true,
       sortable: true,
     },

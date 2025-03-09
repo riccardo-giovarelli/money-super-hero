@@ -13,25 +13,29 @@ const Settings = () => {
   const { t } = useTranslation();
 
   return (
-    <Box sx={{ mt: 1 }}>
-      <Tabs
-        value={tabId}
-        onChange={(_e: React.SyntheticEvent, newValue: number) => {
-          setTabId(newValue);
-        }}
-        variant='scrollable'
-        scrollButtons='auto'
-        aria-label='settings tabs'
-      >
+    <Box sx={{ marginTop: 2 }}>
+      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+        <Tabs
+          value={tabId}
+          onChange={(_e: React.SyntheticEvent, newValue: number) => {
+            setTabId(newValue);
+          }}
+          variant='scrollable'
+          scrollButtons='auto'
+          aria-label='settings tabs'
+        >
+          {tabs.map((tab) => (
+            <Tab key={tab.id} value={tab.id} label={t(tab.labelLangCode)} />
+          ))}
+        </Tabs>
+      </Box>
+      <Box>
         {tabs.map((tab) => (
-          <Tab key={tab.id} value={tab.id} label={t(tab.labelLangCode)} />
+          <TabContent key={tab.id} index={tab.id} value={tabId}>
+            <tab.component />
+          </TabContent>
         ))}
-      </Tabs>
-      {tabs.map((tab) => (
-        <TabContent key={tab.id} index={tab.id} value={tabId}>
-          <tab.component />
-        </TabContent>
-      ))}
+      </Box>
     </Box>
   );
 };

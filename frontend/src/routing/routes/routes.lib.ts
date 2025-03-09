@@ -13,7 +13,11 @@ import { RoutesIndoorType, RoutesOutdoorType } from './routes.type';
  * @returns {RoutesIndoorType | undefined} The found route or undefined if no route matches.
  */
 export const getIndoorRouteByField = (field: keyof RoutesIndoorType, value: string): RoutesIndoorType | undefined =>
-  routesIndoor.find((route) => (route[field] ? value.search(route[field] as keyof RoutesIndoorType) !== -1 : false));
+  value === '/'
+    ? routesIndoor[0]
+    : routesIndoor.find((route) =>
+        route[field] ? value.search(route[field] as keyof RoutesIndoorType) !== -1 : false
+      );
 
 /**
  * @function getOutdoorRouteByField

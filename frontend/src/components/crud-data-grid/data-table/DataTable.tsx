@@ -7,13 +7,20 @@ import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
 import Box from '@mui/material/Box';
 import {
-    DataGrid, GridActionsCellItem, GridColDef, GridEventListener, GridRowEditStopReasons, GridRowId,
-    GridRowModel, GridRowModes, GridRowModesModel, GridRowsProp
+  DataGrid,
+  GridActionsCellItem,
+  GridColDef,
+  GridEventListener,
+  GridRowEditStopReasons,
+  GridRowId,
+  GridRowModel,
+  GridRowModes,
+  GridRowModesModel,
+  GridRowsProp,
 } from '@mui/x-data-grid';
 
 import EditToolbar from '../EditToolbar';
 import { DataTablePropsType } from './DataTable.type';
-
 
 declare module '@mui/x-data-grid' {
   interface ToolbarPropsOverrides {
@@ -22,13 +29,31 @@ declare module '@mui/x-data-grid' {
   }
 }
 
-const DataTable = ({ data, dataColumns, count, setPaginationModel, setSortModel }: DataTablePropsType) => {
+const DataTable = ({ data, dataColumns, count, setPaginationModel, setSortModel, handleData }: DataTablePropsType) => {
   const [rows, setRows] = useState<GridRowsProp>([]);
   const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
 
   useEffect(() => {
     setRows(data);
   }, [data]);
+
+  // Update the row in the database
+  const processRowUpdate = async (newRow: GridRowModel) => {
+    const result = await handleData('save', newRow.id, newRow);
+    if (result) {
+      const updatedRow = { ...newRow, isNew: false };
+      setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
+      return updatedRow;
+    }
+  };
+
+  // Delete the row from the database
+  const handleDeleteClick = async (id: GridRowId) => {
+    const result = await handleData('delete', id);
+    if (result) {
+      setRows(rows.filter((row) => row.id !== id));
+    }
+  };
 
   const handleRowEditStop: GridEventListener<'rowEditStop'> = (params, event) => {
     if (params.reason === GridRowEditStopReasons.rowFocusOut) {
@@ -44,26 +69,15 @@ const DataTable = ({ data, dataColumns, count, setPaginationModel, setSortModel 
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
   };
 
-  const handleDeleteClick = (id: GridRowId) => () => {
-    setRows(rows.filter((row) => row.id !== id));
-  };
-
   const handleCancelClick = (id: GridRowId) => () => {
     setRowModesModel({
       ...rowModesModel,
       [id]: { mode: GridRowModes.View, ignoreModifications: true },
     });
-
     const editedRow = rows.find((row) => row.id === id);
     if (editedRow!.isNew) {
       setRows(rows.filter((row) => row.id !== id));
     }
-  };
-
-  const processRowUpdate = (newRow: GridRowModel) => {
-    const updatedRow = { ...newRow, isNew: false };
-    setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
-    return updatedRow;
   };
 
   const handleRowModesModelChange = (newRowModesModel: GridRowModesModel) => {
@@ -109,7 +123,12 @@ const DataTable = ({ data, dataColumns, count, setPaginationModel, setSortModel 
             onClick={handleEditClick(id)}
             color='inherit'
           />,
-          <GridActionsCellItem icon={<DeleteIcon />} label='Delete' onClick={handleDeleteClick(id)} color='inherit' />,
+          <GridActionsCellItem
+            icon={<DeleteIcon />}
+            label='Delete'
+            onClick={() => handleDeleteClick(id)}
+            color='inherit'
+          />,
         ];
       },
     },

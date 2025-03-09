@@ -117,4 +117,48 @@ router.put('/:id', authenticationMiddleware, async (req, res) => {
   }
 });
 
+/**
+ * DELETE: Delete Category by ID
+ *
+ * @description Deletes a category based on the provided ID. The route is protected by
+ * the `authenticationMiddleware`, which ensures that only authenticated users can access it. If the deletion is successful,
+ * it responds with a success message. If there is an error, it responds with an error message.
+ *
+ * @route DELETE /:id
+ * @access Protected (requires authentication)
+ * @param {string} id - The ID of the category to delete.
+ * @returns {Object} A JSON object with a code and message indicating the result of the deletion process.
+ */
+router.delete('/:id', authenticationMiddleware, async (req, res) => {
+  const client = new Client();
+  const { id } = req.params;
+
+  try {
+    await client.connect();
+    const query = {
+      name: 'delete-category-by-id',
+      text: 'DELETE FROM categories WHERE "id" = $1;',
+      values: [id],
+    };
+    const results = await client.query(query);
+    if (results?.rowCount < 1) {
+      res
+        .status(200)
+        .json({ code: 'DELETE_CATEGORY_ERROR', message: 'Error deleting category', details: 'Unknown error' });
+    } else {
+      res.status(200).json({
+        code: 'DELETE_CATEGORY_SUCCESS',
+        message: 'Successfully deleted category',
+        details: {
+          id,
+        },
+      });
+    }
+  } catch (err) {
+    res.status(500).json({ code: 'DELETE_CATEGORY_ERROR', message: 'Error while deleting category', details: err });
+  } finally {
+    await client.end();
+  }
+});
+
 export default router;

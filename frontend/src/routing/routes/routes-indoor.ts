@@ -19,7 +19,7 @@ export const routesIndoor: readonly RoutesIndoorType[] = Object.freeze([
     id: 'indoor-home-page',
     path: '/',
     menuPath: '/',
-    name: '/',
+    name: 'home',
     element: Home,
     index: true,
     labelLangCode: 'indoor_menu.home_page',

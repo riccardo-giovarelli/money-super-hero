@@ -6,7 +6,6 @@ import LayoutIndoor from '@/layouts/layout-indoor';
 import { routesIndoor } from '../routes/routes-indoor';
 import { routesOutdoor } from '../routes/routes-outdoor';
 
-
 const AppRouter = () => (
   <Routes>
     <Route element={<LayoutIndoor />}>

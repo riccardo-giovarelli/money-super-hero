@@ -3,7 +3,6 @@ import { defineConfig } from 'vite';
 
 import react from '@vitejs/plugin-react';
 
-
 const __dirname = path.dirname(__filename);
 
 export default defineConfig({
@@ -21,6 +20,7 @@ export default defineConfig({
       '@layouts': path.resolve(__dirname, './src/layouts'),
       '@types': path.resolve(__dirname, './src/types'),
       '@languages': path.resolve(__dirname, './src/languages'),
+      '@settings': path.resolve(__dirname, './src/pages/settings'),
     },
   },
 });

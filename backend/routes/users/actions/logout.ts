@@ -2,7 +2,6 @@ import express from 'express';
 
 import { authenticationMiddleware } from '../users.lib.ts';
 
-
 const router = express.Router();
 
 /**
@@ -13,6 +12,7 @@ const router = express.Router();
  * the session destruction, it responds with an error message.
  *
  * @route GET /
+ * @access Protected (requires authentication)
  * @returns {Object} A JSON object with a code and message indicating the result of the logout process.
  */
 router.get('/', authenticationMiddleware, (req, res) => {
@@ -21,7 +21,7 @@ router.get('/', authenticationMiddleware, (req, res) => {
       res.status(200).json({ code: 'LOGOUT_ERROR', message: 'Error while logging out', details: err });
     } else {
       res.clearCookie('money-super-hero-session');
-      res.json({ code: 'LOGGED_OUT', message: 'User logged out', details: '' });
+      res.json({ code: 'LOGGED_OUT', message: 'User logged out', details: 'Current user logged out' });
     }
   });
 });

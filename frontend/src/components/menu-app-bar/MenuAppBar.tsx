@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router';
 
-import { getRouteByField } from '@/routing/routes/routes.lib';
+import { getIndoorRouteByField } from '@/routing/routes/routes.lib';
 import { RoutesIndoorType } from '@/routing/routes/routes.type';
 import { useAppStore } from '@/stores/app-store/AppStore';
 import AccountCircle from '@mui/icons-material/AccountCircle';
@@ -27,7 +27,7 @@ const MenuAppBar = () => {
   const { mode, setMode } = useColorScheme();
 
   useEffect(() => {
-    const name = getRouteByField('path', location.pathname, 'indoor') as RoutesIndoorType;
+    const name = getIndoorRouteByField('name', location.pathname) as RoutesIndoorType;
     setPageName(name?.labelLangCode || 'indoor_menu.no_name');
   }, [location.pathname]);
 

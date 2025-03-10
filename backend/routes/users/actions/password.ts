@@ -4,7 +4,6 @@ import pg from 'pg';
 
 import { authenticationMiddleware } from '../users.lib.ts';
 
-
 const router = express.Router();
 const { Client } = pg;
 
@@ -17,6 +16,7 @@ const { Client } = pg;
  * it responds with an error message.
  *
  * @route PUT /
+ * @access Protected (requires authentication)
  * @returns {Object} A JSON object with a code and message indicating the result of the update process.
  */
 router.put('/', authenticationMiddleware, async (req, res) => {
@@ -43,7 +43,7 @@ router.put('/', authenticationMiddleware, async (req, res) => {
         });
       }
     } catch (err) {
-      res.status(200).json({ code: 'UPDATE_ERROR', message: 'Error while updating user password', details: err });
+      res.status(500).json({ code: 'UPDATE_ERROR', message: 'Error while updating user password', details: err });
     } finally {
       await client.end();
     }

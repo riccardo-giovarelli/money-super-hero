@@ -2,7 +2,6 @@ import bcrypt from 'bcryptjs';
 import express from 'express';
 import pg from 'pg';
 
-
 const router = express.Router();
 const { Client } = pg;
 
@@ -14,6 +13,7 @@ const { Client } = pg;
  * it responds with a success message. If there is an error, it responds with an error message.
  *
  * @route POST /
+ * @access Protected (requires authentication)
  * @returns {Object} A JSON object with a code and message indicating the result of the registration process.
  */
 router.post('/', async (req, res) => {
@@ -35,7 +35,7 @@ router.post('/', async (req, res) => {
     }
   } catch (err) {
     await client.end();
-    res.status(200).json({ code: 'REGISTRATION_ERROR', message: 'Error while inserting new user', details: err });
+    res.status(500).json({ code: 'REGISTRATION_ERROR', message: 'Error while inserting new user', details: err });
     return;
   }
 
@@ -60,7 +60,7 @@ router.post('/', async (req, res) => {
         .status(200)
         .json({ code: 'REGISTRATION_SUCCESSFUL', message: 'New user saved successfully', details: results });
     } catch (err) {
-      res.status(200).json({ code: 'REGISTRATION_ERROR', message: 'Error while inserting new user', details: err });
+      res.status(500).json({ code: 'REGISTRATION_ERROR', message: 'Error while inserting new user', details: err });
     } finally {
       await client.end();
     }

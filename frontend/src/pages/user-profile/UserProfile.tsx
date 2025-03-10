@@ -5,21 +5,18 @@ import PasswordChecklist from 'react-password-checklist';
 import { useAuthenticationStore } from '@/authentication/AuthenticationStore/AuthenticationStore';
 import AlertSnackbar from '@/components/alert-snackbar/AlertSnackbar';
 import useUserData from '@/hooks/useUserData/useUserData';
-import { UsersType } from '@/models/users';
+import { UserType } from '@/models/users';
 import { MessageType } from '@/types/generic.type';
 import tank from '@/utils/axios';
-import {
-    Box, Button, Card, CardActions, CardContent, CardHeader, Container, TextField
-} from '@mui/material';
+import { Box, Button, Card, CardActions, CardContent, CardHeader, Container, TextField } from '@mui/material';
 import Grid from '@mui/material/Grid2';
 
 import { isFormFilled } from './UserProfile.lib';
 import { PasswordDataType } from './UserProfile.type';
 
-
 const UserProfile = () => {
   const [passwordIsValid, setPasswordIsValid] = useState<boolean>(false);
-  const [profileData, setProfileData] = useState<UsersType | null>(null);
+  const [profileData, setProfileData] = useState<UserType | null>(null);
   const [passwordData, setPasswordData] = useState<PasswordDataType | null>(null);
   const [message, setMessage] = useState<MessageType | null>(null);
   const setUserData = useAuthenticationStore((state) => state.setUserData);
@@ -134,7 +131,7 @@ const UserProfile = () => {
     setProfileData({
       ...profileData,
       [(event.target as HTMLInputElement).name]: (event.target as HTMLInputElement).value,
-    } as UsersType);
+    } as UserType);
   };
 
   /**

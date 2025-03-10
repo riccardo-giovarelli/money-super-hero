@@ -2,9 +2,34 @@
 
 Application for managing your budget
 
+## Version
+Work in Progress :construction_worker:
+
 ## Prerequisites
 - Node.js
 - Docker
+
+## Project Structure
+```mermaid
+flowchart TD
+    A(Money Super Hero) --> Z{Nginx}
+    Z --> B[Frontend] --> C{Technologies} 
+    C --> D[TypeScript]
+    C --> D[React]
+    C --> F[React Router]
+    C --> G[Zustand]
+    C --> H[Material UI]
+    C --> I[i18next]
+    C --> L[Axios]
+    Z --> M[Backend] --> N{Technologies} 
+    N --> O[Node.js]
+    N --> P[TypeScript]
+    N --> Q[nodemon]
+    N --> R[Express]
+    N --> S[node-postgres]
+    Z --> T[Database] --> U{Technologies} 
+    U --> V[PostgreSQL]
+```
 
 ## First run
 

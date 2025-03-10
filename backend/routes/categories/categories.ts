@@ -161,4 +161,45 @@ router.delete('/:id', authenticationMiddleware, async (req, res) => {
   }
 });
 
+/**
+ * POST: Add New Category
+ *
+ * @description Adds a new category to the categories table. The route is protected by
+ * the `authenticationMiddleware`, which ensures that only authenticated users can access it. If the addition is successful,
+ * it responds with a success message. If there is an error, it responds with an error message.
+ *
+ * @route POST /
+ * @access Protected (requires authentication)
+ * @param {string} name - The name of the new category.
+ * @param {string} notes - The notes for the new category.
+ * @returns {Object} A JSON object with a code and message indicating the result of the addition process.
+ */
+router.post('/', authenticationMiddleware, async (req, res) => {
+  const client = new Client();
+  const { name, notes } = req.body;
+
+  try {
+    await client.connect();
+    const query = {
+      name: 'add-new-category',
+      text: 'INSERT INTO categories ("name", "notes") VALUES ($1, $2) RETURNING *;',
+      values: [name, notes],
+    };
+    const results = await client.query(query);
+    if (results?.rowCount < 1) {
+      res.status(200).json({ code: 'ADD_CATEGORY_ERROR', message: 'Error adding category', details: 'Unknown error' });
+    } else {
+      res.status(200).json({
+        code: 'ADD_CATEGORY_SUCCESS',
+        message: 'Successfully added category',
+        details: results.rows[0],
+      });
+    }
+  } catch (err) {
+    res.status(500).json({ code: 'ADD_CATEGORY_ERROR', message: 'Error while adding category', details: err });
+  } finally {
+    await client.end();
+  }
+});
+
 export default router;

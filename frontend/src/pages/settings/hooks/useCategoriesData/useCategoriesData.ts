@@ -5,11 +5,15 @@ import { GridSortModel } from '@mui/x-data-grid';
 
 import { CategoriesResultsType } from './useCategoriesData.type';
 
-
 const useCategoriesData = (page: number, pageSize: number, sortModel: GridSortModel = []) => {
   const [categoriesResults, setCategoriesResults] = useState<CategoriesResultsType>();
   const columns = [
-    { field: 'id', headerName: 'ID', width: 50, sortable: true },
+    {
+      field: 'id',
+      headerName: 'ID',
+      width: 100,
+      sortable: true,
+    },
     {
       field: 'name',
       headerName: 'Name',
@@ -27,6 +31,9 @@ const useCategoriesData = (page: number, pageSize: number, sortModel: GridSortMo
       sortable: true,
     },
   ];
+  const columnsVisibility = {
+    id: false,
+  };
 
   useEffect(() => {
     const parameters: string[] = [];
@@ -47,6 +54,7 @@ const useCategoriesData = (page: number, pageSize: number, sortModel: GridSortMo
     categories: categoriesResults?.results ? categoriesResults.results : [],
     count: categoriesResults?.count ? categoriesResults.count : 0,
     columns,
+    columnsVisibility,
   };
 };
 

@@ -29,7 +29,15 @@ declare module '@mui/x-data-grid' {
   }
 }
 
-const DataTable = ({ data, dataColumns, count, setPaginationModel, setSortModel, handleData }: DataTablePropsType) => {
+const DataTable = ({
+  data,
+  dataColumns,
+  columnVisibilityModel,
+  count,
+  setPaginationModel,
+  setSortModel,
+  handleData,
+}: DataTablePropsType) => {
   const [rows, setRows] = useState<GridRowsProp>([]);
   const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
 
@@ -37,13 +45,22 @@ const DataTable = ({ data, dataColumns, count, setPaginationModel, setSortModel,
     setRows(data);
   }, [data]);
 
-  // Update the row in the database
+  // Update/Add the row in the database
   const processRowUpdate = async (newRow: GridRowModel) => {
-    const result = await handleData('save', newRow.id, newRow);
-    if (result) {
-      const updatedRow = { ...newRow, isNew: false };
-      setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
-      return updatedRow;
+    if (newRow?.id && String(newRow.id).startsWith('NEW_')) {
+      const result = await handleData('add', newRow.id, newRow);
+      if (result) {
+        const updatedRow = { ...newRow, isNew: false };
+        setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
+        return updatedRow;
+      }
+    } else {
+      const result = await handleData('save', newRow.id, newRow);
+      if (result) {
+        const updatedRow = { ...newRow, isNew: false };
+        setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
+        return updatedRow;
+      }
     }
   };
 
@@ -150,6 +167,7 @@ const DataTable = ({ data, dataColumns, count, setPaginationModel, setSortModel,
       <DataGrid
         rows={rows}
         columns={columns}
+        columnVisibilityModel={columnVisibilityModel}
         editMode='row'
         rowModesModel={rowModesModel}
         onRowModesModelChange={handleRowModesModelChange}

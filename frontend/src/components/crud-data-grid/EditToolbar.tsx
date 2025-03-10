@@ -1,14 +1,16 @@
+import { useTranslation } from 'react-i18next';
+
 import AddIcon from '@mui/icons-material/Add';
-import { Button } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import { GridRowModes, GridSlotProps, GridToolbarContainer } from '@mui/x-data-grid';
 import { randomId } from '@mui/x-data-grid-generator';
 
-
 const EditToolbar = (props: GridSlotProps['toolbar']) => {
   const { setRows, setRowModesModel } = props;
+  const { t } = useTranslation();
 
   const handleClick = () => {
-    const id = randomId();
+    const id = `NEW_${randomId()}`;
     setRows((oldRows) => [...oldRows, { id, name: '', age: '', role: '', isNew: true }]);
     setRowModesModel((oldModel) => ({
       ...oldModel,
@@ -18,8 +20,9 @@ const EditToolbar = (props: GridSlotProps['toolbar']) => {
 
   return (
     <GridToolbarContainer>
-      <Button color='primary' startIcon={<AddIcon />} onClick={handleClick}>
-        Add record
+      <Box sx={{ flexGrow: 1 }} />
+      <Button color='primary' startIcon={<AddIcon />} variant='outlined' onClick={handleClick}>
+        {t('app.data_table.add_record')}
       </Button>
     </GridToolbarContainer>
   );

@@ -15,7 +15,7 @@ const TabCategories = () => {
     pageSize: DEFAULT_TABLE_PAGE_SIZE,
   });
   const [sortModel, setSortModel] = useState<GridSortModel>([]);
-  const { categories, count, columns } = useCategoriesData(
+  const { categories, count, columns, columnsVisibility } = useCategoriesData(
     paginationModel.page + 1,
     paginationModel.pageSize,
     sortModel
@@ -31,6 +31,10 @@ const TabCategories = () => {
    */
   const handleCategoriesData = async (mode: string, id: GridRowId, row?: GridValidRowModel): Promise<boolean> => {
     switch (mode) {
+      case 'add': {
+        const results = await tank.post(`/categories`, { name: row?.name, notes: row?.notes });
+        return results?.data?.code && results.data.code === 'ADD_CATEGORY_SUCCESS';
+      }
       case 'save': {
         if (!id) return false;
         const results = await tank.put(`/categories/${id}`, { name: row?.name, notes: row?.notes });
@@ -60,6 +64,7 @@ const TabCategories = () => {
           <DataTable
             data={categories}
             dataColumns={columns}
+            columnVisibilityModel={columnsVisibility}
             count={Number(count)}
             setPaginationModel={setPaginationModel}
             setSortModel={setSortModel}

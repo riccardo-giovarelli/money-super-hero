@@ -2,9 +2,35 @@
 
 Application for managing your budget
 
+## Version
+Work in Progress :construction_worker:
+
 ## Prerequisites
 - Node.js
 - Docker
+
+## Project Structure
+```mermaid
+flowchart TD
+    APP(Money Super Hero) --> NGINX(((Nginx)))
+    NGINX <--> FEid1{{Frontend}} --> FE-T{Tech} 
+    FE-T --> FE-T-LIST["`TypeScript
+    React
+    React Router
+    Zustand
+    Material UI
+    i18next
+    Axios`"]
+    NGINX <--> BE[/Backend/] --> BE-T{Tech} 
+    BE-T --> BE-T-LIST["`Node.js
+    TypeScript
+    nodemon
+    Express
+    node-postgres
+    `"]
+    NGINX <--> DBid1[(Database)] --> DB-T{Tech} 
+    DB-T --> DB-T-LIST["`PostgreSQL`"]
+```
 
 ## First run
 

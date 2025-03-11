@@ -12,23 +12,24 @@ Work in Progress :construction_worker:
 ## Project Structure
 ```mermaid
 flowchart TD
-    A(Money Super Hero) --> Z{Nginx}
-    Z --> B[Frontend] --> C{Technologies} 
-    C --> D[TypeScript]
-    C --> D[React]
-    C --> F[React Router]
-    C --> G[Zustand]
-    C --> H[Material UI]
-    C --> I[i18next]
-    C --> L[Axios]
-    Z --> M[Backend] --> N{Technologies} 
-    N --> O[Node.js]
-    N --> P[TypeScript]
-    N --> Q[nodemon]
-    N --> R[Express]
-    N --> S[node-postgres]
-    Z --> T[Database] --> U{Technologies} 
-    U --> V[PostgreSQL]
+    APP(Money Super Hero) --> NGINX(((Nginx)))
+    NGINX <--> FEid1{{Frontend}} --> FE-T{Tech} 
+    FE-T --> FE-T-LIST["`TypeScript
+    React
+    React Router
+    Zustand
+    Material UI
+    i18next
+    Axios`"]
+    NGINX <--> BE[/Backend/] --> BE-T{Tech} 
+    BE-T --> BE-T-LIST["`Node.js
+    TypeScript
+    nodemon
+    Express
+    node-postgres
+    `"]
+    NGINX <--> DBid1[(Database)] --> DB-T{Tech} 
+    DB-T --> DB-T-LIST["`PostgreSQL`"]
 ```
 
 ## First run

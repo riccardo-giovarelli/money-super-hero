@@ -2,12 +2,13 @@ import { useState } from 'react';
 
 import DataTable from '@/components/crud-data-grid/data-table/DataTable';
 import { DEFAULT_TABLE_PAGE_SIZE } from '@/config/constants';
-import { PaginationModelType } from '@/pages/settings/components/tab-categories/TabCategories.type';
 import useCategoriesData from '@/pages/settings/hooks/useCategoriesData/useCategoriesData';
+import { PaginationModelType } from '@/types/pagination.type';
 import tank from '@/utils/axios';
 import { Box } from '@mui/material';
 import Grid from '@mui/material/Grid2';
 import { GridRowId, GridSortModel, GridValidRowModel } from '@mui/x-data-grid';
+
 
 const TabCategories = () => {
   const [paginationModel, setPaginationModel] = useState<PaginationModelType>({

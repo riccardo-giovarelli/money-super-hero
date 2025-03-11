@@ -29,7 +29,7 @@ const Settings = () => {
           ))}
         </Tabs>
       </Box>
-      <Box>
+      <Box sx={{ marginTop: 1 }}>
         {tabs.map((tab) => (
           <TabContent key={tab.id} index={tab.id} value={tabId}>
             <tab.component />

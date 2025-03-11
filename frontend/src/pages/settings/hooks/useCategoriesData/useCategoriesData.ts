@@ -5,6 +5,7 @@ import { GridSortModel } from '@mui/x-data-grid';
 
 import { CategoriesResultsType } from './useCategoriesData.type';
 
+
 const useCategoriesData = (page: number, pageSize: number, sortModel: GridSortModel = []) => {
   const [categoriesResults, setCategoriesResults] = useState<CategoriesResultsType>();
   const columns = [

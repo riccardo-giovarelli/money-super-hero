@@ -6,8 +6,9 @@ Application for managing your budget
 Work in Progress :construction_worker:
 
 ## Prerequisites
-- Node.js
-- Docker
+- [Node.js](https://nodejs.org/)
+- [Yarn](https://yarnpkg.com/)
+- [Docker](https://www.docker.com/)
 
 ## Project Structure
 ```mermaid
@@ -33,9 +34,13 @@ flowchart TD
 ```
 
 ## First run
-
+#### From the project root
 ```bash
   docker compose up --build
+```
+#### From the _**backend**_ folder of the project
+```bash
+  yarn && yarn migrate up
 ```
 
 ## Run

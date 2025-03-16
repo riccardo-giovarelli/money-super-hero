@@ -47,10 +47,10 @@ const DataTable = ({
 
   // Update/Add the row in the database
   const processRowUpdate = async (newRow: GridRowModel) => {
-    if (newRow?.id && String(newRow.id).startsWith('NEW_')) {
+    if (newRow?.id && newRow.isNew) {
       const result = await handleData('add', newRow.id, newRow);
       if (result) {
-        const updatedRow = { ...newRow, isNew: false };
+        const updatedRow = { ...newRow, isNew: false, id: result };
         setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
         return updatedRow;
       }
@@ -116,7 +116,7 @@ const DataTable = ({
           return [
             <GridActionsCellItem
               icon={<SaveIcon />}
-              label='Save'
+              label="Save"
               sx={{
                 color: 'primary.main',
               }}
@@ -124,10 +124,10 @@ const DataTable = ({
             />,
             <GridActionsCellItem
               icon={<CancelIcon />}
-              label='Cancel'
-              className='textPrimary'
+              label="Cancel"
+              className="textPrimary"
               onClick={handleCancelClick(id)}
-              color='inherit'
+              color="inherit"
             />,
           ];
         }
@@ -135,16 +135,16 @@ const DataTable = ({
         return [
           <GridActionsCellItem
             icon={<EditIcon />}
-            label='Edit'
-            className='textPrimary'
+            label="Edit"
+            className="textPrimary"
             onClick={handleEditClick(id)}
-            color='inherit'
+            color="inherit"
           />,
           <GridActionsCellItem
             icon={<DeleteIcon />}
-            label='Delete'
+            label="Delete"
             onClick={() => handleDeleteClick(id)}
-            color='inherit'
+            color="inherit"
           />,
         ];
       },
@@ -168,7 +168,7 @@ const DataTable = ({
         rows={rows}
         columns={columns}
         columnVisibilityModel={columnVisibilityModel}
-        editMode='row'
+        editMode="row"
         rowModesModel={rowModesModel}
         onRowModesModelChange={handleRowModesModelChange}
         onRowEditStop={handleRowEditStop}
@@ -189,8 +189,8 @@ const DataTable = ({
         disableRowSelectionOnClick
         onPaginationModelChange={setPaginationModel}
         onSortModelChange={setSortModel}
-        sortingMode='server'
-        paginationMode='server'
+        sortingMode="server"
+        paginationMode="server"
         rowCount={Number(count)}
       />
     </Box>

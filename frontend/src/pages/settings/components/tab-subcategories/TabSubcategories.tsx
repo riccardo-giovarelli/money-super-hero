@@ -8,7 +8,6 @@ import { Box } from '@mui/material';
 import Grid from '@mui/material/Grid2';
 import { GridSortModel } from '@mui/x-data-grid';
 
-
 const TabSubcategories = () => {
   const [paginationModel, setPaginationModel] = useState<PaginationModelType>({
     page: 0,

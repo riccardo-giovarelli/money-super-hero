@@ -33,24 +33,30 @@ flowchart TD
     DB-T --> DB-T-LIST["`PostgreSQL`"]
 ```
 
-## First run
-#### From the project root
+## Environment
+### First run :hammer:
+_From the project root_
 ```bash
   docker compose up --build
 ```
-#### From the _**backend**_ folder of the project
+_From the folder `backend`_
 ```bash
   yarn && yarn migrate up
 ```
 
-## Run
+### Run :point_right:
 
 ```bash
   docker compose up
 ```
 
-## Development
+### Stop :hand:
 
+```bash
+  docker compose stop
+```
+
+## Development server
 ### App url
 `http://localhost:8000/`
 

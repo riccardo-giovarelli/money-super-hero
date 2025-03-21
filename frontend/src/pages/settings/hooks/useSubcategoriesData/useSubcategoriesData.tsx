@@ -10,11 +10,16 @@ const useSubcategoriesData = (page: number, pageSize: number, sortModel: GridSor
   const [columns, setColumns] = useState<GridColDef<GridValidRowModel>[]>([]);
   const [subcategoriesResults, setSubcategoriesResults] = useState<CategoriesResultsType>();
 
+  /**
+   * The columns visibility model
+   */
   const columnsVisibility = {
     id: false,
-    category_id: false,
   };
 
+  /**
+   * Fetches the category options and sets the columns
+   */
   useEffect(() => {
     tank.get('/categories').then((results) => {
       if (results?.data?.code === 'GET_CATEGORIES_SUCCESS') {
@@ -34,24 +39,18 @@ const useSubcategoriesData = (page: number, pageSize: number, sortModel: GridSor
             sortable: true,
           },
           {
-            field: 'category_name',
+            field: 'category_id',
             headerName: 'Category',
             minWidth: 150,
             flex: 1,
             editable: true,
-            sortable: true,
             type: 'singleSelect',
             valueOptions: results?.data?.details?.results
-              ? results?.data?.details?.results.map((category: CategoryType) => category.name)
+              ? results?.data?.details?.results.map((category: CategoryType) => ({
+                  value: category.id,
+                  label: category.name,
+                }))
               : [],
-          },
-          {
-            field: 'category_id',
-            headerName: 'Category Id',
-            minWidth: 150,
-            flex: 1,
-            editable: true,
-            sortable: true,
           },
           {
             field: 'notes',
@@ -66,6 +65,9 @@ const useSubcategoriesData = (page: number, pageSize: number, sortModel: GridSor
     });
   }, []);
 
+  /**
+   * Fetches the subcategories
+   */
   useEffect(() => {
     const parameters: string[] = [];
     parameters.push(`page=${page}`);

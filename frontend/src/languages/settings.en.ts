@@ -8,5 +8,11 @@ export const settings = {
     'settings.category_update_error': 'Error updating category',
     'settings.category_delete_success': 'Category deleted successfully',
     'settings.category_delete_error': 'Error deleting category',
+    'settings.subcategory_add_success': 'Subcategory added successfully',
+    'settings.subcategory_add_error': 'Error adding subcategory',
+    'settings.subcategory_update_success': 'Subcategory updated successfully',
+    'settings.subcategory_update_error': 'Error updating subcategory',
+    'settings.subcategory_delete_success': 'Subcategory deleted successfully',
+    'settings.subcategory_delete_error': 'Error deleting subcategory',
   },
 };

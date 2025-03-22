@@ -7,7 +7,6 @@ import TuneIcon from '@mui/icons-material/Tune';
 
 import { RoutesIndoorType } from './routes.type';
 
-
 const Home = lazy(() => import('@/pages/home/Home'));
 const Dashboard = lazy(() => import('@/pages/dashboard/Dashboard'));
 const Settings = lazy(() => import('@/pages/settings/Settings'));

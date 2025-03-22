@@ -21,7 +21,7 @@ const MenuAppDrawer = () => {
   const DrawerList = (
     <Box
       sx={{ width: 250 }}
-      role='presentation'
+      role="presentation"
       onClick={() => {
         setAppDrawerOpen(false);
       }}
@@ -65,6 +65,9 @@ const MenuAppDrawer = () => {
   return (
     <div>
       <Drawer
+        ModalProps={{
+          hideBackdrop: true,
+        }}
         open={appDrawerOpen}
         onClose={() => {
           setAppDrawerOpen(false);

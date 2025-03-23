@@ -12,7 +12,6 @@ import { GridRowId, GridSortModel, GridValidRowModel } from '@mui/x-data-grid';
 
 import { useSettingsStore } from '../../stores/SettingsStore';
 
-
 const TabSubcategories = () => {
   const [paginationModel, setPaginationModel] = useState<PaginationModelType>({
     page: 0,

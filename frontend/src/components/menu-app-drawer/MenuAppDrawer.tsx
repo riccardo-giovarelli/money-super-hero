@@ -2,7 +2,6 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 
 import { routesIndoor } from '@/routing/routes/routes-indoor';
-import { useAppStore } from '@/stores/app-store/AppStore';
 import { Divider } from '@mui/material';
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
@@ -12,9 +11,9 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 
-const MenuAppDrawer = () => {
-  const setAppDrawerOpen = useAppStore((state) => state.setAppDrawerOpen);
-  const appDrawerOpen = useAppStore((state) => state.appDrawerOpen);
+import { MenuAppDrawerPropsType } from './MenuAppDrawer.type';
+
+const MenuAppDrawer = ({ open, setOpen }: MenuAppDrawerPropsType) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
@@ -23,7 +22,7 @@ const MenuAppDrawer = () => {
       sx={{ width: 250 }}
       role="presentation"
       onClick={() => {
-        setAppDrawerOpen(false);
+        setOpen(false);
       }}
     >
       <List>
@@ -68,9 +67,9 @@ const MenuAppDrawer = () => {
         ModalProps={{
           hideBackdrop: true,
         }}
-        open={appDrawerOpen}
+        open={open}
         onClose={() => {
-          setAppDrawerOpen(false);
+          setOpen(false);
         }}
       >
         {DrawerList}

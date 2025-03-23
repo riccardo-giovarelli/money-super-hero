@@ -122,6 +122,19 @@ router.post('/', authenticationMiddleware, async (req, res) => {
   }
 });
 
+/**
+ * PUT: Edit an Existing Sub-Category
+ *
+ * @description Updates the details of an existing sub-category in the database.
+ *
+ * @route PUT /:id
+ * @access Protected (requires authentication)
+ * @param {number} id - The ID of the sub-category to update (provided as a URL parameter).
+ * @body {string} name - The updated name of the sub-category (optional).
+ * @body {string} notes - The updated notes for the sub-category (optional).
+ * @body {number} category_id - The updated category ID to associate the sub-category with (optional).
+ * @returns {object} - A JSON object containing the result of the operation.
+ */
 router.put('/:id', authenticationMiddleware, async (req, res) => {
   const client = new Client();
   const { id } = req.params;
@@ -159,6 +172,48 @@ router.put('/:id', authenticationMiddleware, async (req, res) => {
       message: 'Error while updating sub-category',
       details: err,
     });
+  } finally {
+    await client.end();
+  }
+});
+
+router.delete('/:id', authenticationMiddleware, async (req, res) => {
+  const client = new Client();
+  const { id } = req.params;
+
+  try {
+    await client.connect();
+    const query = {
+      name: 'delete-sub-category-by-id',
+      text: 'DELETE FROM sub_categories WHERE "id" = $1;',
+      values: [id],
+    };
+    const results = await client.query(query);
+    if (results?.rowCount < 1) {
+      res
+        .status(200)
+        .json({
+          code: 'DELETE_SUB_CATEGORY_ERROR',
+          message: 'Error deleting sub-category',
+          details: 'Unknown error',
+        });
+    } else {
+      res.status(200).json({
+        code: 'DELETE_SUB_CATEGORY_SUCCESS',
+        message: 'Successfully deleted sub-category',
+        details: {
+          id,
+        },
+      });
+    }
+  } catch (err) {
+    res
+      .status(500)
+      .json({
+        code: 'DELETE_SUB_CATEGORY_ERROR',
+        message: 'Error while deleting sub-category',
+        details: err,
+      });
   } finally {
     await client.end();
   }

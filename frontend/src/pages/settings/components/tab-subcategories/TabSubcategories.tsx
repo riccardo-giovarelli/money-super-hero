@@ -73,6 +73,22 @@ const TabSubcategories = () => {
 
         return results.data.details.id;
       }
+      case 'delete': {
+        if (!id) return false;
+        const results = await tank.delete(`/subcategories/${id}`);
+        const success =
+          results?.data?.code &&
+          results.data.code === 'DELETE_SUB_CATEGORY_SUCCESS' &&
+          results?.data?.details?.id;
+
+        setAlertSnackbarMessage(
+          success
+            ? { type: 'success', text: t('settings.subcategory_delete_success') }
+            : { type: 'error', text: t('settings.subcategory_delete_error') }
+        );
+
+        return results.data.details.id;
+      }
       default:
         return false;
     }

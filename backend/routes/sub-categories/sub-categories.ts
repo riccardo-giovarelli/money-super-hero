@@ -3,6 +3,7 @@ import pg from 'pg';
 
 import { authenticationMiddleware } from '../users/users.lib.ts';
 
+
 import type { CategoriesGetPayload } from './sub-categories.type.ts';
 
 const router = express.Router();
@@ -114,6 +115,48 @@ router.post('/', authenticationMiddleware, async (req, res) => {
     res.status(500).json({
       code: 'ADD_SUB_CATEGORY_ERROR',
       message: 'Error creating sub-category.',
+      details: err,
+    });
+  } finally {
+    await client.end();
+  }
+});
+
+router.put('/:id', authenticationMiddleware, async (req, res) => {
+  const client = new Client();
+  const { id } = req.params;
+  const { name, notes, category_id } = req.body;
+
+  try {
+    await client.connect();
+    const query = {
+      name: 'update-sub-category-by-id',
+      text: 'UPDATE sub_categories SET "name" = $1, "category_id" = $2, "notes" = $3 WHERE "id" = $4;',
+      values: [name, category_id, notes, id],
+    };
+    const results = await client.query(query);
+    if (results?.rowCount < 1) {
+      res.status(200).json({
+        code: 'UPDATE_SUB_CATEGORY_ERROR',
+        message: 'Error updating sub-category',
+        details: 'Unknown error',
+      });
+    } else {
+      res.status(200).json({
+        code: 'UPDATE_SUB_CATEGORY_SUCCESS',
+        message: 'Successfully updated sub-category',
+        details: {
+          id,
+          name,
+          category_id,
+          notes,
+        },
+      });
+    }
+  } catch (err) {
+    res.status(500).json({
+      code: 'UPDATE_SUB_CATEGORY_ERROR',
+      message: 'Error while updating sub-category',
       details: err,
     });
   } finally {

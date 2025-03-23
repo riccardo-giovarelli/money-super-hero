@@ -12,6 +12,7 @@ import { GridRowId, GridSortModel, GridValidRowModel } from '@mui/x-data-grid';
 
 import { useSettingsStore } from '../../stores/SettingsStore';
 
+
 const TabSubcategories = () => {
   const [paginationModel, setPaginationModel] = useState<PaginationModelType>({
     page: 0,
@@ -33,7 +34,6 @@ const TabSubcategories = () => {
   ): Promise<boolean> => {
     switch (mode) {
       case 'add': {
-        console.log('row', row);
         const results = await tank.post(`/subcategories`, {
           name: row?.name,
           notes: row?.notes,
@@ -49,6 +49,26 @@ const TabSubcategories = () => {
           success
             ? { type: 'success', text: t('settings.subcategory_add_success') }
             : { type: 'error', text: t('settings.subcategory_add_error') }
+        );
+
+        return results.data.details.id;
+      }
+      case 'save': {
+        if (!id) return false;
+        const results = await tank.put(`/subcategories/${id}`, {
+          name: row?.name,
+          notes: row?.notes,
+          category_id: row?.category_id,
+        });
+        const success =
+          results?.data?.code &&
+          results.data.code === 'UPDATE_SUB_CATEGORY_SUCCESS' &&
+          results?.data?.details?.id;
+
+        setAlertSnackbarMessage(
+          success
+            ? { type: 'success', text: t('settings.subcategory_update_success') }
+            : { type: 'error', text: t('settings.subcategory_update_error') }
         );
 
         return results.data.details.id;

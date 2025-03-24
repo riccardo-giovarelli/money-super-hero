@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
+import ConfirmDialog from '@/components/confirm-dialog/ConfirmDialog';
 import { DEFAULT_TABLE_PAGE_SIZE } from '@/config/constants';
 import CancelIcon from '@mui/icons-material/Close';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
@@ -40,6 +42,8 @@ const DataTable = ({
 }: DataTablePropsType) => {
   const [rows, setRows] = useState<GridRowsProp>([]);
   const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
+  const [itemToDelete, setItemToDelete] = useState<GridRowId | null>(null);
+  const { t } = useTranslation();
 
   useEffect(() => {
     setRows(data);
@@ -66,10 +70,7 @@ const DataTable = ({
 
   // Delete the row from the database
   const handleDeleteClick = async (id: GridRowId) => {
-    const result = await handleData('delete', id);
-    if (result) {
-      setRows(rows.filter((row) => row.id !== id));
-    }
+    setItemToDelete(id);
   };
 
   const handleRowEditStop: GridEventListener<'rowEditStop'> = (params, event) => {
@@ -99,6 +100,16 @@ const DataTable = ({
 
   const handleRowModesModelChange = (newRowModesModel: GridRowModesModel) => {
     setRowModesModel(newRowModesModel);
+  };
+
+  const handleConfirmDialogClose = async (choice: boolean) => {
+    if (choice && itemToDelete) {
+      const result = await handleData('delete', itemToDelete);
+      if (result) {
+        setRows(rows.filter((row) => row.id !== itemToDelete));
+      }
+    }
+    setItemToDelete(null);
   };
 
   const columns: GridColDef[] = [
@@ -192,6 +203,12 @@ const DataTable = ({
         sortingMode="server"
         paginationMode="server"
         rowCount={Number(count)}
+      />
+      <ConfirmDialog
+        open={itemToDelete !== null}
+        onClose={handleConfirmDialogClose}
+        title={t('app.message.warning')}
+        text={t('app.message.deleting_item_warning')}
       />
     </Box>
   );

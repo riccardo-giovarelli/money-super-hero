@@ -3,3 +3,8 @@ export interface CategoryType {
   name: string;
   notes: string;
 }
+
+export interface CategoryOptionsType {
+  value: number;
+  label: string;
+}

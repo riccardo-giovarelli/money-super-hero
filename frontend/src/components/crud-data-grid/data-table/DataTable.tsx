@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
+import ConfirmDialog from '@/components/confirm-dialog/ConfirmDialog';
 import { DEFAULT_TABLE_PAGE_SIZE } from '@/config/constants';
 import CancelIcon from '@mui/icons-material/Close';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
@@ -40,6 +42,8 @@ const DataTable = ({
 }: DataTablePropsType) => {
   const [rows, setRows] = useState<GridRowsProp>([]);
   const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
+  const [itemToDelete, setItemToDelete] = useState<GridRowId | null>(null);
+  const { t } = useTranslation();
 
   useEffect(() => {
     setRows(data);
@@ -47,10 +51,10 @@ const DataTable = ({
 
   // Update/Add the row in the database
   const processRowUpdate = async (newRow: GridRowModel) => {
-    if (newRow?.id && String(newRow.id).startsWith('NEW_')) {
+    if (newRow?.id && newRow.isNew) {
       const result = await handleData('add', newRow.id, newRow);
       if (result) {
-        const updatedRow = { ...newRow, isNew: false };
+        const updatedRow = { ...newRow, isNew: false, id: result };
         setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
         return updatedRow;
       }
@@ -66,10 +70,7 @@ const DataTable = ({
 
   // Delete the row from the database
   const handleDeleteClick = async (id: GridRowId) => {
-    const result = await handleData('delete', id);
-    if (result) {
-      setRows(rows.filter((row) => row.id !== id));
-    }
+    setItemToDelete(id);
   };
 
   const handleRowEditStop: GridEventListener<'rowEditStop'> = (params, event) => {
@@ -101,6 +102,16 @@ const DataTable = ({
     setRowModesModel(newRowModesModel);
   };
 
+  const handleConfirmDialogClose = async (choice: boolean) => {
+    if (choice && itemToDelete) {
+      const result = await handleData('delete', itemToDelete);
+      if (result) {
+        setRows(rows.filter((row) => row.id !== itemToDelete));
+      }
+    }
+    setItemToDelete(null);
+  };
+
   const columns: GridColDef[] = [
     ...dataColumns,
     {
@@ -116,7 +127,7 @@ const DataTable = ({
           return [
             <GridActionsCellItem
               icon={<SaveIcon />}
-              label='Save'
+              label="Save"
               sx={{
                 color: 'primary.main',
               }}
@@ -124,10 +135,10 @@ const DataTable = ({
             />,
             <GridActionsCellItem
               icon={<CancelIcon />}
-              label='Cancel'
-              className='textPrimary'
+              label="Cancel"
+              className="textPrimary"
               onClick={handleCancelClick(id)}
-              color='inherit'
+              color="inherit"
             />,
           ];
         }
@@ -135,16 +146,16 @@ const DataTable = ({
         return [
           <GridActionsCellItem
             icon={<EditIcon />}
-            label='Edit'
-            className='textPrimary'
+            label="Edit"
+            className="textPrimary"
             onClick={handleEditClick(id)}
-            color='inherit'
+            color="inherit"
           />,
           <GridActionsCellItem
             icon={<DeleteIcon />}
-            label='Delete'
+            label="Delete"
             onClick={() => handleDeleteClick(id)}
-            color='inherit'
+            color="inherit"
           />,
         ];
       },
@@ -168,7 +179,7 @@ const DataTable = ({
         rows={rows}
         columns={columns}
         columnVisibilityModel={columnVisibilityModel}
-        editMode='row'
+        editMode="row"
         rowModesModel={rowModesModel}
         onRowModesModelChange={handleRowModesModelChange}
         onRowEditStop={handleRowEditStop}
@@ -189,9 +200,15 @@ const DataTable = ({
         disableRowSelectionOnClick
         onPaginationModelChange={setPaginationModel}
         onSortModelChange={setSortModel}
-        sortingMode='server'
-        paginationMode='server'
+        sortingMode="server"
+        paginationMode="server"
         rowCount={Number(count)}
+      />
+      <ConfirmDialog
+        open={itemToDelete !== null}
+        onClose={handleConfirmDialogClose}
+        title={t('app.message.warning')}
+        text={t('app.message.deleting_item_warning')}
       />
     </Box>
   );

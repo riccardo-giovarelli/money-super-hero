@@ -10,8 +10,8 @@ const EditToolbar = (props: GridSlotProps['toolbar']) => {
   const { t } = useTranslation();
 
   const handleClick = () => {
-    const id = `NEW_${randomId()}`;
-    setRows((oldRows) => [...oldRows, { id, name: '', age: '', role: '', isNew: true }]);
+    const id = randomId();
+    setRows((oldRows) => [...oldRows, { id, name: '', notes: '', isNew: true }]);
     setRowModesModel((oldModel) => ({
       ...oldModel,
       [id]: { mode: GridRowModes.Edit, fieldToFocus: 'name' },
@@ -21,7 +21,7 @@ const EditToolbar = (props: GridSlotProps['toolbar']) => {
   return (
     <GridToolbarContainer>
       <Box sx={{ flexGrow: 1 }} />
-      <Button color='primary' startIcon={<AddIcon />} variant='outlined' onClick={handleClick}>
+      <Button color="primary" startIcon={<AddIcon />} variant="outlined" onClick={handleClick}>
         {t('app.data_table.add_record')}
       </Button>
     </GridToolbarContainer>

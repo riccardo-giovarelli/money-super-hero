@@ -1,12 +1,20 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { CategoryType } from '@/models/categories';
+import { SubategoryType } from '@/models/sub-categories';
+import tank from '@/utils/axios';
 import {
   FormControl,
   FormControlLabel,
   FormLabel,
+  InputLabel,
+  MenuItem,
+  OutlinedInput,
   Radio,
   RadioGroup,
+  Select,
+  SelectChangeEvent,
   TextField,
 } from '@mui/material';
 import Grid from '@mui/material/Grid2';
@@ -15,7 +23,34 @@ import { TransactionsFordFieldType, TransactionsFormDataType } from './Transacti
 
 const TransactionsNew = () => {
   const { t } = useTranslation();
-  const [formData, setFormData] = useState<TransactionsFormDataType>({ amount: '', direction: '' });
+  const [formData, setFormData] = useState<TransactionsFormDataType>({
+    amount: '',
+    direction: '',
+    category: '',
+    subcategory: '',
+  });
+  const [categories, setCategories] = useState<CategoryType[]>([]);
+  const [subcategories, setSubcategories] = useState<SubategoryType[]>([]);
+
+  // Fetch categories
+  useEffect(() => {
+    tank.get('/categories').then((results) => {
+      if (results?.data?.code === 'GET_CATEGORIES_SUCCESS') {
+        setCategories(results?.data?.details?.results ? results.data.details.results : []);
+      }
+    });
+  }, []);
+
+  // Fetch subcategories
+  useEffect(() => {
+    if (formData.category) {
+      tank.get(`/subcategories/${formData.category}`).then((results) => {
+        if (results?.data?.code === 'GET_SUB_CATEGORIES_SUCCESS') {
+          setSubcategories(results?.data?.details?.results ? results.data.details.results : []);
+        }
+      });
+    }
+  }, [formData.category]);
 
   /**
    * @function handleFormChange
@@ -26,6 +61,7 @@ const TransactionsNew = () => {
    * @param {string} value - The new value of the form field.
    */
   const handleFormChange = (field: TransactionsFordFieldType, value: string) => {
+    console.log('field', field, 'value', value);
     setFormData((prevFormData) => ({
       ...prevFormData,
       [field]: value,
@@ -61,7 +97,7 @@ const TransactionsNew = () => {
             alignContent: 'center',
           }}
         >
-          <FormLabel id="ddirection-radio-buttons-group-label">
+          <FormLabel id="direction-radio-buttons-group-label">
             {t('transactions.add_transaction.direction.label')} *
           </FormLabel>
           <RadioGroup
@@ -85,6 +121,55 @@ const TransactionsNew = () => {
               label={t('transactions.add_transaction.direction.out')}
             />
           </RadioGroup>
+        </FormControl>
+      </Grid>
+      <Grid size={6}>
+        {/* Category */}
+        <FormControl fullWidth>
+          <InputLabel id="category-select-name-label">
+            {t('transactions.add_transaction.category.label')}
+          </InputLabel>
+          <Select
+            labelId="category-select-name-label"
+            id="category"
+            value={formData.category}
+            onChange={(event: SelectChangeEvent<string>) => {
+              handleFormChange('category', event.target.value);
+            }}
+            input={<OutlinedInput label={t('transactions.add_transaction.category.label')} />}
+          >
+            {categories.map((category) => (
+              <MenuItem key={category.id} value={category.id}>
+                {category.name}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </Grid>
+      <Grid size={6}>
+        {/* Subcategory */}
+        <FormControl fullWidth>
+          <InputLabel id="sub-category-select-name-label">
+            {formData.category.length === 0
+              ? t('transactions.add_transaction.subcategory.no_data')
+              : t('transactions.add_transaction.subcategory.label')}
+          </InputLabel>
+          <Select
+            labelId="sub-category-select-name-label"
+            id="category"
+            value={formData.subcategory}
+            onChange={(event: SelectChangeEvent<string>) => {
+              handleFormChange('subcategory', event.target.value);
+            }}
+            input={<OutlinedInput label={t('transactions.add_transaction.category.label')} />}
+            disabled={formData.category.length === 0}
+          >
+            {subcategories.map((subcategory) => (
+              <MenuItem key={subcategory.id} value={subcategory.id}>
+                {subcategory.name}
+              </MenuItem>
+            ))}
+          </Select>
         </FormControl>
       </Grid>
     </Grid>

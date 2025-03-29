@@ -6,3 +6,10 @@ export interface TransactionsFormDataType {
   category: string;
   subcategory: string;
 }
+
+export const transactionsFormDefaultData = {
+  amount: '',
+  direction: '',
+  category: '',
+  subcategory: '',
+};

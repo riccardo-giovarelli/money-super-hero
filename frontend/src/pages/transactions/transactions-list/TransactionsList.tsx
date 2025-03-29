@@ -22,7 +22,7 @@ const TransactionsList = () => {
           navigate('/transactions/new');
         }}
       >
-        {t('transactions.add_transaction')}
+        {t('transactions.add_transaction.new_button.label')}
       </Button>
     </Box>
   );

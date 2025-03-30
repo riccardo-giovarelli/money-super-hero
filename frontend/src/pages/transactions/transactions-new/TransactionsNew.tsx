@@ -82,10 +82,30 @@ const TransactionsNew = () => {
     }));
   };
 
+  /**
+   * @function handleSubmit
+   *
+   * @description Handles the form submission for creating a new transaction. Prevents the default form submission behavior,
+   *              sends the form data to the server, and displays a success or error message based on the server's response.
+   *
+   * @param {React.FormEvent<HTMLFormElement>} event - The form submission event.
+   * @returns {void}
+   */
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log(formData);
-    setMessage({ type: 'info', text: 'Form submitted!' });
+    tank.post('/transactions', { ...formData }).then((results) => {
+      if (!results?.data?.code || results.data.code !== 'ADD_TRANSACTION_SUCCESS') {
+        setMessage({
+          type: 'error',
+          text: t('transactions.add_transaction.result.error'),
+        });
+      } else {
+        setMessage({
+          type: 'success',
+          text: t('transactions.add_transaction.result.success'),
+        });
+      }
+    });
   };
 
   return (

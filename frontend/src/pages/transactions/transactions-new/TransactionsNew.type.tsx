@@ -1,10 +1,16 @@
-export type TransactionsFordFieldType = 'amount' | 'direction' | 'category' | 'subcategory';
+export type TransactionsFordFieldType =
+  | 'amount'
+  | 'direction'
+  | 'category'
+  | 'subcategory'
+  | 'notes';
 
 export interface TransactionsFormDataType {
   amount: string;
   direction: string;
   category: string;
   subcategory: string;
+  notes: string;
 }
 
 export const transactionsFormDefaultData = {
@@ -12,4 +18,5 @@ export const transactionsFormDefaultData = {
   direction: '',
   category: '',
   subcategory: '',
+  notes: '',
 };

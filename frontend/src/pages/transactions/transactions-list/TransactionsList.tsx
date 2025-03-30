@@ -8,22 +8,24 @@ const TransactionsList = () => {
   const navigate = useNavigate();
 
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        flexDirection: 'row-reverse',
-        p: 1,
-        m: 1,
-      }}
-    >
-      <Button
-        variant="contained"
-        onClick={() => {
-          navigate('/transactions/new');
+    <Box component={'div'}>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'row-reverse',
+          p: 1,
+          m: 1,
         }}
       >
-        {t('transactions.add_transaction.new_button.label')}
-      </Button>
+        <Button
+          variant="contained"
+          onClick={() => {
+            navigate('/transactions/new');
+          }}
+        >
+          {t('transactions.add_transaction.new_button.label')}
+        </Button>
+      </Box>
     </Box>
   );
 };

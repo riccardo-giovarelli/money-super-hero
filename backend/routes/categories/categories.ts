@@ -3,6 +3,7 @@ import pg from 'pg';
 
 import { authenticationMiddleware } from '../users/users.lib.ts';
 
+
 import type { CategoriesGetPayload } from './categories.type.ts';
 
 const router = express.Router();
@@ -25,6 +26,14 @@ const { Client } = pg;
  */
 router.get('/', authenticationMiddleware, async (req, res) => {
   const client = new Client();
+
+  const {
+    page = 1,
+    limit = 10,
+    sortColumn = 'id',
+    sortDirection = 'asc',
+  } = req.query as CategoriesGetPayload;
+  const offset = (Number(page) - 1) * Number(limit);
 
   /**
    * If no query parameters are provided,
@@ -67,18 +76,6 @@ router.get('/', authenticationMiddleware, async (req, res) => {
     }
     return;
   }
-
-  /**
-   * If query parameters are provided, retrieve
-   * categories with pagination and sorting.
-   */
-  const {
-    page = 1,
-    limit = 10,
-    sortColumn = 'id',
-    sortDirection = 'asc',
-  } = req.query as CategoriesGetPayload;
-  const offset = (Number(page) - 1) * Number(limit);
 
   try {
     await client.connect();

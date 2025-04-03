@@ -1,9 +1,8 @@
-import express from 'express';
-import pg from 'pg';
+import express from "express";
+import pg from "pg";
 
-import { authenticationMiddleware } from '../users/users.lib.ts';
-import { TransactionsGetPayload } from './transactions.type.ts';
-
+import { authenticationMiddleware } from "../users/users.lib.ts";
+import type { TransactionsGetPayload } from "./transactions.type.ts";
 
 const router = express.Router();
 const { Client } = pg;
@@ -24,7 +23,7 @@ const { Client } = pg;
  *
  * @returns {object} - A JSON object with the result of the operation.
  */
-router.post('/', authenticationMiddleware, async (req, res) => {
+router.post("/", authenticationMiddleware, async (req, res) => {
   const client = new Client();
   const { amount, direction, category, subcategory, notes } = req.body;
 
@@ -33,44 +32,50 @@ router.post('/', authenticationMiddleware, async (req, res) => {
 
     // Get user ID of the current user
     const userQuery = {
-      name: 'get-user-id-by-email',
+      name: "get-user-id-by-email",
       text: 'SELECT "id" FROM users WHERE "email" = $1;',
-      values: [req.session['username']],
+      values: [req.session["username"]],
     };
     const userResults = await client.query(userQuery);
     if (userResults?.rowCount < 1) {
       res.status(200).json({
-        code: 'ADD_TRANSACTION_ERROR',
-        message: 'Error while adding transaction',
-        details: 'Error retrieving user information',
+        code: "ADD_TRANSACTION_ERROR",
+        message: "Error while adding transaction",
+        details: "Error retrieving user information",
       });
     }
 
     // Add new transaction
     const newTransactionQuery = {
-      name: 'add-new-transaction',
+      name: "add-new-transaction",
       text: 'INSERT INTO transactions ("user_id", "amount", "direction", "category", "sub_category", "notes") VALUES ($1, $2, $3, $4, $5, $6) RETURNING *;',
-      values: [userResults.rows[0].id, amount, direction, category, subcategory, notes],
+      values: [
+        userResults.rows[0].id,
+        amount,
+        direction,
+        category,
+        subcategory,
+        notes,
+      ],
     };
     const newTransactionResults = await client.query(newTransactionQuery);
-    console.log('results', newTransactionResults);
     if (newTransactionResults?.rowCount < 1) {
       res.status(200).json({
-        code: 'ADD_TRANSACTION_ERROR',
-        message: 'Error adding transaction',
-        details: 'Unknown error',
+        code: "ADD_TRANSACTION_ERROR",
+        message: "Error adding transaction",
+        details: "Unknown error",
       });
     } else {
       res.status(200).json({
-        code: 'ADD_TRANSACTION_SUCCESS',
-        message: 'Successfully added transaction',
+        code: "ADD_TRANSACTION_SUCCESS",
+        message: "Successfully added transaction",
         details: newTransactionResults.rows[0],
       });
     }
   } catch (err) {
     res.status(500).json({
-      code: 'ADD_TRANSACTION_ERROR',
-      message: 'Error while adding transaction',
+      code: "ADD_TRANSACTION_ERROR",
+      message: "Error while adding transaction",
       details: err,
     });
   } finally {
@@ -93,14 +98,14 @@ router.post('/', authenticationMiddleware, async (req, res) => {
  *
  * @returns {object} - A JSON object with the result of the operation.
  */
-router.get('/', authenticationMiddleware, async (req, res) => {
+router.get("/", authenticationMiddleware, async (req, res) => {
   const client = new Client();
 
   const {
     page = 1,
     limit = 10,
-    sortColumn = 'id',
-    sortDirection = 'asc',
+    sortColumn = "id",
+    sortDirection = "asc",
   } = req.query as TransactionsGetPayload;
   const offset = (Number(page) - 1) * Number(limit);
 
@@ -109,16 +114,16 @@ router.get('/', authenticationMiddleware, async (req, res) => {
 
     // Get user ID of the current user
     const userQuery = {
-      name: 'get-user-id-by-email',
+      name: "get-user-id-by-email",
       text: 'SELECT "id" FROM users WHERE "email" = $1;',
-      values: [req.session['username']],
+      values: [req.session["username"]],
     };
     const userResults = await client.query(userQuery);
     if (userResults?.rowCount < 1) {
       res.status(200).json({
-        code: 'GET_TRANSACTIONS_ERROR',
-        message: 'Error retrieving transactions',
-        details: 'Error retrieving user information',
+        code: "GET_TRANSACTIONS_ERROR",
+        message: "Error retrieving transactions",
+        details: "Error retrieving user information",
       });
       return;
     }
@@ -126,7 +131,7 @@ router.get('/', authenticationMiddleware, async (req, res) => {
 
     // Get the total count of transactions
     const countQuery = {
-      name: 'get-transactions-count',
+      name: "get-transactions-count",
       text: 'SELECT COUNT(*) AS full_count FROM transactions WHERE "user_id" = $1;',
       values: [userId],
     };
@@ -134,9 +139,9 @@ router.get('/', authenticationMiddleware, async (req, res) => {
 
     // Query to get transactions with pagination and sorting
     const transactionsQuery = {
-      name: 'get-transactions-with-pagination',
+      name: "get-transactions-with-pagination",
       text: `
-        SELECT "id", "amount", "direction", "category", "sub_category", "notes", "created_at"
+        SELECT "id", "amount", "direction", "category", "sub_category", "notes", "timestamp"
         FROM transactions
         WHERE "user_id" = $1
         ORDER BY "${sortColumn}" ${sortDirection.toString().toUpperCase()}
@@ -149,14 +154,14 @@ router.get('/', authenticationMiddleware, async (req, res) => {
     // Handle results
     if (transactionsResults?.rowCount < 1) {
       res.status(200).json({
-        code: 'GET_TRANSACTIONS_ERROR',
-        message: 'No transactions found',
-        details: 'No results retrieving transactions',
+        code: "GET_TRANSACTIONS_ERROR",
+        message: "No transactions found",
+        details: "No results retrieving transactions",
       });
     } else {
       res.status(200).json({
-        code: 'GET_TRANSACTIONS_SUCCESS',
-        message: 'Successfully retrieved transactions',
+        code: "GET_TRANSACTIONS_SUCCESS",
+        message: "Successfully retrieved transactions",
         details: {
           results: transactionsResults.rows,
           count: countResults.rows[0].full_count,
@@ -165,8 +170,8 @@ router.get('/', authenticationMiddleware, async (req, res) => {
     }
   } catch (err) {
     res.status(500).json({
-      code: 'GET_TRANSACTIONS_ERROR',
-      message: 'Error retrieving transactions',
+      code: "GET_TRANSACTIONS_ERROR",
+      message: "Error retrieving transactions",
       details: err,
     });
   } finally {

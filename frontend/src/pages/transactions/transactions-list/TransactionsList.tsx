@@ -2,10 +2,17 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 
 import { Box, Button } from '@mui/material';
+import { useEffect } from 'react';
+import useTransactions from '../hooks/useTransactions/useTransactions';
 
 const TransactionsList = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const transactions = useTransactions();
+
+  useEffect(() => {
+    console.log(transactions);
+  }, [transactions]);
 
   return (
     <Box component={'div'}>

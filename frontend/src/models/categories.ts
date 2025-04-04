@@ -1,7 +1,7 @@
 export interface CategoryType {
   id: number;
   name: string;
-  notes: string;
+  notes?: string;
 }
 
 export interface CategoryOptionsType {

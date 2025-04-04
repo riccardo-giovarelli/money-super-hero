@@ -12,6 +12,7 @@ export const transactions = {
     'transactions.add_transaction.subcategory.label': 'Sottocategoria',
     'transactions.add_transaction.subcategory.no_data': 'Nessuna Sottocategoria',
     'transactions.add_transaction.notes.label': 'Note',
+    'transactions.add_transaction.date.label': 'Data',
     'transactions.add_transaction.result.success': 'Transazione aggiunta con successo',
     'transactions.add_transaction.result.error': "Errore durante l'aggiunta della transazione",
   },

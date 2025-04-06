@@ -1,15 +1,13 @@
-import { TransactionType } from '@/models/transactions';
-import tank from '@/utils/axios';
-import { GridColDef } from '@mui/x-data-grid';
+import { GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
 import { useQuery } from '@tanstack/react-query';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  parseCategoriesApiResults,
-  parseSubCategoriesApiResults,
-  parseTransactionsApiResults,
-} from './useTransactions.lib';
+import { parseCategoriesApiResults, parseSubCategoriesApiResults, parseTransactionsApiResults } from './useTransactions.lib';
+
+import { TransactionType } from 'src/models/transactions';
+import TransactionsDirectionTableCell from '../../components/transactions-direction-table-cell/TransactionsDirectionTableCell';
 import { TransactionTableType } from './useTransactions.type';
+import tank from '@/utils/axios';
 
 const useTransactions = (enabled: boolean = false) => {
   const { t } = useTranslation();
@@ -37,6 +35,7 @@ const useTransactions = (enabled: boolean = false) => {
       headerName: t('transactions.add_transaction.direction.label'),
       type: 'string',
       width: 110,
+      renderCell: (params: GridRenderCellParams) => <TransactionsDirectionTableCell {...params} />,
     },
     {
       field: 'category',
@@ -101,10 +100,7 @@ const useTransactions = (enabled: boolean = false) => {
     queryKey: ['subcategoriesData'],
     queryFn: async () =>
       tank.get(`/subcategories`).then((results) => {
-        if (
-          results?.data?.code === 'GET_SUB_CATEGORIES_SUCCESS' &&
-          results?.data?.details?.results
-        ) {
+        if (results?.data?.code === 'GET_SUB_CATEGORIES_SUCCESS' && results?.data?.details?.results) {
           return parseSubCategoriesApiResults(results.data.details.results);
         }
       }),
@@ -121,9 +117,7 @@ const useTransactions = (enabled: boolean = false) => {
         ? transactionsData.map((transaction: TransactionType) => ({
             ...transaction,
             category: categoriesData.find((category) => category.id === transaction.category)?.name,
-            subCategory: subcategoriesData.find(
-              (subcategory) => subcategory.id === transaction.subCategory
-            )?.name,
+            subCategory: subcategoriesData.find((subcategory) => subcategory.id === transaction.subCategory)?.name,
           }))
         : [],
     [transactionsData, categoriesData, subcategoriesData]

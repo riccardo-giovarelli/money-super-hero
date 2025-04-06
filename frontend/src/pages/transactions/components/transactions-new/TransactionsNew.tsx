@@ -26,11 +26,7 @@ import {
 } from '@mui/material';
 import Grid from '@mui/material/Grid2';
 
-import {
-  TransactionsFordFieldType,
-  TransactionsFormDataType,
-  transactionsFormDefaultData,
-} from './TransactionsNew.type';
+import { TransactionsFordFieldType, TransactionsFormDataType, transactionsFormDefaultData } from './TransactionsNew.type';
 
 const TransactionsNew = () => {
   const { t } = useTranslation();
@@ -58,11 +54,7 @@ const TransactionsNew = () => {
   useEffect(() => {
     if (formData.category) {
       tank.get(`/subcategories/${formData.category}`).then((results) => {
-        setSubcategories(
-          results?.data?.code === 'GET_SUB_CATEGORIES_SUCCESS' && results?.data?.details?.results
-            ? results.data.details.results
-            : []
-        );
+        setSubcategories(results?.data?.code === 'GET_SUB_CATEGORIES_SUCCESS' && results?.data?.details?.results ? results.data.details.results : []);
       });
     }
   }, [formData.category]);
@@ -104,6 +96,7 @@ const TransactionsNew = () => {
           type: 'success',
           text: t('transactions.add_transaction.result.success'),
         });
+        setFormData(transactionsFormDefaultData);
       }
     });
   };
@@ -112,10 +105,26 @@ const TransactionsNew = () => {
     <Container maxWidth="lg">
       <form onSubmit={handleSubmit}>
         <Grid container spacing={2}>
-          <Grid size={12}>
-            <Typography variant="h5" component="h1" sx={{ borderBottom: 1, mb: 2 }}>
+          <Grid size={8}>
+            <Typography variant="h5" component="h1">
               {t('transactions.add_transaction.form_title')}
             </Typography>
+          </Grid>
+          <Grid size={4}>
+            <Box display="flex" flexDirection="row" alignItems="center" justifyContent="end" gap={2}>
+              <Button variant="contained" type="submit">
+                {t('transactions.add_transaction.save_button.label')}
+              </Button>
+              <Button
+                variant="contained"
+                onClick={() => {
+                  navigate('/transactions');
+                }}
+                color="secondary"
+              >
+                {t('transactions.add_transaction.cancel_button.label')}
+              </Button>
+            </Box>
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
             {/* Amount */}
@@ -144,9 +153,7 @@ const TransactionsNew = () => {
                 alignContent: 'center',
               }}
             >
-              <FormLabel id="direction-radio-buttons-group-label">
-                {t('transactions.add_transaction.direction.label')}
-              </FormLabel>
+              <FormLabel id="direction-radio-buttons-group-label">{t('transactions.add_transaction.direction.label')}</FormLabel>
               <RadioGroup
                 row
                 id="direction"
@@ -157,25 +164,15 @@ const TransactionsNew = () => {
                 }}
                 value={formData.direction}
               >
-                <FormControlLabel
-                  value="IN"
-                  control={<Radio required />}
-                  label={t('transactions.add_transaction.direction.in')}
-                />
-                <FormControlLabel
-                  value="OUT"
-                  control={<Radio required />}
-                  label={t('transactions.add_transaction.direction.out')}
-                />
+                <FormControlLabel value="IN" control={<Radio required />} label={t('transactions.add_transaction.direction.in')} />
+                <FormControlLabel value="OUT" control={<Radio required />} label={t('transactions.add_transaction.direction.out')} />
               </RadioGroup>
             </FormControl>
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
             {/* Category */}
             <FormControl fullWidth>
-              <InputLabel id="category-select-name-label">
-                {t('transactions.add_transaction.category.label')} *
-              </InputLabel>
+              <InputLabel id="category-select-name-label">{t('transactions.add_transaction.category.label')} *</InputLabel>
               <Select
                 labelId="category-select-name-label"
                 id="category"
@@ -183,9 +180,7 @@ const TransactionsNew = () => {
                 onChange={(event: SelectChangeEvent<string>) => {
                   handleFormChange('category', event.target.value);
                 }}
-                input={
-                  <OutlinedInput label={`${t('transactions.add_transaction.category.label')} *`} />
-                }
+                input={<OutlinedInput label={`${t('transactions.add_transaction.category.label')} *`} />}
                 required
               >
                 {categories.map((category) => (
@@ -235,28 +230,6 @@ const TransactionsNew = () => {
                 value={formData.notes}
               />
             </FormControl>
-          </Grid>
-          <Grid size={12}>
-            <Box
-              display="flex"
-              flexDirection="row"
-              alignItems="center"
-              justifyContent="end"
-              gap={2}
-            >
-              <Button variant="contained" type="submit">
-                {t('transactions.add_transaction.save_button.label')}
-              </Button>
-              <Button
-                variant="contained"
-                onClick={() => {
-                  navigate('/transactions');
-                }}
-                color="secondary"
-              >
-                {t('transactions.add_transaction.cancel_button.label')}
-              </Button>
-            </Box>
           </Grid>
         </Grid>
       </form>

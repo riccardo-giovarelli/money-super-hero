@@ -1,9 +1,9 @@
-import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router';
 import { Box, Button } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
-import useTransactions from '../hooks/useTransactions/useTransactions';
-import SkeletonMaker from '@/components/skeleton-maker/SkeletonMaker';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router';
+import useTransactions from '../../hooks/useTransactions/useTransactions.tsx';
+import SkeletonMaker from '@/components/skeleton-maker/SkeletonMaker.tsx';
 
 const TransactionsList = () => {
   const { t } = useTranslation();

@@ -3,7 +3,7 @@ export const transactions = {
     'transactions.add_transaction.form_title': 'Nuova Transazione',
     'transactions.add_transaction.new_button.label': 'Aggiungi',
     'transactions.add_transaction.save_button.label': 'Salva',
-    'transactions.add_transaction.cancel_button.label': 'Annulla',
+    'transactions.add_transaction.cancel_button.label': 'Indietro',
     'transactions.add_transaction.amount.label': 'Importo',
     'transactions.add_transaction.direction.label': 'Tipo',
     'transactions.add_transaction.direction.in': 'Entrata',

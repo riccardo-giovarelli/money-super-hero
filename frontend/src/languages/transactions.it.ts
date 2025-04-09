@@ -15,5 +15,9 @@ export const transactions = {
     'transactions.add_transaction.date.label': 'Data',
     'transactions.add_transaction.result.success': 'Transazione aggiunta con successo',
     'transactions.add_transaction.result.error': "Errore durante l'aggiunta della transazione",
+    'transactions.list_transactions.edit_button.label': 'Modifica',
+    'transactions.edit_transaction.form_title': 'Modifica Transazione',
+    'transactions.edit_transaction.save_button.label': 'Salva',
+    'transactions.edit_transaction.cancel_button.label': 'Indietro',
   },
 };

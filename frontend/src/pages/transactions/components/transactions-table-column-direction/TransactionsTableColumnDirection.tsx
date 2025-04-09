@@ -2,7 +2,7 @@ import { GridRenderCellParams } from '@mui/x-data-grid';
 import ForwardIcon from '@mui/icons-material/Forward';
 import { Box } from '@mui/material';
 
-const TransactionsDirectionTableCell = (params: GridRenderCellParams) => {
+const TransactionsTableColumnDirection = (params: GridRenderCellParams) => {
   return (
     <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
       {params?.row?.direction === 'IN' ? (
@@ -14,4 +14,4 @@ const TransactionsDirectionTableCell = (params: GridRenderCellParams) => {
   );
 };
 
-export default TransactionsDirectionTableCell;
+export default TransactionsTableColumnDirection;

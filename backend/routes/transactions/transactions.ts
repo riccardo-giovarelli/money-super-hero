@@ -141,12 +141,23 @@ router.get("/", authenticationMiddleware, async (req, res) => {
     const transactionsQuery = {
       name: "get-transactions-with-pagination",
       text: `
-        SELECT "id", "amount", "direction", "category", "sub_category", "notes", "timestamp"
-        FROM transactions
-        WHERE "user_id" = $1
-        ORDER BY "${sortColumn}" ${sortDirection.toString().toUpperCase()}
-        LIMIT $2 OFFSET $3;
-      `,
+    SELECT 
+      transactions.id AS id,
+      transactions.amount AS amount,
+      transactions.direction AS direction,
+      categories.name AS category,
+      categories.id AS category_id,
+      sub_categories.name AS sub_category,
+      sub_categories.id AS sub_category_id,
+      transactions.notes AS notes,
+      transactions.timestamp AS timestamp
+    FROM transactions
+    LEFT JOIN categories ON transactions.category = categories.id
+    LEFT JOIN sub_categories ON transactions.sub_category = sub_categories.id
+    WHERE transactions.user_id = $1
+    ORDER BY "${sortColumn}" ${sortDirection.toString().toUpperCase()}
+    LIMIT $2 OFFSET $3;
+  `,
       values: [userId, Number(limit), offset],
     };
     const transactionsResults = await client.query(transactionsQuery);

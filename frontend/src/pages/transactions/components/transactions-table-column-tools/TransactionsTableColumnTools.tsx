@@ -11,12 +11,12 @@ const TransactionsTableColumnTools = (params: GridRenderCellParams) => {
   return (
     <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
       <Tooltip title={`${t('transactions.list_transactions.edit_button.label')} id ${params.id}`}>
-        <IconButton>
-          <EditIcon
-            onClick={() => {
-              navigate(`/transactions/${params.id}`);
-            }}
-          />
+        <IconButton
+          onClick={() => {
+            navigate(`/transactions/${params.id}`);
+          }}
+        >
+          <EditIcon />
         </IconButton>
       </Tooltip>
     </Box>

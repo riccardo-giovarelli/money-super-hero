@@ -12,16 +12,14 @@ import { CategoryType } from '@/models/categories';
  *
  * @returns {TransactionType[]} - An array of transactions formatted for use in the frontend.
  */
-export const parseTransactionsApiResults = (
-  results: TransactionApiResultsType[]
-): TransactionType[] =>
+export const parseTransactionsApiResults = (results: TransactionApiResultsType[]): TransactionType[] =>
   results.map((result: TransactionApiResultsType) => ({
     amount: Number(result.amount),
-    category: result.category,
+    category: result.category_id,
     direction: result.direction,
     id: result.id,
     notes: result.notes,
-    subCategory: result.sub_category,
+    sub_category: result.sub_category_id,
     timestamp: new Date(result.timestamp),
   }));
 

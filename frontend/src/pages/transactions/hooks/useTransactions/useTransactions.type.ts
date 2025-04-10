@@ -1,10 +1,12 @@
 export interface TransactionApiResultsType {
   amount: string;
-  category: number;
+  category: string;
+  category_id: number;
   direction: 'IN' | 'OUT';
   id: number;
   notes: string;
-  sub_category: number;
+  sub_category: string;
+  sub_category_id: number;
   timestamp: string;
 }
 
@@ -14,6 +16,6 @@ export interface TransactionTableType {
   direction: 'IN' | 'OUT';
   id: number;
   notes: string;
-  subCategory?: string;
+  sub_category?: string;
   timestamp: Date;
 }

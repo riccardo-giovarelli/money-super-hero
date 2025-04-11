@@ -1,10 +1,14 @@
+import { CategoryType } from '@/models/categories';
+import { SubategoryType } from '@/models/sub-categories';
+import { TransactionType } from '@/models/transactions';
+import { MessageType } from '@/types/generic.type';
 import tank from '@/utils/axios';
 import { isValidNumber } from '@/utils/string';
 import {
-  Container,
-  Typography,
+  Alert,
   Box,
   Button,
+  Container,
   FormControl,
   FormControlLabel,
   FormLabel,
@@ -16,48 +20,51 @@ import {
   Select,
   SelectChangeEvent,
   TextField,
-  Alert,
+  Typography,
 } from '@mui/material';
 import Grid from '@mui/material/Grid2';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router';
-import { TransactionsFordFieldType, TransactionsFormDataType, transactionsFormDefaultData } from '../transactions-new/TransactionsNew.type';
-import { CategoryType } from '@/models/categories';
-import { SubategoryType } from '@/models/sub-categories';
-import { MessageType } from '@/types/generic.type';
+import { TransactionsFordFieldType } from '../transactions-new/TransactionsNew.type';
+import { parseTransactionsApiResults } from './TransactionsEdit.lib';
 
 const TransactionsEdit = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const params = useParams();
-  const [formData, setFormData] = useState<TransactionsFormDataType>(transactionsFormDefaultData);
-  const [categories, setCategories] = useState<CategoryType[]>([]);
-  const [subcategories, setSubcategories] = useState<SubategoryType[]>([]);
+  const [formData, setFormData] = useState<TransactionType | null>(null);
+  const [categoriesData, setCategoriesData] = useState<CategoryType[]>([]);
+  const [subcategoriesData, setSubcategoriesData] = useState<SubategoryType[]>([]);
   const [message, setMessage] = useState<MessageType | null>(null);
 
   // Fetch categories
   useEffect(() => {
     tank.get('/categories').then((results) => {
       if (results?.data?.code === 'GET_CATEGORIES_SUCCESS') {
-        setCategories(results?.data?.details?.results ? results.data.details.results : []);
+        setCategoriesData(results?.data?.details?.results ? results.data.details.results : []);
       }
     });
   }, []);
 
   // Fetch subcategories
   useEffect(() => {
-    if (formData.category) {
+    if (formData?.category) {
       tank.get(`/subcategories/${formData.category}`).then((results) => {
-        setSubcategories(results?.data?.code === 'GET_SUB_CATEGORIES_SUCCESS' && results?.data?.details?.results ? results.data.details.results : []);
+        setSubcategoriesData(
+          results?.data?.code === 'GET_SUB_CATEGORIES_SUCCESS' && results?.data?.details?.results ? results.data.details.results : []
+        );
       });
     }
-  }, [formData.category]);
+  }, [formData?.category]);
 
+  // Fetch transaction data
   useEffect(() => {
     if (params?.trsId && isValidNumber(params.trsId)) {
       tank.get(`/transactions/${params.trsId}`).then((results) => {
-        console.log(results);
+        if (results?.data?.code === 'GET_TRANSACTION_SUCCESS' && results?.data?.details) {
+          setFormData(parseTransactionsApiResults(results.data.details));
+        }
       });
     }
   }, [params]);
@@ -69,16 +76,23 @@ const TransactionsEdit = () => {
   /**
    * @function handleFormChange
    *
-   * @description Updates the form data state when a form field value changes.
+   * @description Updates the `formData` state when a form field value changes. This function dynamically updates
+   *              the specified field in the `formData` object while preserving the existing values of other fields.
    *
-   * @param {TransactionsFordFieldType} field - The name of the form field being updated (e.g., 'amount', 'direction').
+   * @param {TransactionsFordFieldType} field - The name of the form field being updated (e.g., 'amount', 'direction', 'category').
    * @param {string} value - The new value of the form field.
+   *
+   * @returns {void}
    */
   const handleFormChange = (field: TransactionsFordFieldType, value: string) => {
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      [field]: value,
-    }));
+    setFormData((prevFormData) => {
+      return prevFormData
+        ? {
+            ...prevFormData,
+            [field]: value,
+          }
+        : null;
+    });
   };
 
   return (
@@ -114,7 +128,7 @@ const TransactionsEdit = () => {
                 type="number"
                 label={t('transactions.add_transaction.amount.label')}
                 variant="outlined"
-                value={formData.amount}
+                value={formData?.amount ? formData.amount : ''}
                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                   handleFormChange('amount', event.target.value);
                 }}
@@ -142,7 +156,7 @@ const TransactionsEdit = () => {
                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                   handleFormChange('direction', (event.target as HTMLInputElement).value);
                 }}
-                value={formData.direction}
+                value={formData?.direction ? formData.direction : ''}
               >
                 <FormControlLabel value="IN" control={<Radio required />} label={t('transactions.add_transaction.direction.in')} />
                 <FormControlLabel value="OUT" control={<Radio required />} label={t('transactions.add_transaction.direction.out')} />
@@ -156,14 +170,14 @@ const TransactionsEdit = () => {
               <Select
                 labelId="category-select-name-label"
                 id="category"
-                value={formData.category}
+                value={formData?.category ? formData.category.toString() : ''}
                 onChange={(event: SelectChangeEvent<string>) => {
                   handleFormChange('category', event.target.value);
                 }}
                 input={<OutlinedInput label={`${t('transactions.add_transaction.category.label')} *`} />}
                 required
               >
-                {categories.map((category) => (
+                {categoriesData.map((category) => (
                   <MenuItem key={category.id} value={category.id}>
                     {category.name}
                   </MenuItem>
@@ -175,21 +189,21 @@ const TransactionsEdit = () => {
             {/* Subcategory */}
             <FormControl fullWidth>
               <InputLabel id="sub-category-select-name-label">
-                {subcategories.length === 0
+                {subcategoriesData.length === 0
                   ? t('transactions.add_transaction.subcategory.no_data')
                   : t('transactions.add_transaction.subcategory.label')}
               </InputLabel>
               <Select
                 labelId="sub-category-select-name-label"
                 id="sub-category"
-                value={formData.subcategory}
+                value={formData?.subCategory ? formData.subCategory.toString() : ''}
                 onChange={(event: SelectChangeEvent<string>) => {
                   handleFormChange('subcategory', event.target.value);
                 }}
                 input={<OutlinedInput label={t('transactions.add_transaction.category.label')} />}
-                disabled={subcategories.length === 0}
+                disabled={subcategoriesData.length === 0}
               >
-                {subcategories.map((subcategory) => (
+                {subcategoriesData.map((subcategory) => (
                   <MenuItem key={subcategory.id} value={subcategory.id}>
                     {subcategory.name}
                   </MenuItem>
@@ -207,7 +221,7 @@ const TransactionsEdit = () => {
                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                   handleFormChange('notes', event.target.value);
                 }}
-                value={formData.notes}
+                value={formData?.notes ? formData.notes : ''}
               />
             </FormControl>
           </Grid>

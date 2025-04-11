@@ -190,4 +190,75 @@ router.get("/", authenticationMiddleware, async (req, res) => {
   }
 });
 
+/**
+ * GET: Retrieve a Transaction by ID
+ *
+ * @description Retrieves a specific transaction by its ID for the authenticated user.
+ *
+ * @route GET /:id
+ * @access Protected (requires authentication)
+ *
+ * @param {string} id - The ID of the transaction to retrieve.
+ *
+ * @returns {object} - A JSON object with the result of the operation.
+ */
+router.get("/:id", authenticationMiddleware, async (req, res) => {
+  const client = new Client();
+  const { id } = req.params;
+
+  try {
+    await client.connect();
+
+    // Get user ID of the current user
+    const userQuery = {
+      name: "get-user-id-by-email",
+      text: 'SELECT "id" FROM users WHERE "email" = $1;',
+      values: [req.session["username"]],
+    };
+    const userResults = await client.query(userQuery);
+    if (userResults?.rowCount < 1) {
+      return res.status(200).json({
+        code: "GET_TRANSACTION_ERROR",
+        message: "Error retrieving transaction",
+        details: "Error retrieving user information",
+      });
+    }
+    const userId = userResults.rows[0].id;
+
+    const transactionQuery = {
+      name: "get-transaction-by-id",
+      text: `
+        SELECT id, amount, direction, category, sub_category, notes, timestamp
+        FROM transactions
+        WHERE user_id = $1 AND id = $2;
+      `,
+      values: [userId, id],
+    };
+    const transactionResults = await client.query(transactionQuery);
+
+    // Handle results
+    if (transactionResults?.rowCount < 1) {
+      res.status(200).json({
+        code: "GET_TRANSACTION_ERROR",
+        message: "Transaction not found",
+        details: `No transaction found with ID: ${id}`,
+      });
+    } else {
+      res.status(200).json({
+        code: "GET_TRANSACTION_SUCCESS",
+        message: "Successfully retrieved transaction",
+        details: transactionResults.rows[0],
+      });
+    }
+  } catch (err) {
+    res.status(500).json({
+      code: "GET_TRANSACTION_ERROR",
+      message: "Error retrieving transaction",
+      details: err,
+    });
+  } finally {
+    await client.end();
+  }
+});
+
 export default router;

@@ -1,5 +1,5 @@
-export interface TransactionApiResultsType {
-  amount: string;
+export interface TransactionsApiResultsType {
+  amount: number;
   category: string;
   category_id: number;
   direction: 'IN' | 'OUT';

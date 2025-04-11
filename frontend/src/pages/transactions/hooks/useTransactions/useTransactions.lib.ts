@@ -1,5 +1,5 @@
 import { TransactionType } from '@/models/transactions';
-import { TransactionApiResultsType } from './useTransactions.type';
+import { TransactionsApiResultsType } from './useTransactions.type';
 import { SubategoryType } from '@/models/sub-categories';
 import { CategoryType } from '@/models/categories';
 
@@ -8,18 +8,18 @@ import { CategoryType } from '@/models/categories';
  *
  * @description Parses the API results for transactions and converts them into a format suitable for the transaction context.
  *
- * @param {TransactionApiResultsType[]} results - The array of transaction objects returned by the API.
+ * @param {TransactionsApiResultsType[]} results - The array of transaction objects returned by the API.
  *
  * @returns {TransactionType[]} - An array of transactions formatted for use in the frontend.
  */
-export const parseTransactionsApiResults = (results: TransactionApiResultsType[]): TransactionType[] =>
-  results.map((result: TransactionApiResultsType) => ({
-    amount: Number(result.amount),
+export const parseTransactionsApiResults = (results: TransactionsApiResultsType[]): TransactionType[] =>
+  results.map((result: TransactionsApiResultsType) => ({
+    amount: result.amount,
     category: result.category_id,
     direction: result.direction,
     id: result.id,
     notes: result.notes,
-    sub_category: result.sub_category_id,
+    subCategory: result.sub_category_id,
     timestamp: new Date(result.timestamp),
   }));
 

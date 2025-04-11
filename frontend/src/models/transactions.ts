@@ -4,6 +4,6 @@ export interface TransactionType {
   direction: 'IN' | 'OUT';
   id: number;
   notes: string;
-  sub_category: number;
+  subCategory: number;
   timestamp: Date;
 }

@@ -1,14 +1,15 @@
 import { GridColDef, GridRenderCellParams, GridSortModel } from '@mui/x-data-grid';
 import { useQuery } from '@tanstack/react-query';
+import dayjs from 'dayjs';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { parseCategoriesApiResults, parseSubCategoriesApiResults, parseTransactionsApiResults } from './useTransactions.lib';
 
-import { TransactionType } from 'src/models/transactions';
-import { TransactionTableType } from './useTransactions.type';
 import tank from '@/utils/axios';
 import TransactionsTableColumnDirection from '@pages/transactions/components/transactions-table-column-direction/TransactionsTableColumnDirection.tsx';
 import TransactionsTableColumnTools from '@pages/transactions/components/transactions-table-column-tools/TransactionsTableColumnTools.tsx';
+import { TransactionType } from 'src/models/transactions';
+import { TransactionTableType } from './useTransactions.type';
 
 const useTransactions = (page: number, pageSize: number, sortModel: GridSortModel = []) => {
   const { t } = useTranslation();
@@ -31,6 +32,7 @@ const useTransactions = (page: number, pageSize: number, sortModel: GridSortMode
       type: 'number',
       width: 150,
       filterable: false,
+      valueGetter: (value) => Number(value),
     },
     {
       field: 'direction',
@@ -47,7 +49,7 @@ const useTransactions = (page: number, pageSize: number, sortModel: GridSortMode
       filterable: false,
     },
     {
-      field: 'sub_category',
+      field: 'subCategory',
       headerName: t('transactions.add_transaction.subcategory.label'),
       type: 'string',
       width: 150,
@@ -59,6 +61,7 @@ const useTransactions = (page: number, pageSize: number, sortModel: GridSortMode
       type: 'string',
       width: 150,
       filterable: false,
+      valueGetter: (value) => (value ? dayjs(value).format('DD/MM/YYYY - HH:mm') : '-'),
     },
     {
       field: 'notes',
@@ -133,7 +136,7 @@ const useTransactions = (page: number, pageSize: number, sortModel: GridSortMode
         ? transactionsData.transactions.map((transaction: TransactionType) => ({
             ...transaction,
             category: categoriesData.find((category) => category.id === transaction.category)?.name,
-            sub_category: subcategoriesData.find((subcategory) => subcategory.id === transaction.sub_category)?.name,
+            sub_category: subcategoriesData.find((subcategory) => subcategory.id === transaction.subCategory)?.name,
           }))
         : [],
     [transactionsData, categoriesData, subcategoriesData]

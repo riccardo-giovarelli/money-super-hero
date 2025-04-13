@@ -17,8 +17,8 @@ const { Client } = pg;
  *
  * @body {number} amount - The amount of the transaction.
  * @body {string} direction - The direction of the transaction ('IN' for income, 'OUT' for expense).
- * @body {string} category - The category of the transaction.
- * @body {string} subcategory - The subcategory of the transaction (optional).
+ * @body {number} category - The category of the transaction.
+ * @body {number} subcategory - The subcategory of the transaction (optional).
  * @body {string} notes - Additional notes for the transaction (optional).
  *
  * @returns {object} - A JSON object with the result of the operation.
@@ -217,11 +217,12 @@ router.get("/:id", authenticationMiddleware, async (req, res) => {
     };
     const userResults = await client.query(userQuery);
     if (userResults?.rowCount < 1) {
-      return res.status(200).json({
+      res.status(200).json({
         code: "GET_TRANSACTION_ERROR",
         message: "Error retrieving transaction",
         details: "Error retrieving user information",
       });
+      return;
     }
     const userId = userResults.rows[0].id;
 
@@ -254,6 +255,90 @@ router.get("/:id", authenticationMiddleware, async (req, res) => {
     res.status(500).json({
       code: "GET_TRANSACTION_ERROR",
       message: "Error retrieving transaction",
+      details: err,
+    });
+  } finally {
+    await client.end();
+  }
+});
+
+/**
+ * PUT: Edit a Transaction by ID
+ *
+ * @description Updates the details of a specific transaction for the authenticated user.
+ *
+ * @route PUT /:id
+ * @access Protected (requires authentication)
+ *
+ * @param {string} id - The ID of the transaction to update (provided as a URL parameter).
+ * @body {number} [amount] - The updated amount of the transaction (optional).
+ * @body {string} [direction] - The updated direction of the transaction ('IN' or 'OUT', optional).
+ * @body {number} [category] - The updated category of the transaction (optional).
+ * @body {number} [subcategory] - The updated subcategory of the transaction (optional).
+ * @body {string} [notes] - The updated notes for the transaction (optional).
+ *
+ * @returns {object} - A JSON object containing the result of the operation.
+ */
+router.put("/:id", authenticationMiddleware, async (req, res) => {
+  const client = new Client();
+  const { id } = req.params;
+  const { amount, direction, category, subcategory, notes } = req.body;
+
+  try {
+    await client.connect();
+
+    // Get user ID of the current user
+    const userQuery = {
+      name: "get-user-id-by-email",
+      text: 'SELECT "id" FROM users WHERE "email" = $1;',
+      values: [req.session["username"]],
+    };
+    const userResults = await client.query(userQuery);
+    if (userResults?.rowCount < 1) {
+      res.status(200).json({
+        code: "EDIT_TRANSACTION_ERROR",
+        message: "Error retrieving user information",
+      });
+      return;
+    }
+    const userId = userResults.rows[0].id;
+
+    // Update the transaction
+    const updateQuery = {
+      name: "edit-transaction-by-id",
+      text: `
+        UPDATE transactions
+        SET 
+          amount = COALESCE($1, amount),
+          direction = COALESCE($2, direction),
+          category = COALESCE($3, category),
+          sub_category = COALESCE($4, sub_category),
+          notes = COALESCE($5, notes)
+        WHERE user_id = $6 AND id = $7
+        RETURNING *;
+      `,
+      values: [amount, direction, category, subcategory, notes, userId, id],
+    };
+    const updateResults = await client.query(updateQuery);
+
+    // Handle results
+    if (updateResults?.rowCount < 1) {
+      res.status(200).json({
+        code: "EDIT_TRANSACTION_ERROR",
+        message: "Transaction not found or no changes made",
+        details: `No transaction found with id ${id}`,
+      });
+    } else {
+      res.status(200).json({
+        code: "EDIT_TRANSACTION_SUCCESS",
+        message: "Successfully updated transaction",
+        details: updateResults.rows[0],
+      });
+    }
+  } catch (err) {
+    res.status(500).json({
+      code: "EDIT_TRANSACTION_ERROR",
+      message: "Error updating transaction",
       details: err,
     });
   } finally {

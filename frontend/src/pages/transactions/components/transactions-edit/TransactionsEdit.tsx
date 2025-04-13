@@ -28,7 +28,7 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router';
 import { TransactionsFordFieldType } from '../transactions-new/TransactionsNew.type';
-import TransactionsTableColumnDirection from '../transactions-table-column-direction/TransactionsTableColumnDirection';
+import TransactionsValues from '../transactions-values/TransactionsValues';
 import { parseTransactionsApiResults } from './TransactionsEdit.lib';
 
 const TransactionsEdit = () => {
@@ -153,150 +153,150 @@ const TransactionsEdit = () => {
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
             {/* Amount */}
-            <FormControl fullWidth>
-              <TextField
-                id="amount"
-                type="number"
-                label={t('transactions.add_transaction.amount.label')}
-                variant="outlined"
-                value={formData?.amount ? formData.amount : ''}
-                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                  handleFormChange('amount', event.target.value);
-                }}
-                required={editMode}
-                slotProps={{
-                  input: {
-                    readOnly: !editMode,
-                  },
-                }}
-              />
-            </FormControl>
+            {editMode && (
+              <FormControl fullWidth>
+                <TextField
+                  id="amount"
+                  type="number"
+                  label={t('transactions.add_transaction.amount.label')}
+                  variant="outlined"
+                  value={formData?.amount ? formData.amount : ''}
+                  onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                    handleFormChange('amount', event.target.value);
+                  }}
+                  required={editMode}
+                />
+              </FormControl>
+            )}
+            {!editMode && <TransactionsValues type={'text'} label={t('transactions.add_transaction.amount.label')} value={formData?.amount} />}
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
             {/* Direction */}
-            <FormControl
-              sx={{
-                display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'center',
-                columnGap: 2,
-              }}
-            >
-              {editMode && (
-                <>
-                  <FormLabel id="direction-radio-buttons-group-label">{t('transactions.add_transaction.direction.label')}</FormLabel>
-                  <RadioGroup
-                    row
-                    id="direction"
-                    name="direction"
-                    aria-labelledby="direction-radio-buttons-group-label"
-                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                      handleFormChange('direction', (event.target as HTMLInputElement).value);
-                    }}
-                    value={formData?.direction ? formData.direction : ''}
-                    sx={{
-                      paddingX: 1,
-                    }}
-                  >
-                    <FormControlLabel value="IN" control={<Radio required />} label={t('transactions.add_transaction.direction.in')} />
-                    <FormControlLabel value="OUT" control={<Radio required />} label={t('transactions.add_transaction.direction.out')} />
-                  </RadioGroup>
-                </>
-              )}
-              {!editMode && (
-                <>
-                  <Typography variant="body1" component="div">
-                    {t('transactions.add_transaction.direction.label')}
-                  </Typography>
-                  <Box
-                    sx={{
-                      paddingX: 0.8,
-                      paddingY: 0.4,
-                    }}
-                  >
-                    <TransactionsTableColumnDirection direction={formData?.direction} />
-                  </Box>
-                </>
-              )}
-            </FormControl>
+            {editMode && (
+              <FormControl
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  columnGap: 2,
+                }}
+              >
+                <FormLabel id="direction-radio-buttons-group-label">{t('transactions.add_transaction.direction.label')}</FormLabel>
+                <RadioGroup
+                  row
+                  id="direction"
+                  name="direction"
+                  aria-labelledby="direction-radio-buttons-group-label"
+                  onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                    handleFormChange('direction', (event.target as HTMLInputElement).value);
+                  }}
+                  value={formData?.direction ? formData.direction : ''}
+                  sx={{
+                    paddingX: 1,
+                  }}
+                >
+                  <FormControlLabel value="IN" control={<Radio required />} label={t('transactions.add_transaction.direction.in')} />
+                  <FormControlLabel value="OUT" control={<Radio required />} label={t('transactions.add_transaction.direction.out')} />
+                </RadioGroup>
+              </FormControl>
+            )}
+            {!editMode && (
+              <TransactionsValues type={'direction'} label={t('transactions.add_transaction.direction.label')} value={formData?.direction} />
+            )}
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
             {/* Category */}
-            <FormControl fullWidth>
-              <InputLabel id="category-select-name-label">{t('transactions.add_transaction.category.label')}</InputLabel>
-              <Select
-                labelId="category-select-name-label"
-                id="category"
-                value={formData?.category ? formData.category.toString() : ''}
-                onChange={(event: SelectChangeEvent<string>) => {
-                  handleFormChange('category', event.target.value);
-                }}
-                input={<OutlinedInput label={`${t('transactions.add_transaction.category.label')} *`} />}
-                required={editMode}
-                slotProps={{
-                  input: {
-                    readOnly: !editMode,
-                  },
-                }}
-              >
-                {categoriesData.map((category) => (
-                  <MenuItem key={category.id} value={category.id}>
-                    {category.name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+            {editMode && (
+              <FormControl fullWidth>
+                <InputLabel id="category-select-name-label">{t('transactions.add_transaction.category.label')}</InputLabel>
+                <Select
+                  labelId="category-select-name-label"
+                  id="category"
+                  value={formData?.category ? formData.category.toString() : ''}
+                  onChange={(event: SelectChangeEvent<string>) => {
+                    handleFormChange('category', event.target.value);
+                  }}
+                  input={<OutlinedInput label={`${t('transactions.add_transaction.category.label')} *`} />}
+                  required={editMode}
+                >
+                  {categoriesData.map((category) => (
+                    <MenuItem key={category.id} value={category.id}>
+                      {category.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            )}
+            {!editMode && (
+              <TransactionsValues
+                type={'text'}
+                label={t('transactions.add_transaction.category.label')}
+                value={formData?.category && categoriesData.find((category) => category.id === formData.category)?.name}
+              />
+            )}
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
             {/* Subcategory */}
-            <FormControl fullWidth>
-              <InputLabel id="sub-category-select-name-label">
-                {subcategoriesData.length === 0
-                  ? t('transactions.add_transaction.subcategory.no_data')
-                  : t('transactions.add_transaction.subcategory.label')}
-              </InputLabel>
-              <Select
-                labelId="sub-category-select-name-label"
-                id="sub-category"
-                value={formData?.subCategory ? formData.subCategory.toString() : ''}
-                onChange={(event: SelectChangeEvent<string>) => {
-                  handleFormChange('subcategory', event.target.value);
-                }}
-                input={<OutlinedInput label={t('transactions.add_transaction.category.label')} />}
-                disabled={subcategoriesData.length === 0}
-                slotProps={{
-                  input: {
-                    readOnly: !editMode,
-                  },
-                }}
-              >
-                {subcategoriesData.map((subcategory) => (
-                  <MenuItem key={subcategory.id} value={subcategory.id}>
-                    {subcategory.name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+            {editMode && (
+              <FormControl fullWidth>
+                <InputLabel id="sub-category-select-name-label">
+                  {subcategoriesData.length === 0
+                    ? t('transactions.add_transaction.subcategory.no_data')
+                    : t('transactions.add_transaction.subcategory.label')}
+                </InputLabel>
+                <Select
+                  labelId="sub-category-select-name-label"
+                  id="sub-category"
+                  value={formData?.subCategory ? formData.subCategory.toString() : ''}
+                  onChange={(event: SelectChangeEvent<string>) => {
+                    handleFormChange('subcategory', event.target.value);
+                  }}
+                  input={<OutlinedInput label={t('transactions.add_transaction.category.label')} />}
+                  disabled={subcategoriesData.length === 0}
+                  slotProps={{
+                    input: {
+                      readOnly: !editMode,
+                    },
+                  }}
+                >
+                  {subcategoriesData.map((subcategory) => (
+                    <MenuItem key={subcategory.id} value={subcategory.id}>
+                      {subcategory.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            )}
+            {!editMode && (
+              <TransactionsValues
+                type={'text'}
+                label={t('transactions.add_transaction.category.label')}
+                value={formData?.subCategory && subcategoriesData.find((subCategory) => subCategory.id === formData.subCategory)?.name}
+              />
+            )}
           </Grid>
           <Grid size={12}>
-            <FormControl fullWidth>
-              <TextField
-                id="filled-multiline-static"
-                label={t('transactions.add_transaction.notes.label')}
-                multiline
-                rows={5}
-                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                  handleFormChange('notes', event.target.value);
-                }}
-                value={formData?.notes ? formData.notes : ''}
-                slotProps={{
-                  input: {
-                    readOnly: !editMode,
-                  },
-                }}
-              />
-            </FormControl>
+            {editMode && (
+              <FormControl fullWidth>
+                <TextField
+                  id="filled-multiline-static"
+                  label={t('transactions.add_transaction.notes.label')}
+                  multiline
+                  rows={5}
+                  onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                    handleFormChange('notes', event.target.value);
+                  }}
+                  value={formData?.notes ? formData.notes : ''}
+                  slotProps={{
+                    input: {
+                      readOnly: !editMode,
+                    },
+                  }}
+                />
+              </FormControl>
+            )}
+            {!editMode && <TransactionsValues type={'textArea'} label={t('transactions.add_transaction.notes.label')} value={formData?.notes} />}
           </Grid>
         </Grid>
       </form>

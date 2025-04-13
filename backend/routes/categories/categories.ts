@@ -3,6 +3,7 @@ import pg from 'pg';
 
 import { authenticationMiddleware } from '../users/users.lib.ts';
 
+
 import type { CategoriesGetPayload } from './categories.type.ts';
 
 const router = express.Router();
@@ -11,10 +12,12 @@ const { Client } = pg;
 /**
  * GET: Retrieve Categories
  *
- * @description Retrieves categories with pagination and optional sorting.
+ * @description Retrieves a list of categories from the database. Supports optional pagination and sorting.
+ * If no pagination parameters (`page` and `limit`) are provided, all categories are retrieved without pagination.
  *
  * @route GET /
  * @access Protected (requires authentication)
+ *
  * @param {number} page - The page number for pagination (default is 1).
  * @param {number} limit - The number of items per page (default is 10).
  * @param {string} sortColumn - The column to sort by (default is 'id').
@@ -23,8 +26,56 @@ const { Client } = pg;
  */
 router.get('/', authenticationMiddleware, async (req, res) => {
   const client = new Client();
-  const { page = 1, limit = 10, sortColumn = 'id', sortDirection = 'asc' } = req.query as CategoriesGetPayload;
+
+  const {
+    page = 1,
+    limit = 10,
+    sortColumn = 'id',
+    sortDirection = 'asc',
+  } = req.query as CategoriesGetPayload;
   const offset = (Number(page) - 1) * Number(limit);
+
+  /**
+   * If no query parameters are provided,
+   * retrieve all categories without pagination.
+   */
+  if (!req?.query?.page || !req?.query?.limit) {
+    try {
+      await client.connect();
+
+      // Query to get categories without pagination
+      const categoriesResults = await client.query(
+        'SELECT id, name, notes FROM categories ORDER BY name ASC;'
+      );
+
+      // Handle results
+      if (categoriesResults?.rowCount < 1) {
+        res.status(200).json({
+          code: 'GET_CATEGORIES_ERROR',
+          message: 'Unable to get categories',
+          details: 'No results retrieving categories',
+        });
+      } else {
+        res.status(200).json({
+          code: 'GET_CATEGORIES_SUCCESS',
+          message: 'Successfully retrieved categories',
+          details: {
+            results: categoriesResults.rows,
+            count: categoriesResults.rows.length,
+          },
+        });
+      }
+    } catch (err) {
+      res.status(500).json({
+        code: 'GET_CATEGORIES_ERROR',
+        message: 'Error retrieving categories',
+        details: err,
+      });
+    } finally {
+      await client.end();
+    }
+    return;
+  }
 
   try {
     await client.connect();
@@ -62,7 +113,11 @@ router.get('/', authenticationMiddleware, async (req, res) => {
       });
     }
   } catch (err) {
-    res.status(500).json({ code: 'GET_CATEGORIES_ERROR', message: 'Error retrieving categories', details: err });
+    res.status(500).json({
+      code: 'GET_CATEGORIES_ERROR',
+      message: 'Error retrieving categories',
+      details: err,
+    });
   } finally {
     await client.end();
   }
@@ -77,6 +132,7 @@ router.get('/', authenticationMiddleware, async (req, res) => {
  *
  * @route PUT /:id
  * @access Protected (requires authentication)
+ *
  * @param {string} id - The ID of the category to update.
  * @param {string} name - The new name of the category.
  * @param {string} notes - The new notes for the category.
@@ -96,9 +152,11 @@ router.put('/:id', authenticationMiddleware, async (req, res) => {
     };
     const results = await client.query(query);
     if (results?.rowCount < 1) {
-      res
-        .status(200)
-        .json({ code: 'UPDATE_CATEGORY_ERROR', message: 'Error updating category', details: 'Unknown error' });
+      res.status(200).json({
+        code: 'UPDATE_CATEGORY_ERROR',
+        message: 'Error updating category',
+        details: 'Unknown error',
+      });
     } else {
       res.status(200).json({
         code: 'UPDATE_CATEGORY_SUCCESS',
@@ -111,7 +169,11 @@ router.put('/:id', authenticationMiddleware, async (req, res) => {
       });
     }
   } catch (err) {
-    res.status(500).json({ code: 'UPDATE_CATEGORY_ERROR', message: 'Error while updating category', details: err });
+    res.status(500).json({
+      code: 'UPDATE_CATEGORY_ERROR',
+      message: 'Error while updating category',
+      details: err,
+    });
   } finally {
     await client.end();
   }
@@ -126,6 +188,7 @@ router.put('/:id', authenticationMiddleware, async (req, res) => {
  *
  * @route DELETE /:id
  * @access Protected (requires authentication)
+ *
  * @param {string} id - The ID of the category to delete.
  * @returns {Object} A JSON object with a code and message indicating the result of the deletion process.
  */
@@ -142,9 +205,11 @@ router.delete('/:id', authenticationMiddleware, async (req, res) => {
     };
     const results = await client.query(query);
     if (results?.rowCount < 1) {
-      res
-        .status(200)
-        .json({ code: 'DELETE_CATEGORY_ERROR', message: 'Error deleting category', details: 'Unknown error' });
+      res.status(200).json({
+        code: 'DELETE_CATEGORY_ERROR',
+        message: 'Error deleting category',
+        details: 'Unknown error',
+      });
     } else {
       res.status(200).json({
         code: 'DELETE_CATEGORY_SUCCESS',
@@ -155,7 +220,11 @@ router.delete('/:id', authenticationMiddleware, async (req, res) => {
       });
     }
   } catch (err) {
-    res.status(500).json({ code: 'DELETE_CATEGORY_ERROR', message: 'Error while deleting category', details: err });
+    res.status(500).json({
+      code: 'DELETE_CATEGORY_ERROR',
+      message: 'Error while deleting category',
+      details: err,
+    });
   } finally {
     await client.end();
   }
@@ -170,6 +239,7 @@ router.delete('/:id', authenticationMiddleware, async (req, res) => {
  *
  * @route POST /
  * @access Protected (requires authentication)
+ *
  * @param {string} name - The name of the new category.
  * @param {string} notes - The notes for the new category.
  * @returns {Object} A JSON object with a code and message indicating the result of the addition process.
@@ -187,7 +257,11 @@ router.post('/', authenticationMiddleware, async (req, res) => {
     };
     const results = await client.query(query);
     if (results?.rowCount < 1) {
-      res.status(200).json({ code: 'ADD_CATEGORY_ERROR', message: 'Error adding category', details: 'Unknown error' });
+      res.status(200).json({
+        code: 'ADD_CATEGORY_ERROR',
+        message: 'Error adding category',
+        details: 'Unknown error',
+      });
     } else {
       res.status(200).json({
         code: 'ADD_CATEGORY_SUCCESS',
@@ -196,7 +270,9 @@ router.post('/', authenticationMiddleware, async (req, res) => {
       });
     }
   } catch (err) {
-    res.status(500).json({ code: 'ADD_CATEGORY_ERROR', message: 'Error while adding category', details: err });
+    res
+      .status(500)
+      .json({ code: 'ADD_CATEGORY_ERROR', message: 'Error while adding category', details: err });
   } finally {
     await client.end();
   }

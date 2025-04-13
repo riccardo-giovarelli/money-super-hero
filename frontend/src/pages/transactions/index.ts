@@ -1,6 +1,6 @@
-import TransactionsList from './transactions-list/TransactionsList';
-import TransactionsNew from './transactions-new/TransactionsNew.tsx';
-import TransactionsShow from './transactions-show/TransactionsShow.tsx';
-import Transactions from './transactions/Transactions.tsx';
+import TransactionsList from './components/transactions-list/TransactionsList.tsx';
+import TransactionsNew from './components/transactions-new/TransactionsNew.tsx';
+import TransactionsShow from './components/transactions-show/TransactionsShow.tsx';
+import Transactions from './components/transactions/Transactions.tsx';
 
 export { Transactions, TransactionsNew, TransactionsList, TransactionsShow };

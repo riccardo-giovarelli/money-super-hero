@@ -18,6 +18,9 @@ export const transactions = {
     'transactions.list_transactions.edit_button.label': 'Modifica',
     'transactions.edit_transaction.form_title': 'Modifica Transazione',
     'transactions.edit_transaction.save_button.label': 'Salva',
-    'transactions.edit_transaction.cancel_button.label': 'Indietro',
+    'transactions.edit_transaction.edit_button.label': 'Modifica',
+    'transactions.edit_transaction.back_button.label': 'Indietro',
+    'transactions.edit_transaction.cancel_button.label': 'Annulla',
+    'transactions.add_transaction.datetime.label': 'Data e Ora',
   },
 };

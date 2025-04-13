@@ -23,7 +23,7 @@ const Transactions = () => {
     }
   }, [params.trsId]);
 
-  return <Box sx={{ marginTop: 3 }}>{component}</Box>;
+  return <Box sx={{ marginTop: 4 }}>{component}</Box>;
 };
 
 export default Transactions;

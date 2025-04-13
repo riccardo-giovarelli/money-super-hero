@@ -23,10 +23,12 @@ import {
   Typography,
 } from '@mui/material';
 import Grid from '@mui/material/Grid2';
+import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router';
 import { TransactionsFordFieldType } from '../transactions-new/TransactionsNew.type';
+import TransactionsTableColumnDirection from '../transactions-table-column-direction/TransactionsTableColumnDirection';
 import { parseTransactionsApiResults } from './TransactionsEdit.lib';
 
 const TransactionsEdit = () => {
@@ -37,6 +39,7 @@ const TransactionsEdit = () => {
   const [categoriesData, setCategoriesData] = useState<CategoryType[]>([]);
   const [subcategoriesData, setSubcategoriesData] = useState<SubategoryType[]>([]);
   const [message, setMessage] = useState<MessageType | null>(null);
+  const [editMode, setEditMode] = useState<boolean>(false);
 
   // Fetch categories
   useEffect(() => {
@@ -99,26 +102,54 @@ const TransactionsEdit = () => {
     <Container maxWidth="lg">
       <form onSubmit={handleSubmit}>
         <Grid container spacing={2}>
-          <Grid size={8}>
+          <Grid size={{ xs: 12, md: 8 }}>
             <Typography variant="h5" component="h1">
-              {`${t('transactions.edit_transaction.form_title')} - ID ${params?.trsId}`}
+              {`${t('transactions.edit_transaction.form_title')} (${
+                formData?.timestamp ? dayjs(formData?.timestamp).format('DD/MM/YYYY - HH:mm') : ''
+              })`}
             </Typography>
           </Grid>
-          <Grid size={4}>
-            <Box display="flex" flexDirection="row" alignItems="center" justifyContent="end" gap={2}>
-              <Button variant="contained" type="submit">
-                {t('transactions.edit_transaction.save_button.label')}
-              </Button>
-              <Button
-                variant="contained"
-                onClick={() => {
-                  navigate('/transactions');
-                }}
-                color="secondary"
-              >
-                {t('transactions.edit_transaction.cancel_button.label')}
-              </Button>
+          <Grid size={{ xs: 12, md: 4 }}>
+            <Box display="flex" flexDirection="row" alignItems="center" justifyContent={{ xs: 'start', md: 'end' }} gap={2}>
+              {editMode && (
+                <Button variant="contained" color="primary" type="submit">
+                  {t('transactions.edit_transaction.save_button.label')}
+                </Button>
+              )}
+              {!editMode && (
+                <Button variant="contained" color="primary" onClick={() => setEditMode(true)}>
+                  {t('transactions.edit_transaction.edit_button.label')}
+                </Button>
+              )}
+              {editMode && (
+                <Button
+                  variant="contained"
+                  onClick={() => {
+                    setEditMode(false);
+                  }}
+                  color="secondary"
+                >
+                  {t('transactions.edit_transaction.cancel_button.label')}
+                </Button>
+              )}
+              {!editMode && (
+                <Button
+                  variant="contained"
+                  onClick={() => {
+                    navigate('/transactions');
+                  }}
+                  color="secondary"
+                >
+                  {t('transactions.edit_transaction.back_button.label')}
+                </Button>
+              )}
             </Box>
+          </Grid>
+        </Grid>
+        <Grid container spacing={2} sx={{ marginTop: 4 }}>
+          <Grid size={12}>
+            {/* Date Time */}
+            <Typography variant="h4" gutterBottom></Typography>
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
             {/* Amount */}
@@ -132,41 +163,68 @@ const TransactionsEdit = () => {
                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                   handleFormChange('amount', event.target.value);
                 }}
-                required
+                required={editMode}
+                slotProps={{
+                  input: {
+                    readOnly: !editMode,
+                  },
+                }}
               />
             </FormControl>
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
             {/* Direction */}
             <FormControl
-              fullWidth
               sx={{
                 display: 'flex',
+                flexDirection: 'row',
                 alignItems: 'center',
                 justifyContent: 'center',
-                alignContent: 'center',
+                columnGap: 2,
               }}
             >
-              <FormLabel id="direction-radio-buttons-group-label">{t('transactions.add_transaction.direction.label')}</FormLabel>
-              <RadioGroup
-                row
-                id="direction"
-                name="direction"
-                aria-labelledby="direction-radio-buttons-group-label"
-                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                  handleFormChange('direction', (event.target as HTMLInputElement).value);
-                }}
-                value={formData?.direction ? formData.direction : ''}
-              >
-                <FormControlLabel value="IN" control={<Radio required />} label={t('transactions.add_transaction.direction.in')} />
-                <FormControlLabel value="OUT" control={<Radio required />} label={t('transactions.add_transaction.direction.out')} />
-              </RadioGroup>
+              {editMode && (
+                <>
+                  <FormLabel id="direction-radio-buttons-group-label">{t('transactions.add_transaction.direction.label')}</FormLabel>
+                  <RadioGroup
+                    row
+                    id="direction"
+                    name="direction"
+                    aria-labelledby="direction-radio-buttons-group-label"
+                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                      handleFormChange('direction', (event.target as HTMLInputElement).value);
+                    }}
+                    value={formData?.direction ? formData.direction : ''}
+                    sx={{
+                      paddingX: 1,
+                    }}
+                  >
+                    <FormControlLabel value="IN" control={<Radio required />} label={t('transactions.add_transaction.direction.in')} />
+                    <FormControlLabel value="OUT" control={<Radio required />} label={t('transactions.add_transaction.direction.out')} />
+                  </RadioGroup>
+                </>
+              )}
+              {!editMode && (
+                <>
+                  <Typography variant="body1" component="div">
+                    {t('transactions.add_transaction.direction.label')}
+                  </Typography>
+                  <Box
+                    sx={{
+                      paddingX: 0.8,
+                      paddingY: 0.4,
+                    }}
+                  >
+                    <TransactionsTableColumnDirection direction={formData?.direction} />
+                  </Box>
+                </>
+              )}
             </FormControl>
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
             {/* Category */}
             <FormControl fullWidth>
-              <InputLabel id="category-select-name-label">{t('transactions.add_transaction.category.label')} *</InputLabel>
+              <InputLabel id="category-select-name-label">{t('transactions.add_transaction.category.label')}</InputLabel>
               <Select
                 labelId="category-select-name-label"
                 id="category"
@@ -175,7 +233,12 @@ const TransactionsEdit = () => {
                   handleFormChange('category', event.target.value);
                 }}
                 input={<OutlinedInput label={`${t('transactions.add_transaction.category.label')} *`} />}
-                required
+                required={editMode}
+                slotProps={{
+                  input: {
+                    readOnly: !editMode,
+                  },
+                }}
               >
                 {categoriesData.map((category) => (
                   <MenuItem key={category.id} value={category.id}>
@@ -202,6 +265,11 @@ const TransactionsEdit = () => {
                 }}
                 input={<OutlinedInput label={t('transactions.add_transaction.category.label')} />}
                 disabled={subcategoriesData.length === 0}
+                slotProps={{
+                  input: {
+                    readOnly: !editMode,
+                  },
+                }}
               >
                 {subcategoriesData.map((subcategory) => (
                   <MenuItem key={subcategory.id} value={subcategory.id}>
@@ -222,6 +290,11 @@ const TransactionsEdit = () => {
                   handleFormChange('notes', event.target.value);
                 }}
                 value={formData?.notes ? formData.notes : ''}
+                slotProps={{
+                  input: {
+                    readOnly: !editMode,
+                  },
+                }}
               />
             </FormControl>
           </Grid>

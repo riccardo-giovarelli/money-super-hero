@@ -18,6 +18,9 @@ export const transactions = {
     'transactions.list_transactions.edit_button.label': 'Edit',
     'transactions.edit_transaction.form_title': 'Edit Transaction',
     'transactions.edit_transaction.save_button.label': 'Save',
-    'transactions.edit_transaction.cancel_button.label': 'Back',
+    'transactions.edit_transaction.edit_button.label': 'Edit',
+    'transactions.edit_transaction.back_button.label': 'Back',
+    'transactions.edit_transaction.cancel_button.label': 'Cancel',
+    'transactions.add_transaction.datetime.label': 'Date Time',
   },
 };

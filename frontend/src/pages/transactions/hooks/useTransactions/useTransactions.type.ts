@@ -1,8 +1,10 @@
+import { InteractionType } from '@/models/transactions';
+
 export interface TransactionsApiResultsType {
   amount: number;
   category: string;
   category_id: number;
-  direction: 'IN' | 'OUT';
+  direction: InteractionType;
   id: number;
   notes: string;
   sub_category: string;
@@ -13,7 +15,7 @@ export interface TransactionsApiResultsType {
 export interface TransactionTableType {
   amount: number;
   category?: string;
-  direction: 'IN' | 'OUT';
+  direction: InteractionType;
   id: number;
   notes: string;
   sub_category?: string;

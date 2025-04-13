@@ -1,17 +1,16 @@
-import { GridRenderCellParams } from '@mui/x-data-grid';
 import ForwardIcon from '@mui/icons-material/Forward';
 import { Box } from '@mui/material';
+import { TransactionsTableColumnDirectionPropsType } from './TransactionsTableColumnDirection.type';
 
-const TransactionsTableColumnDirection = (params: GridRenderCellParams) => {
-  return (
+const TransactionsTableColumnDirection = ({ direction }: TransactionsTableColumnDirectionPropsType) =>
+  direction && (
     <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
-      {params?.row?.direction === 'IN' ? (
+      {direction === 'IN' ? (
         <ForwardIcon color="success" fontSize="large" sx={{ transform: 'rotate(-90deg)' }} />
       ) : (
         <ForwardIcon color="error" fontSize="large" sx={{ transform: 'rotate(90deg)' }} />
       )}
     </Box>
   );
-};
 
 export default TransactionsTableColumnDirection;

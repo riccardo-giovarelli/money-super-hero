@@ -1,9 +1,11 @@
 export interface TransactionType {
   amount: number;
   category: number;
-  direction: 'IN' | 'OUT';
+  direction: InteractionType;
   id: number;
   notes: string;
   subCategory: number;
   timestamp: Date;
 }
+
+export type InteractionType = 'IN' | 'OUT';

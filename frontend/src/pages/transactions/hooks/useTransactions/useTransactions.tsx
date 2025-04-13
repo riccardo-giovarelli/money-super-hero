@@ -38,7 +38,7 @@ const useTransactions = (page: number, pageSize: number, sortModel: GridSortMode
       field: 'direction',
       headerName: t('transactions.add_transaction.direction.label'),
       width: 110,
-      renderCell: (params: GridRenderCellParams) => <TransactionsTableColumnDirection {...params} />,
+      renderCell: (params: GridRenderCellParams) => <TransactionsTableColumnDirection direction={params?.row?.direction} />,
       filterable: false,
     },
     {

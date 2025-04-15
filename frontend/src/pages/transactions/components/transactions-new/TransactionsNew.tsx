@@ -85,20 +85,30 @@ const TransactionsNew = () => {
    */
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
-    tank.post('/transactions', { ...formData }).then((results) => {
-      if (!results?.data?.code || results.data.code !== 'ADD_TRANSACTION_SUCCESS') {
-        setMessage({
-          type: 'error',
-          text: t('transactions.add_transaction.result.error'),
-        });
-      } else {
-        setMessage({
-          type: 'success',
-          text: t('transactions.add_transaction.result.success'),
-        });
-        setFormData(transactionsFormDefaultData);
-      }
-    });
+    console.log('formData', formData);
+    const { amount, category, direction, subcategory, notes } = formData;
+    tank
+      .post('/transactions', {
+        amount: amount || null,
+        category: category || null,
+        direction: direction || null,
+        subcategory: subcategory || null,
+        notes: notes || null,
+      })
+      .then((results) => {
+        if (!results?.data?.code || results.data.code !== 'ADD_TRANSACTION_SUCCESS') {
+          setMessage({
+            type: 'error',
+            text: t('transactions.add_transaction.result.error'),
+          });
+        } else {
+          setMessage({
+            type: 'success',
+            text: t('transactions.add_transaction.result.success'),
+          });
+          setFormData(transactionsFormDefaultData);
+        }
+      });
   };
 
   return (

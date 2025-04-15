@@ -7,6 +7,6 @@ export const parseTransactionsApiResults = (result: TransactionApiResultsType): 
   direction: result.direction,
   id: result.id,
   notes: result.notes,
-  subCategory: result.sub_category,
+  subcategory: result.sub_category,
   timestamp: new Date(result.timestamp),
 });

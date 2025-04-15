@@ -49,7 +49,7 @@ const useTransactions = (page: number, pageSize: number, sortModel: GridSortMode
       filterable: false,
     },
     {
-      field: 'subCategory',
+      field: 'subcategory',
       headerName: t('transactions.add_transaction.subcategory.label'),
       type: 'string',
       width: 150,
@@ -136,7 +136,7 @@ const useTransactions = (page: number, pageSize: number, sortModel: GridSortMode
         ? transactionsData.transactions.map((transaction: TransactionType) => ({
             ...transaction,
             category: categoriesData.find((category) => category.id === transaction.category)?.name,
-            sub_category: subcategoriesData.find((subcategory) => subcategory.id === transaction.subCategory)?.name,
+            subcategory: subcategoriesData.find((subcategory) => subcategory.id === transaction.subcategory)?.name,
           }))
         : [],
     [transactionsData, categoriesData, subcategoriesData]

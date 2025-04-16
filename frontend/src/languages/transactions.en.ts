@@ -16,7 +16,8 @@ export const transactions = {
     'transactions.add_transaction.result.success': 'Transaction added successfully',
     'transactions.add_transaction.result.error': 'Error while adding transaction',
     'transactions.add_transaction.datetime.label': 'Date Time',
-    'transactions.list_transactions.edit_button.label': 'Edit',
+    'transactions.list_transactions.edit_button.label': 'Edit Transaction',
+    'transactions.list_transactions.delete_button.label': 'Delete Transaction',
     'transactions.edit_transaction.form_title': 'Edit Transaction',
     'transactions.edit_transaction.save_button.label': 'Save',
     'transactions.edit_transaction.edit_button.label': 'Edit',
@@ -24,5 +25,7 @@ export const transactions = {
     'transactions.edit_transaction.cancel_button.label': 'Cancel',
     'transactions.edit_transaction.result.success': 'Transaction updated successfully',
     'transactions.edit_transaction.result.error': 'Error while updating transaction',
+    'transactions.delete_transactions.result.success': 'Transaction deleted successfully',
+    'transactions.delete_transactions.result.error': 'Error while deleting transaction',
   },
 };

@@ -5,7 +5,6 @@ import { MessageType } from '@/types/generic.type';
 import tank from '@/utils/axios';
 import { isValidNumber } from '@/utils/string';
 import {
-  Alert,
   Box,
   Button,
   Container,
@@ -30,6 +29,7 @@ import { useNavigate, useParams } from 'react-router';
 import { TransactionsFordFieldType } from '../transactions-new/TransactionsNew.type';
 import TransactionsValues from '../transactions-values/TransactionsValues';
 import { parseTransactionsApiResults } from './TransactionsEdit.lib';
+import AlertSnackbar from '@/components/alert-snackbar/AlertSnackbar';
 
 const TransactionsEdit = () => {
   const { t } = useTranslation();
@@ -330,17 +330,13 @@ const TransactionsEdit = () => {
           </Grid>
         </Grid>
       </form>
-      {message && (
-        <Alert
-          sx={{ marginTop: 3 }}
-          severity={message.type}
-          onClose={() => {
-            setMessage(null);
-          }}
-        >
-          {message.text}
-        </Alert>
-      )}
+      <AlertSnackbar
+        message={message?.text ? message.text : ''}
+        autoHideDuration={5000}
+        severity={message?.type}
+        open={message !== null}
+        onClose={() => setMessage(null)}
+      />
     </Container>
   );
 };

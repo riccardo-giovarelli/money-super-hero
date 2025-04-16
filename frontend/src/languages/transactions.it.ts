@@ -16,7 +16,8 @@ export const transactions = {
     'transactions.add_transaction.result.success': 'Transazione aggiunta con successo',
     'transactions.add_transaction.result.error': "Errore durante l'aggiunta della transazione",
     'transactions.add_transaction.datetime.label': 'Data e Ora',
-    'transactions.list_transactions.edit_button.label': 'Modifica',
+    'transactions.list_transactions.edit_button.label': 'Modifica Transazione',
+    'transactions.list_transactions.delete_button.label': 'Elimina Transazione',
     'transactions.edit_transaction.form_title': 'Modifica Transazione',
     'transactions.edit_transaction.save_button.label': 'Salva',
     'transactions.edit_transaction.edit_button.label': 'Modifica',
@@ -24,5 +25,7 @@ export const transactions = {
     'transactions.edit_transaction.cancel_button.label': 'Annulla',
     'transactions.edit_transaction.result.success': 'Transazione aggiornata con successo',
     'transactions.edit_transaction.result.error': "Errore durante l'aggiornamento della transazione",
+    'transactions.delete_transactions.result.success': 'Transazione eliminata con successo',
+    'transactions.delete_transactions.result.error': "Errore durante l'eliminazione della transazione",
   },
 };

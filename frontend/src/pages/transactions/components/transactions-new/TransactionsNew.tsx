@@ -7,7 +7,6 @@ import { SubategoryType } from '@/models/sub-categories';
 import { MessageType } from '@/types/generic.type';
 import tank from '@/utils/axios';
 import {
-  Alert,
   Box,
   Button,
   Container,
@@ -27,6 +26,7 @@ import {
 import Grid from '@mui/material/Grid2';
 
 import { TransactionsFordFieldType, TransactionsFormDataType, transactionsFormDefaultData } from './TransactionsNew.type';
+import AlertSnackbar from '@/components/alert-snackbar/AlertSnackbar';
 
 const TransactionsNew = () => {
   const { t } = useTranslation();
@@ -85,7 +85,6 @@ const TransactionsNew = () => {
    */
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
-    console.log('formData', formData);
     const { amount, category, direction, subcategory, notes } = formData;
     tank
       .post('/transactions', {
@@ -245,17 +244,13 @@ const TransactionsNew = () => {
           </Grid>
         </Grid>
       </form>
-      {message && (
-        <Alert
-          sx={{ marginTop: 3 }}
-          severity={message.type}
-          onClose={() => {
-            setMessage(null);
-          }}
-        >
-          {message.text}
-        </Alert>
-      )}
+      <AlertSnackbar
+        message={message?.text ? message.text : ''}
+        autoHideDuration={5000}
+        severity={message?.type}
+        open={message !== null}
+        onClose={() => setMessage(null)}
+      />
     </Container>
   );
 };

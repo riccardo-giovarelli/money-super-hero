@@ -11,7 +11,7 @@ import TransactionsTableColumnTools from '@pages/transactions/components/transac
 import { TransactionType } from 'src/models/transactions';
 import { TransactionTableType } from './useTransactions.type';
 
-const useTransactions = (page: number, pageSize: number, sortModel: GridSortModel = []) => {
+const useTransactions = (page: number, pageSize: number, sortModel: GridSortModel = [], refreshKey: boolean) => {
   const { t } = useTranslation();
 
   /**
@@ -76,7 +76,7 @@ const useTransactions = (page: number, pageSize: number, sortModel: GridSortMode
    * Fetch transactions data
    */
   const { data: transactionsData, isFetching: transactionsIsFetching } = useQuery({
-    queryKey: [page, pageSize, sortModel],
+    queryKey: [page, pageSize, sortModel, refreshKey],
     queryFn: async () => {
       const parameters: string[] = [];
       parameters.push(`page=${page}`);

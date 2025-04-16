@@ -346,4 +346,76 @@ router.put("/:id", authenticationMiddleware, async (req, res) => {
   }
 });
 
+/**
+ * DELETE: Delete a Transaction by ID
+ *
+ * @description Deletes a specific transaction for the authenticated user by its ID.
+ *
+ * @route DELETE /:id
+ * @access Protected (requires authentication)
+ *
+ * @param {string} id - The ID of the transaction to delete (provided as a URL parameter).
+ *
+ * @returns {object} - A JSON object containing the result of the operation.
+ */
+router.delete("/:id", authenticationMiddleware, async (req, res) => {
+  const client = new Client();
+  const { id } = req.params;
+
+  try {
+    await client.connect();
+
+    // Get user ID of the current user
+    const userQuery = {
+      name: "get-user-id-by-email",
+      text: 'SELECT "id" FROM users WHERE "email" = $1;',
+      values: [req.session["username"]],
+    };
+    const userResults = await client.query(userQuery);
+    if (userResults?.rowCount < 1) {
+      res.status(200).json({
+        code: "DELETE_TRANSACTION_ERROR",
+        message: "Error retrieving user information",
+      });
+      return;
+    }
+    const userId = userResults.rows[0].id;
+
+    // Delete the transaction
+    const deleteQuery = {
+      name: "delete-transaction-by-id",
+      text: `
+        DELETE FROM transactions
+        WHERE user_id = $1 AND id = $2
+        RETURNING *;
+      `,
+      values: [userId, id],
+    };
+    const deleteResults = await client.query(deleteQuery);
+
+    // Handle results
+    if (deleteResults?.rowCount < 1) {
+      res.status(200).json({
+        code: "DELETE_TRANSACTION_ERROR",
+        message: "Transaction not found",
+        details: `No transaction found with ID: ${id}`,
+      });
+    } else {
+      res.status(200).json({
+        code: "DELETE_TRANSACTION_SUCCESS",
+        message: "Successfully deleted transaction",
+        details: deleteResults.rows[0],
+      });
+    }
+  } catch (err) {
+    res.status(500).json({
+      code: "DELETE_TRANSACTION_ERROR",
+      message: "Error deleting transaction",
+      details: err,
+    });
+  } finally {
+    await client.end();
+  }
+});
+
 export default router;

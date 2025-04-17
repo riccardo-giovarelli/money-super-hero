@@ -11,25 +11,12 @@ const useSubcategoriesData = (page: number, pageSize: number, sortModel: GridSor
   const [subcategoriesResults, setSubcategoriesResults] = useState<CategoriesResultsType>();
 
   /**
-   * The columns visibility model
-   */
-  const columnsVisibility = {
-    id: false,
-  };
-
-  /**
    * Fetches the category options and sets the columns
    */
   useEffect(() => {
     tank.get('/categories').then((results) => {
       if (results?.data?.code === 'GET_CATEGORIES_SUCCESS') {
         setColumns([
-          {
-            field: 'id',
-            headerName: 'ID',
-            width: 100,
-            sortable: true,
-          },
           {
             field: 'name',
             headerName: 'Name',
@@ -87,7 +74,6 @@ const useSubcategoriesData = (page: number, pageSize: number, sortModel: GridSor
     subcategories: subcategoriesResults?.results ? subcategoriesResults.results : [],
     count: subcategoriesResults?.count ? subcategoriesResults.count : 0,
     columns,
-    columnsVisibility,
   };
 };
 

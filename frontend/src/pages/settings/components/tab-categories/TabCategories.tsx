@@ -18,11 +18,7 @@ const TabCategories = () => {
     pageSize: DEFAULT_TABLE_PAGE_SIZE,
   });
   const [sortModel, setSortModel] = useState<GridSortModel>([]);
-  const { categories, count, columns, columnsVisibility } = useCategoriesData(
-    paginationModel.page + 1,
-    paginationModel.pageSize,
-    sortModel
-  );
+  const { categories, count, columns } = useCategoriesData(paginationModel.page + 1, paginationModel.pageSize, sortModel);
   const { t } = useTranslation();
   const setAlertSnackbarMessage = useSettingsStore((state) => state.setAlertSnackbarMessage);
 
@@ -34,11 +30,7 @@ const TabCategories = () => {
    * @param {GridValidRowModel} [row] - The row data to be saved (only required for 'save' mode).
    * @returns {Promise<boolean>} A promise that resolves to a boolean indicating the success of the operation.
    */
-  const handleCategoriesData = async (
-    mode: string,
-    id: GridRowId,
-    row?: GridValidRowModel
-  ): Promise<number | boolean> => {
+  const handleCategoriesData = async (mode: string, id: GridRowId, row?: GridValidRowModel): Promise<number | boolean> => {
     switch (mode) {
       case 'add': {
         const results = await tank.post(`/categories`, {
@@ -46,15 +38,10 @@ const TabCategories = () => {
           notes: row?.notes,
         });
 
-        const success =
-          results?.data?.code &&
-          results.data.code === 'ADD_CATEGORY_SUCCESS' &&
-          results?.data?.details?.id;
+        const success = results?.data?.code && results.data.code === 'ADD_CATEGORY_SUCCESS' && results?.data?.details?.id;
 
         setAlertSnackbarMessage(
-          success
-            ? { type: 'success', text: t('settings.category_add_success') }
-            : { type: 'error', text: t('settings.category_add_error') }
+          success ? { type: 'success', text: t('settings.category_add_success') } : { type: 'error', text: t('settings.category_add_error') }
         );
 
         return results.data.details.id;
@@ -65,15 +52,10 @@ const TabCategories = () => {
           name: row?.name,
           notes: row?.notes,
         });
-        const success =
-          results?.data?.code &&
-          results.data.code === 'UPDATE_CATEGORY_SUCCESS' &&
-          results?.data?.details?.id;
+        const success = results?.data?.code && results.data.code === 'UPDATE_CATEGORY_SUCCESS' && results?.data?.details?.id;
 
         setAlertSnackbarMessage(
-          success
-            ? { type: 'success', text: t('settings.category_update_success') }
-            : { type: 'error', text: t('settings.category_update_error') }
+          success ? { type: 'success', text: t('settings.category_update_success') } : { type: 'error', text: t('settings.category_update_error') }
         );
 
         return results.data.details.id;
@@ -81,15 +63,10 @@ const TabCategories = () => {
       case 'delete': {
         if (!id) return false;
         const results = await tank.delete(`/categories/${id}`);
-        const success =
-          results?.data?.code &&
-          results.data.code === 'DELETE_CATEGORY_SUCCESS' &&
-          results?.data?.details?.id;
+        const success = results?.data?.code && results.data.code === 'DELETE_CATEGORY_SUCCESS' && results?.data?.details?.id;
 
         setAlertSnackbarMessage(
-          success
-            ? { type: 'success', text: t('settings.category_delete_success') }
-            : { type: 'error', text: t('settings.category_delete_error') }
+          success ? { type: 'success', text: t('settings.category_delete_success') } : { type: 'error', text: t('settings.category_delete_error') }
         );
 
         return results.data.details.id;
@@ -113,7 +90,6 @@ const TabCategories = () => {
           <DataTable
             data={categories}
             dataColumns={columns}
-            columnVisibilityModel={columnsVisibility}
             count={Number(count)}
             setPaginationModel={setPaginationModel}
             setSortModel={setSortModel}

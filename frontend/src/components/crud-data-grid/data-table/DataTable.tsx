@@ -31,15 +31,7 @@ declare module '@mui/x-data-grid' {
   }
 }
 
-const DataTable = ({
-  data,
-  dataColumns,
-  columnVisibilityModel,
-  count,
-  setPaginationModel,
-  setSortModel,
-  handleData,
-}: DataTablePropsType) => {
+const DataTable = ({ data, dataColumns, count, setPaginationModel, setSortModel, handleData }: DataTablePropsType) => {
   const [rows, setRows] = useState<GridRowsProp>([]);
   const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
   const [itemToDelete, setItemToDelete] = useState<GridRowId | null>(null);
@@ -133,30 +125,13 @@ const DataTable = ({
               }}
               onClick={handleSaveClick(id)}
             />,
-            <GridActionsCellItem
-              icon={<CancelIcon />}
-              label="Cancel"
-              className="textPrimary"
-              onClick={handleCancelClick(id)}
-              color="inherit"
-            />,
+            <GridActionsCellItem icon={<CancelIcon />} label="Cancel" className="textPrimary" onClick={handleCancelClick(id)} color="inherit" />,
           ];
         }
 
         return [
-          <GridActionsCellItem
-            icon={<EditIcon />}
-            label="Edit"
-            className="textPrimary"
-            onClick={handleEditClick(id)}
-            color="inherit"
-          />,
-          <GridActionsCellItem
-            icon={<DeleteIcon />}
-            label="Delete"
-            onClick={() => handleDeleteClick(id)}
-            color="inherit"
-          />,
+          <GridActionsCellItem icon={<EditIcon />} label="Edit" className="textPrimary" onClick={handleEditClick(id)} color="inherit" />,
+          <GridActionsCellItem icon={<DeleteIcon />} label="Delete" onClick={() => handleDeleteClick(id)} color="inherit" />,
         ];
       },
     },
@@ -178,7 +153,6 @@ const DataTable = ({
       <DataGrid
         rows={rows}
         columns={columns}
-        columnVisibilityModel={columnVisibilityModel}
         editMode="row"
         rowModesModel={rowModesModel}
         onRowModesModelChange={handleRowModesModelChange}

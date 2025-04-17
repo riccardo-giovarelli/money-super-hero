@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 
+import { useAuthenticationStore } from '@/authentication/AuthenticationStore/AuthenticationStore';
 import { routesIndoor } from '@/routing/routes/routes-indoor';
 import { Divider } from '@mui/material';
 import Box from '@mui/material/Box';
@@ -15,6 +16,7 @@ import { MenuAppDrawerPropsType } from './MenuAppDrawer.type';
 
 const MenuAppDrawer = ({ open, setOpen }: MenuAppDrawerPropsType) => {
   const navigate = useNavigate();
+  const userData = useAuthenticationStore((state) => state.userData);
   const { t } = useTranslation();
 
   const DrawerList = (
@@ -27,19 +29,22 @@ const MenuAppDrawer = ({ open, setOpen }: MenuAppDrawerPropsType) => {
     >
       <List>
         <ListItem disablePadding>
-          <ListItemButton>
-            <ListItemText
-              primary={t('app.name')}
-              slotProps={{
-                primary: {
-                  fontSize: 20,
-                  fontWeight: 'medium',
-                  letterSpacing: 0,
-                  textAlign: 'center',
-                },
-              }}
-            />
-          </ListItemButton>
+          <ListItemText
+            primary={`${userData?.firstName} ${userData?.lastName}`}
+            color="action"
+            slotProps={{
+              primary: {
+                fontSize: 20,
+                letterSpacing: 0,
+                textAlign: 'center',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                fontWeight: 'medium',
+                paddingY: 2,
+              },
+            }}
+          />
         </ListItem>
         <Divider />
         {routesIndoor.map(
@@ -64,9 +69,6 @@ const MenuAppDrawer = ({ open, setOpen }: MenuAppDrawerPropsType) => {
   return (
     <div>
       <Drawer
-        ModalProps={{
-          hideBackdrop: true,
-        }}
         open={open}
         onClose={() => {
           setOpen(false);

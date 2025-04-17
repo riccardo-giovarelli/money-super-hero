@@ -10,7 +10,7 @@ import { RoutesIndoorType } from './routes.type';
 const Home = lazy(() => import('@/pages/home/Home'));
 const Dashboard = lazy(() => import('@/pages/dashboard/Dashboard'));
 const Settings = lazy(() => import('@/pages/settings/Settings'));
-const Transactions = lazy(() => import('@/pages/transactions/transactions/Transactions'));
+const Transactions = lazy(() => import('@/pages/transactions/components/transactions/Transactions'));
 const UserProfile = lazy(() => import('@/pages/user-profile/UserProfile'));
 
 export const routesIndoor: readonly RoutesIndoorType[] = Object.freeze([

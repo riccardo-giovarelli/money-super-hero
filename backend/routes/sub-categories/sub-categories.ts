@@ -3,7 +3,6 @@ import pg from 'pg';
 
 import { authenticationMiddleware } from '../users/users.lib.ts';
 
-
 import type { CategoriesGetPayload } from './sub-categories.type.ts';
 
 const router = express.Router();
@@ -16,6 +15,7 @@ const { Client } = pg;
  *
  * @route GET /
  * @access Protected (requires authentication)
+ *
  * @returns {object} - A JSON object containing the sub-categories.
  */
 router.get('/', authenticationMiddleware, async (req, res) => {
@@ -75,12 +75,68 @@ router.get('/', authenticationMiddleware, async (req, res) => {
 });
 
 /**
+ * GET: Retrieve Sub-Categories by Category ID
+ *
+ * @description Retrieves all sub-categories associated with a specific category ID from the database.
+ *
+ * @route GET /:category_id
+ * @access Protected (requires authentication)
+ *
+ * @param {number} category_id - The ID of the category to filter sub-categories by (provided as a URL parameter).
+ * @returns {object} - A JSON object with the results of the operation.
+ *
+ */
+router.get('/:category_id', authenticationMiddleware, async (req, res) => {
+  const client = new Client();
+  const { category_id } = req.params;
+
+  try {
+    await client.connect();
+
+    // Query to get sub-categories by category ID
+    const subCategoriesQuery = {
+      name: 'get-subcategories-by-category-id',
+      text: 'SELECT "id", "name", "category_id", "notes" FROM sub_categories WHERE "category_id" = $1 ORDER BY name ASC;',
+      values: [category_id],
+    };
+    const subCategoriesResults = await client.query(subCategoriesQuery);
+
+    // Handle results
+    if (subCategoriesResults?.rowCount < 1) {
+      res.status(200).json({
+        code: 'GET_SUB_CATEGORIES_ERROR',
+        message: 'Unable to get sub-categories',
+        details: 'No results retrieving sub-categories',
+      });
+    } else {
+      res.status(200).json({
+        code: 'GET_SUB_CATEGORIES_SUCCESS',
+        message: 'Successfully retrieved sub-categories',
+        details: {
+          results: subCategoriesResults.rows,
+          count: subCategoriesResults.rows.length,
+        },
+      });
+    }
+  } catch (err) {
+    res.status(500).json({
+      code: 'GET_SUB_CATEGORIES_ERROR',
+      message: 'Error retrieving sub-categories',
+      details: err,
+    });
+  } finally {
+    await client.end();
+  }
+});
+
+/**
  * POST: Create a New Sub-Category
  *
  * @description Creates a new sub-category and associates it with a category.
  *
  * @route POST /
  * @access Protected (requires authentication)
+ *
  * @body {string} name - The name of the sub-category.
  * @body {string} notes - Notes for the sub-category (optional).
  * @body {number} category_id - The ID of the associated category.
@@ -129,6 +185,7 @@ router.post('/', authenticationMiddleware, async (req, res) => {
  *
  * @route PUT /:id
  * @access Protected (requires authentication)
+ *
  * @param {number} id - The ID of the sub-category to update (provided as a URL parameter).
  * @body {string} name - The updated name of the sub-category (optional).
  * @body {string} notes - The updated notes for the sub-category (optional).
@@ -190,13 +247,11 @@ router.delete('/:id', authenticationMiddleware, async (req, res) => {
     };
     const results = await client.query(query);
     if (results?.rowCount < 1) {
-      res
-        .status(200)
-        .json({
-          code: 'DELETE_SUB_CATEGORY_ERROR',
-          message: 'Error deleting sub-category',
-          details: 'Unknown error',
-        });
+      res.status(200).json({
+        code: 'DELETE_SUB_CATEGORY_ERROR',
+        message: 'Error deleting sub-category',
+        details: 'Unknown error',
+      });
     } else {
       res.status(200).json({
         code: 'DELETE_SUB_CATEGORY_SUCCESS',
@@ -207,13 +262,11 @@ router.delete('/:id', authenticationMiddleware, async (req, res) => {
       });
     }
   } catch (err) {
-    res
-      .status(500)
-      .json({
-        code: 'DELETE_SUB_CATEGORY_ERROR',
-        message: 'Error while deleting sub-category',
-        details: err,
-      });
+    res.status(500).json({
+      code: 'DELETE_SUB_CATEGORY_ERROR',
+      message: 'Error while deleting sub-category',
+      details: err,
+    });
   } finally {
     await client.end();
   }

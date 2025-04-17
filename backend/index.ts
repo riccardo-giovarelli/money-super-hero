@@ -9,8 +9,8 @@ import NodeCache from 'node-cache';
 
 import categoriesRoutes from './routes/categories/categories.ts';
 import subcategoriesRoutes from './routes/sub-categories/sub-categories.ts';
+import transactionsRoutes from './routes/transactions/transactions.ts';
 import usersRoutes from './routes/users/users.ts';
-
 
 // New Express
 const app = express();
@@ -52,6 +52,11 @@ app.use('/api/categories', categoriesRoutes);
  * Route -> SUB-CATEGORIES
  */
 app.use('/api/subcategories', subcategoriesRoutes);
+
+/**
+ * Route -> TRANSACTIONS
+ */
+app.use('/api/transactions', transactionsRoutes);
 
 // Express goes live
 app.listen(3000, () => {

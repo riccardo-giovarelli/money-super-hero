@@ -18,19 +18,11 @@ const TabSubcategories = () => {
     pageSize: DEFAULT_TABLE_PAGE_SIZE,
   });
   const [sortModel, setSortModel] = useState<GridSortModel>([]);
-  const { subcategories, count, columns, columnsVisibility } = useSubcategoriesData(
-    paginationModel.page + 1,
-    paginationModel.pageSize,
-    sortModel
-  );
+  const { subcategories, count, columns } = useSubcategoriesData(paginationModel.page + 1, paginationModel.pageSize, sortModel);
   const { t } = useTranslation();
   const setAlertSnackbarMessage = useSettingsStore((state) => state.setAlertSnackbarMessage);
 
-  const handleSubcategoriesData = async (
-    mode: string,
-    id: GridRowId,
-    row?: GridValidRowModel
-  ): Promise<boolean> => {
+  const handleSubcategoriesData = async (mode: string, id: GridRowId, row?: GridValidRowModel): Promise<boolean> => {
     switch (mode) {
       case 'add': {
         const results = await tank.post(`/subcategories`, {
@@ -39,15 +31,10 @@ const TabSubcategories = () => {
           category_id: row?.category_id,
         });
 
-        const success =
-          results?.data?.code &&
-          results.data.code === 'ADD_SUB_CATEGORY_SUCCESS' &&
-          results?.data?.details?.id;
+        const success = results?.data?.code && results.data.code === 'ADD_SUB_CATEGORY_SUCCESS' && results?.data?.details?.id;
 
         setAlertSnackbarMessage(
-          success
-            ? { type: 'success', text: t('settings.subcategory_add_success') }
-            : { type: 'error', text: t('settings.subcategory_add_error') }
+          success ? { type: 'success', text: t('settings.subcategory_add_success') } : { type: 'error', text: t('settings.subcategory_add_error') }
         );
 
         return results.data.details.id;
@@ -59,10 +46,7 @@ const TabSubcategories = () => {
           notes: row?.notes,
           category_id: row?.category_id,
         });
-        const success =
-          results?.data?.code &&
-          results.data.code === 'UPDATE_SUB_CATEGORY_SUCCESS' &&
-          results?.data?.details?.id;
+        const success = results?.data?.code && results.data.code === 'UPDATE_SUB_CATEGORY_SUCCESS' && results?.data?.details?.id;
 
         setAlertSnackbarMessage(
           success
@@ -75,10 +59,7 @@ const TabSubcategories = () => {
       case 'delete': {
         if (!id) return false;
         const results = await tank.delete(`/subcategories/${id}`);
-        const success =
-          results?.data?.code &&
-          results.data.code === 'DELETE_SUB_CATEGORY_SUCCESS' &&
-          results?.data?.details?.id;
+        const success = results?.data?.code && results.data.code === 'DELETE_SUB_CATEGORY_SUCCESS' && results?.data?.details?.id;
 
         setAlertSnackbarMessage(
           success
@@ -107,7 +88,6 @@ const TabSubcategories = () => {
           <DataTable
             data={subcategories}
             dataColumns={columns}
-            columnVisibilityModel={columnsVisibility}
             count={Number(count)}
             setPaginationModel={setPaginationModel}
             setSortModel={setSortModel}

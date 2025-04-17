@@ -11,7 +11,7 @@ import TransactionsTableColumnTools from '@pages/transactions/components/transac
 import { TransactionType } from 'src/models/transactions';
 import { TransactionTableType } from './useTransactions.type';
 
-const useTransactions = (page: number, pageSize: number, sortModel: GridSortModel = []) => {
+const useTransactions = (page: number, pageSize: number, sortModel: GridSortModel = [], refreshKey: boolean) => {
   const { t } = useTranslation();
 
   /**
@@ -49,7 +49,7 @@ const useTransactions = (page: number, pageSize: number, sortModel: GridSortMode
       filterable: false,
     },
     {
-      field: 'subCategory',
+      field: 'subcategory',
       headerName: t('transactions.add_transaction.subcategory.label'),
       type: 'string',
       width: 150,
@@ -76,7 +76,7 @@ const useTransactions = (page: number, pageSize: number, sortModel: GridSortMode
    * Fetch transactions data
    */
   const { data: transactionsData, isFetching: transactionsIsFetching } = useQuery({
-    queryKey: [page, pageSize, sortModel],
+    queryKey: [page, pageSize, sortModel, refreshKey],
     queryFn: async () => {
       const parameters: string[] = [];
       parameters.push(`page=${page}`);
@@ -136,7 +136,7 @@ const useTransactions = (page: number, pageSize: number, sortModel: GridSortMode
         ? transactionsData.transactions.map((transaction: TransactionType) => ({
             ...transaction,
             category: categoriesData.find((category) => category.id === transaction.category)?.name,
-            sub_category: subcategoriesData.find((subcategory) => subcategory.id === transaction.subCategory)?.name,
+            subcategory: subcategoriesData.find((subcategory) => subcategory.id === transaction.subcategory)?.name,
           }))
         : [],
     [transactionsData, categoriesData, subcategoriesData]

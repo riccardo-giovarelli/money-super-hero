@@ -5,7 +5,6 @@ import { MessageType } from '@/types/generic.type';
 import tank from '@/utils/axios';
 import { isValidNumber } from '@/utils/string';
 import {
-  Alert,
   Box,
   Button,
   Container,
@@ -30,6 +29,7 @@ import { useNavigate, useParams } from 'react-router';
 import { TransactionsFordFieldType } from '../transactions-new/TransactionsNew.type';
 import TransactionsValues from '../transactions-values/TransactionsValues';
 import { parseTransactionsApiResults } from './TransactionsEdit.lib';
+import AlertSnackbar from '@/components/alert-snackbar/AlertSnackbar';
 
 const TransactionsEdit = () => {
   const { t } = useTranslation();
@@ -74,6 +74,29 @@ const TransactionsEdit = () => {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
+    const { amount, direction, category, subcategory, notes, id } = formData || {};
+    tank
+      .put(`/transactions/${id}`, {
+        amount: amount || null,
+        category: category || null,
+        direction: direction || null,
+        subcategory: subcategory || null,
+        notes: notes || null,
+      })
+      .then((results) => {
+        if (!results?.data?.code || results.data.code !== 'EDIT_TRANSACTION_SUCCESS') {
+          setMessage({
+            type: 'error',
+            text: t('transactions.edit_transaction.result.error'),
+          });
+        } else {
+          setMessage({
+            type: 'success',
+            text: t('transactions.edit_transaction.result.success'),
+          });
+          setEditMode(false);
+        }
+      });
   };
 
   /**
@@ -117,7 +140,14 @@ const TransactionsEdit = () => {
                 </Button>
               )}
               {!editMode && (
-                <Button variant="contained" color="primary" onClick={() => setEditMode(true)}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => {
+                    setEditMode(true);
+                    setMessage(null);
+                  }}
+                >
                   {t('transactions.edit_transaction.edit_button.label')}
                 </Button>
               )}
@@ -248,7 +278,7 @@ const TransactionsEdit = () => {
                 <Select
                   labelId="sub-category-select-name-label"
                   id="sub-category"
-                  value={formData?.subCategory ? formData.subCategory.toString() : ''}
+                  value={formData?.subcategory ? formData.subcategory.toString() : ''}
                   onChange={(event: SelectChangeEvent<string>) => {
                     handleFormChange('subcategory', event.target.value);
                   }}
@@ -272,7 +302,7 @@ const TransactionsEdit = () => {
               <TransactionsValues
                 type={'text'}
                 label={t('transactions.add_transaction.category.label')}
-                value={formData?.subCategory && subcategoriesData.find((subCategory) => subCategory.id === formData.subCategory)?.name}
+                value={formData?.subcategory && subcategoriesData.find((subcategory) => subcategory.id === formData.subcategory)?.name}
               />
             )}
           </Grid>
@@ -300,17 +330,13 @@ const TransactionsEdit = () => {
           </Grid>
         </Grid>
       </form>
-      {message && (
-        <Alert
-          sx={{ marginTop: 3 }}
-          severity={message.type}
-          onClose={() => {
-            setMessage(null);
-          }}
-        >
-          {message.text}
-        </Alert>
-      )}
+      <AlertSnackbar
+        message={message?.text ? message.text : ''}
+        autoHideDuration={5000}
+        severity={message?.type}
+        open={message !== null}
+        onClose={() => setMessage(null)}
+      />
     </Container>
   );
 };

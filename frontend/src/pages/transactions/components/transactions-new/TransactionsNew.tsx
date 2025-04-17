@@ -7,7 +7,6 @@ import { SubategoryType } from '@/models/sub-categories';
 import { MessageType } from '@/types/generic.type';
 import tank from '@/utils/axios';
 import {
-  Alert,
   Box,
   Button,
   Container,
@@ -27,6 +26,7 @@ import {
 import Grid from '@mui/material/Grid2';
 
 import { TransactionsFordFieldType, TransactionsFormDataType, transactionsFormDefaultData } from './TransactionsNew.type';
+import AlertSnackbar from '@/components/alert-snackbar/AlertSnackbar';
 
 const TransactionsNew = () => {
   const { t } = useTranslation();
@@ -85,20 +85,29 @@ const TransactionsNew = () => {
    */
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
-    tank.post('/transactions', { ...formData }).then((results) => {
-      if (!results?.data?.code || results.data.code !== 'ADD_TRANSACTION_SUCCESS') {
-        setMessage({
-          type: 'error',
-          text: t('transactions.add_transaction.result.error'),
-        });
-      } else {
-        setMessage({
-          type: 'success',
-          text: t('transactions.add_transaction.result.success'),
-        });
-        setFormData(transactionsFormDefaultData);
-      }
-    });
+    const { amount, category, direction, subcategory, notes } = formData;
+    tank
+      .post('/transactions', {
+        amount: amount || null,
+        category: category || null,
+        direction: direction || null,
+        subcategory: subcategory || null,
+        notes: notes || null,
+      })
+      .then((results) => {
+        if (!results?.data?.code || results.data.code !== 'ADD_TRANSACTION_SUCCESS') {
+          setMessage({
+            type: 'error',
+            text: t('transactions.add_transaction.result.error'),
+          });
+        } else {
+          setMessage({
+            type: 'success',
+            text: t('transactions.add_transaction.result.success'),
+          });
+          setFormData(transactionsFormDefaultData);
+        }
+      });
   };
 
   return (
@@ -235,17 +244,13 @@ const TransactionsNew = () => {
           </Grid>
         </Grid>
       </form>
-      {message && (
-        <Alert
-          sx={{ marginTop: 3 }}
-          severity={message.type}
-          onClose={() => {
-            setMessage(null);
-          }}
-        >
-          {message.text}
-        </Alert>
-      )}
+      <AlertSnackbar
+        message={message?.text ? message.text : ''}
+        autoHideDuration={5000}
+        severity={message?.type}
+        open={message !== null}
+        onClose={() => setMessage(null)}
+      />
     </Container>
   );
 };

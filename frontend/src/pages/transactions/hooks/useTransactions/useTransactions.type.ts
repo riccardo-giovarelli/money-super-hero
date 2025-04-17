@@ -18,6 +18,6 @@ export interface TransactionTableType {
   direction: InteractionType;
   id: number;
   notes: string;
-  sub_category?: string;
+  subcategory?: string;
   timestamp: Date;
 }

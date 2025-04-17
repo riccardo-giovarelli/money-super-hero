@@ -4,7 +4,7 @@ export interface TransactionType {
   direction: InteractionType;
   id: number;
   notes: string;
-  subCategory: number;
+  subcategory: number;
   timestamp: Date;
 }
 

@@ -127,9 +127,7 @@ const TransactionsEdit = () => {
         <Grid container spacing={2}>
           <Grid size={{ xs: 12, md: 8 }}>
             <Typography variant="h5" component="h1">
-              {`${t('transactions.edit_transaction.form_title')} (${
-                formData?.timestamp ? dayjs(formData?.timestamp).format('DD/MM/YYYY - HH:mm') : ''
-              })`}
+              {formData?.timestamp ? dayjs(formData?.timestamp).format('DD/MM/YYYY - HH:mm') : ''}
             </Typography>
           </Grid>
           <Grid size={{ xs: 12, md: 4 }}>

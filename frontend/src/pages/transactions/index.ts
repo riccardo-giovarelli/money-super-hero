@@ -1,6 +1,7 @@
 import TransactionsList from './components/transactions-list/TransactionsList.tsx';
 import TransactionsNew from './components/transactions-new/TransactionsNew.tsx';
-import TransactionsShow from './components/transactions-show/TransactionsShow.tsx';
-import Transactions from './components/transactions/Transactions.tsx';
+import Transactions from './Transactions.tsx';
 
-export { Transactions, TransactionsNew, TransactionsList, TransactionsShow };
+export { TransactionsNew, TransactionsList };
+
+export default Transactions;

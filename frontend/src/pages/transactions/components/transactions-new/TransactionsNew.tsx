@@ -22,8 +22,8 @@ import {
   SelectChangeEvent,
   TextField,
   Typography,
+  Grid,
 } from '@mui/material';
-import Grid from '@mui/material/Grid2';
 
 import { TransactionsFordFieldType, TransactionsFormDataType, transactionsFormDefaultData } from './TransactionsNew.type';
 import AlertSnackbar from '@/components/alert-snackbar/AlertSnackbar';

@@ -1,10 +1,9 @@
-import { Box, Container } from '@mui/material';
+import { Box, Container, Grid } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { useDashboardStore } from './stores/DashboardStore';
 import { useTranslation } from 'react-i18next';
-import Grid from '@mui/material/Grid2';
 
 const Dashboard = () => {
   const from = useDashboardStore((state) => state.from);

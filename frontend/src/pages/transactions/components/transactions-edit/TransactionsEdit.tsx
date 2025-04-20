@@ -11,6 +11,7 @@ import {
   FormControl,
   FormControlLabel,
   FormLabel,
+  Grid,
   InputLabel,
   MenuItem,
   OutlinedInput,
@@ -21,7 +22,6 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import Grid from '@mui/material/Grid2';
 import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';

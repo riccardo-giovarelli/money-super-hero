@@ -8,8 +8,7 @@ import useUserData from '@/hooks/useUserData/useUserData';
 import { UserType } from '@/models/users';
 import { MessageType } from '@/types/generic.type';
 import tank from '@/utils/axios';
-import { Box, Button, Card, CardActions, CardContent, CardHeader, Container, TextField } from '@mui/material';
-import Grid from '@mui/material/Grid2';
+import { Box, Button, Card, CardActions, CardContent, CardHeader, Container, TextField, Grid } from '@mui/material';
 
 import { isFormFilled } from './UserProfile.lib';
 import { PasswordDataType } from './UserProfile.type';
@@ -166,46 +165,46 @@ const UserProfile = () => {
               <Grid container spacing={1}>
                 <Grid size={12} sx={{ input: { cursor: 'not-allowed' } }}>
                   <TextField
-                    id='email'
-                    name='email'
+                    id="email"
+                    name="email"
                     label={t('user_profile.email')}
                     value={profileData?.email || ''}
-                    variant='outlined'
-                    margin='normal'
+                    variant="outlined"
+                    margin="normal"
                     fullWidth
-                    type='email'
+                    type="email"
                     disabled
                   />
                 </Grid>
                 <Grid size={{ xs: 12, md: 6 }}>
                   <TextField
-                    id='first-name'
-                    name='firstName'
+                    id="first-name"
+                    name="firstName"
                     label={t('user_profile.first_name')}
                     onChange={handleProfileFormChange}
                     value={profileData?.firstName || ''}
-                    variant='outlined'
-                    margin='normal'
+                    variant="outlined"
+                    margin="normal"
                     required
                     fullWidth
                   />
                 </Grid>
                 <Grid size={{ xs: 12, md: 6 }}>
                   <TextField
-                    id='last-name'
-                    name='lastName'
+                    id="last-name"
+                    name="lastName"
                     label={t('user_profile.last_name')}
                     onChange={handleProfileFormChange}
                     value={profileData?.lastName || ''}
-                    variant='outlined'
-                    margin='normal'
+                    variant="outlined"
+                    margin="normal"
                     fullWidth
                   />
                 </Grid>
               </Grid>
             </CardContent>
             <CardActions sx={{ justifyContent: 'flex-end' }}>
-              <Button type='submit' color='primary'>
+              <Button type="submit" color="primary">
                 {t('user_profile.save')}
               </Button>
             </CardActions>
@@ -218,16 +217,16 @@ const UserProfile = () => {
               <Grid container spacing={1} sx={{ mt: 1 }}>
                 <Grid size={{ xs: 12, md: 6 }}>
                   <TextField
-                    id='password'
-                    name='password'
+                    id="password"
+                    name="password"
                     label={t('user_profile.password')}
                     onChange={handlePasswordFormChange}
                     value={passwordData?.password}
-                    variant='outlined'
-                    margin='normal'
+                    variant="outlined"
+                    margin="normal"
                     required
                     fullWidth
-                    type='password'
+                    type="password"
                   />
                   {passwordData && passwordData?.password?.length > 0 && (
                     <PasswordChecklist
@@ -243,22 +242,22 @@ const UserProfile = () => {
                 </Grid>
                 <Grid size={{ xs: 12, md: 6 }}>
                   <TextField
-                    id='re-password'
-                    name='rePassword'
+                    id="re-password"
+                    name="rePassword"
                     label={t('user_profile.repeat_password')}
                     onChange={handlePasswordFormChange}
                     value={passwordData?.rePassword}
-                    variant='outlined'
-                    margin='normal'
+                    variant="outlined"
+                    margin="normal"
                     required
                     fullWidth
-                    type='password'
+                    type="password"
                   />
                 </Grid>
               </Grid>
             </CardContent>
             <CardActions sx={{ justifyContent: 'flex-end' }}>
-              <Button type='submit' color='primary'>
+              <Button type="submit" color="primary">
                 {t('user_profile.save')}
               </Button>
             </CardActions>

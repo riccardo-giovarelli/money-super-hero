@@ -15,7 +15,7 @@ export const routesIndoor: readonly RoutesIndoorType[] = Object.freeze([
   {
     id: 'indor-dashboard',
     path: '/',
-    menuPath: '/dashboard',
+    menuPath: '/',
     name: 'dashboard',
     element: Dashboard,
     labelLangCode: 'indoor_menu.dashboard',

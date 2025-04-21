@@ -2,14 +2,15 @@ import { Box, Button } from '@mui/material';
 import { DataGrid, GridSortModel } from '@mui/x-data-grid';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
-import useTransactions from '../../hooks/useTransactions/useTransactions.tsx';
+
 import { useState } from 'react';
 import { DEFAULT_TABLE_PAGE_SIZE } from '@/config/constants.ts';
 import { PaginationModelType } from '@/types/pagination.type.ts';
 import ConfirmDialog from '@/components/confirm-dialog/ConfirmDialog.tsx';
-import { useTransactionsStore } from '../../stores/TransactionsStore.ts';
+import { useTransactionsStore } from '@pages/transactions/stores/TransactionsStore.ts';
 import { deleteTransactionById } from './TransactionsList.lib.ts';
 import AlertSnackbar from '@/components/alert-snackbar/AlertSnackbar.tsx';
+import useTransactionsTableData from '@pages/transactions/hooks/useTransactionsTableData/useTransactionsTableData.tsx';
 
 const TransactionsList = () => {
   const { t } = useTranslation();
@@ -25,7 +26,12 @@ const TransactionsList = () => {
   const alertSnackbarMessage = useTransactionsStore((state) => state.alertSnackbarMessage);
   const [refreshKey, setRefreshKey] = useState(false);
 
-  const { columns, transactions, isFetching, rowCount } = useTransactions(paginationModel.page + 1, paginationModel.pageSize, sortModel, refreshKey);
+  const { columns, transactions, isFetching, rowCount } = useTransactionsTableData(
+    paginationModel.page + 1,
+    paginationModel.pageSize,
+    sortModel,
+    refreshKey
+  );
 
   const handleConfirmDialogClose = async (choice: boolean) => {
     if (choice && transactionToDelete) {

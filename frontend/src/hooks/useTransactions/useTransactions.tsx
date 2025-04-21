@@ -1,90 +1,36 @@
-import { GridColDef, GridRenderCellParams, GridSortModel } from '@mui/x-data-grid';
+import { GridSortModel } from '@mui/x-data-grid';
 import { useQuery } from '@tanstack/react-query';
-import dayjs from 'dayjs';
 import { useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
 import { parseCategoriesApiResults, parseSubCategoriesApiResults, parseTransactionsApiResults } from './useTransactions.lib';
 
 import tank from '@/utils/axios';
-import TransactionsTableColumnDirection from '@pages/transactions/components/transactions-table-column-direction/TransactionsTableColumnDirection.tsx';
-import TransactionsTableColumnTools from '@pages/transactions/components/transactions-table-column-tools/TransactionsTableColumnTools.tsx';
 import { TransactionType } from 'src/models/transactions';
-import { TransactionTableType } from './useTransactions.type';
 
-const useTransactions = (page: number, pageSize: number, sortModel: GridSortModel = [], refreshKey: boolean) => {
-  const { t } = useTranslation();
-
-  /**
-   * Columns definition
-   */
-  const columns: GridColDef<TransactionTableType>[] = [
-    {
-      field: 'tools',
-      headerName: 'Tools',
-      width: 90,
-      renderCell: (params: GridRenderCellParams) => <TransactionsTableColumnTools {...params} />,
-      sortable: false,
-      filterable: false,
-    },
-    {
-      field: 'amount',
-      headerName: t('transactions.add_transaction.amount.label'),
-      type: 'number',
-      width: 150,
-      filterable: false,
-      valueGetter: (value) => Number(value),
-    },
-    {
-      field: 'direction',
-      headerName: t('transactions.add_transaction.direction.label'),
-      width: 110,
-      renderCell: (params: GridRenderCellParams) => <TransactionsTableColumnDirection direction={params?.row?.direction} />,
-      filterable: false,
-    },
-    {
-      field: 'category',
-      headerName: t('transactions.add_transaction.category.label'),
-      type: 'string',
-      width: 150,
-      filterable: false,
-    },
-    {
-      field: 'subcategory',
-      headerName: t('transactions.add_transaction.subcategory.label'),
-      type: 'string',
-      width: 150,
-      filterable: false,
-    },
-    {
-      field: 'timestamp',
-      headerName: t('transactions.add_transaction.date.label'),
-      type: 'string',
-      width: 150,
-      filterable: false,
-      valueGetter: (value) => (value ? dayjs(value).format('DD/MM/YYYY - HH:mm') : '-'),
-    },
-    {
-      field: 'notes',
-      headerName: t('transactions.add_transaction.notes.label'),
-      type: 'string',
-      width: 150,
-      filterable: false,
-    },
-  ];
-
+const useTransactions = (page: number | null, pageSize: number | null, from: string | null, to: string | null, sortModel: GridSortModel = []) => {
   /**
    * Fetch transactions data
    */
   const { data: transactionsData, isFetching: transactionsIsFetching } = useQuery({
-    queryKey: [page, pageSize, sortModel, refreshKey],
+    queryKey: [page, pageSize, sortModel],
     queryFn: async () => {
       const parameters: string[] = [];
-      parameters.push(`page=${page}`);
-      parameters.push(`limit=${pageSize}`);
+
+      // Date range
+      if (from && to) {
+        parameters.push(`from=${from}`);
+        parameters.push(`to=${to}`);
+      }
+      // Pagination
+      if (page && pageSize) {
+        parameters.push(`page=${page}`);
+        parameters.push(`limit=${pageSize}`);
+      }
+      // Sorting
       if (sortModel.length > 0) {
         parameters.push(`sortColumn=${sortModel[0].field}`);
         parameters.push(`sortDirection=${sortModel[0].sort}`);
       }
+
       return tank.get(`/transactions?${parameters.join('&')}`).then((results) => {
         if (results?.data?.code === 'GET_TRANSACTIONS_SUCCESS' && results?.data?.details?.results) {
           return {
@@ -143,7 +89,6 @@ const useTransactions = (page: number, pageSize: number, sortModel: GridSortMode
   );
 
   return {
-    columns,
     transactions,
     isFetching: transactionsIsFetching || categoriesIsFetching || subcategoriesIsFetching,
     rowCount: transactionsData?.count ?? 0,

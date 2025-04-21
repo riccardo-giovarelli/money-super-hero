@@ -3,4 +3,6 @@ export interface TransactionsGetPayload {
   limit?: number;
   sortColumn?: string;
   sortDirection?: string;
+  from?: string;
+  to?: string;
 }

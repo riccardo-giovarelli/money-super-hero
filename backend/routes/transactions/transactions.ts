@@ -134,32 +134,35 @@ router.get("/", authenticationMiddleware, async (req, res) => {
     const userId = userResults.rows[0].id;
 
     // Handle pagination
-    const offset = (Number(page) - 1) * Number(limit);
-    if (Number(page) < 1 || Number(limit) < 1) {
-      res.status(200).json({
-        code: "GET_TRANSACTIONS_ERROR",
-        message: "Error retrieving transactions",
-        details: "Invalid pagination parameters",
-      });
-      return;
+    let paginationQuery = "";
+    if (limit && page) {
+      const offset = (Number(page) - 1) * Number(limit);
+      if (Number(page) < 1 || Number(limit) < 1) {
+        res.status(200).json({
+          code: "GET_TRANSACTIONS_ERROR",
+          message: "Error retrieving transactions",
+          details: "Invalid pagination parameters",
+        });
+        return;
+      }
+      if (Number(limit) > 100) {
+        res.status(200).json({
+          code: "GET_TRANSACTIONS_ERROR",
+          message: "Error retrieving transactions",
+          details: "Limit exceeds maximum value of 100",
+        });
+        return;
+      }
+      if (Number(offset) < 0) {
+        res.status(200).json({
+          code: "GET_TRANSACTIONS_ERROR",
+          message: "Error retrieving transactions",
+          details: "Invalid offset value",
+        });
+        return;
+      }
+      paginationQuery = `LIMIT ${Number(limit)} OFFSET ${offset}`;
     }
-    if (Number(limit) > 100) {
-      res.status(200).json({
-        code: "GET_TRANSACTIONS_ERROR",
-        message: "Error retrieving transactions",
-        details: "Limit exceeds maximum value of 100",
-      });
-      return;
-    }
-    if (Number(offset) < 0) {
-      res.status(200).json({
-        code: "GET_TRANSACTIONS_ERROR",
-        message: "Error retrieving transactions",
-        details: "Invalid offset value",
-      });
-      return;
-    }
-    const paginationQuery = `LIMIT ${Number(limit)} OFFSET ${offset}`;
 
     // Handle dates filtering
     const fromDate = from ? new Date(from) : null;
@@ -174,7 +177,7 @@ router.get("/", authenticationMiddleware, async (req, res) => {
     }
     const dateFilter =
       from && to
-        ? `AND transactions.timestamp BETWEEN '${fromDate}' AND '${toDate}'`
+        ? `AND transactions.timestamp BETWEEN '${from}' AND '${to}'`
         : "";
 
     // Get the total count of transactions

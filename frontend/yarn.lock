@@ -1409,6 +1409,11 @@ chart.js@^4.4.9:
   dependencies:
     "@kurkle/color" "^0.3.0"
 
+chartjs-adapter-dayjs-4@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/chartjs-adapter-dayjs-4/-/chartjs-adapter-dayjs-4-1.0.4.tgz#4e810c99d9f28c07364381317d01f1bc504c5b2e"
+  integrity sha512-yy9BAYW4aNzPVrCWZetbILegTRb7HokhgospPoC3b5iZ5qdlqNmXts2KdSp6AqnjkPAp/YWyHDxLvIvwt5x81w==
+
 ci-info@^4.2.0:
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/ci-info/-/ci-info-4.2.0.tgz#cbd21386152ebfe1d56f280a3b5feccbd96764c7"

@@ -1,12 +1,12 @@
-import { GridSortModel } from '@mui/x-data-grid';
 import { useQuery } from '@tanstack/react-query';
 import { useMemo } from 'react';
 import { parseCategoriesApiResults, parseSubCategoriesApiResults, parseTransactionsApiResults } from './useTransactions.lib';
 
 import tank from '@/utils/axios';
 import { TransactionType } from 'src/models/transactions';
+import { UseTransactionsPropsType } from './useTransactions.type';
 
-const useTransactions = (page: number | null, pageSize: number | null, from: string | null, to: string | null, sortModel: GridSortModel = []) => {
+const useTransactions = ({ page, pageSize, from, to, sortModel }: UseTransactionsPropsType) => {
   /**
    * Fetch transactions data
    */
@@ -26,7 +26,7 @@ const useTransactions = (page: number | null, pageSize: number | null, from: str
         parameters.push(`limit=${pageSize}`);
       }
       // Sorting
-      if (sortModel.length > 0) {
+      if (sortModel && sortModel.length > 0) {
         parameters.push(`sortColumn=${sortModel[0].field}`);
         parameters.push(`sortDirection=${sortModel[0].sort}`);
       }

@@ -1,4 +1,5 @@
 import { InteractionType } from '@/models/transactions';
+import { GridSortModel } from '@mui/x-data-grid';
 
 export interface TransactionsApiResultsType {
   amount: number;
@@ -20,4 +21,12 @@ export interface TransactionTableType {
   notes: string;
   subcategory?: string;
   timestamp: Date;
+}
+
+export interface UseTransactionsPropsType {
+  page?: number;
+  pageSize?: number;
+  from?: string;
+  to?: string;
+  sortModel?: GridSortModel;
 }

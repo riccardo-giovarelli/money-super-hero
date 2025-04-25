@@ -3,6 +3,7 @@ import pg from "pg";
 
 import { authenticationMiddleware } from "../users/users.lib.ts";
 import type { TransactionsGetPayload } from "./transactions.type.ts";
+import { getAverageValue } from "./transactions.lib.ts";
 
 const router = express.Router();
 const { Client } = pg;
@@ -225,7 +226,10 @@ router.get("/", authenticationMiddleware, async (req, res) => {
         code: "GET_TRANSACTIONS_SUCCESS",
         message: "Successfully retrieved transactions",
         details: {
-          results: transactionsResults.rows,
+          results: {
+            transactions: transactionsResults.rows,
+            average: getAverageValue(transactionsResults.rows),
+          },
           count: countResults.rows[0].full_count,
         },
       });

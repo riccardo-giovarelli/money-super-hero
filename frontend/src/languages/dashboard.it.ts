@@ -4,5 +4,7 @@ export const dashboard = {
     'dashboard.filter.to': 'A',
     'dashboard.filter.whole_period:': 'Intero periodo',
     'dashboard.transactions_chart.title': 'Transazioni',
+    'dashboard.transactions_chart.transactions': 'Transazioni',
+    'dashboard.transactions_chart.average': 'Media',
   },
 };

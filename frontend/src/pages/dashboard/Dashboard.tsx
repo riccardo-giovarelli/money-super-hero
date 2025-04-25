@@ -18,7 +18,7 @@ const Dashboard = () => {
   const [whole, setWhole] = useState(false);
 
   const { t } = useTranslation();
-  const { transactions } = useTransactions({ from: dayjs(from).format('YYYY-MM-DD'), to: dayjs(to).format('YYYY-MM-DD') });
+  const { transactions, average } = useTransactions({ from: dayjs(from).format('YYYY-MM-DD'), to: dayjs(to).format('YYYY-MM-DD') });
 
   const handleWholeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setWhole(event.target.checked);
@@ -31,6 +31,7 @@ const Dashboard = () => {
           display: 'flex',
           flexDirection: 'row',
           justifyContent: 'flex-end',
+          alignItems: 'end',
           gap: 2,
           p: 1,
           m: 1,
@@ -44,7 +45,7 @@ const Dashboard = () => {
       </Box>
       <Grid container spacing={2} sx={{ marginTop: 2 }}>
         <Grid size={12}>
-          <DashboardTransactionsChart transactions={transactions} whole={whole} />
+          <DashboardTransactionsChart transactions={transactions} average={average} whole={whole} />
         </Grid>
       </Grid>
     </Container>

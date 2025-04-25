@@ -24,6 +24,7 @@
     "axios": "^1.7.9",
     "chart.js": "^4.4.9",
     "chartjs-adapter-dayjs-4": "^1.0.4",
+    "chartjs-plugin-annotation": "^3.1.0",
     "dayjs": "^1.11.13",
     "i18next": "^25.0.0",
     "i18next-browser-languagedetector": "^8.0.2",

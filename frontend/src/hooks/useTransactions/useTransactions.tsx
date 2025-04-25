@@ -34,13 +34,14 @@ const useTransactions = ({ page, pageSize, from, to, sortModel }: UseTransaction
       return tank.get(`/transactions?${parameters.join('&')}`).then((results) => {
         if (results?.data?.code === 'GET_TRANSACTIONS_SUCCESS' && results?.data?.details?.results) {
           return {
-            transactions: parseTransactionsApiResults(results.data.details.results),
+            transactions: parseTransactionsApiResults(results.data.details.results.transactions),
+            average: results.data.details.results.average,
             count: results.data.details.count,
           };
         }
       });
     },
-    placeholderData: { transactions: [], count: 0 },
+    placeholderData: { transactions: [], average: 0, count: 0 },
   });
 
   /**
@@ -92,6 +93,7 @@ const useTransactions = ({ page, pageSize, from, to, sortModel }: UseTransaction
     transactions,
     isFetching: transactionsIsFetching || categoriesIsFetching || subcategoriesIsFetching,
     rowCount: transactionsData?.count ?? 0,
+    average: transactionsData?.average ?? 0,
   };
 };
 

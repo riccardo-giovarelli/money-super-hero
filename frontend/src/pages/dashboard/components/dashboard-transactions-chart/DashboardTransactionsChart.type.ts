@@ -2,6 +2,7 @@ import { InteractionType } from '@/models/transactions';
 
 export interface DashboardTransactionsChartPropsType {
   transactions: DashboardTransactionType[];
+  average: number;
   whole: boolean;
 }
 

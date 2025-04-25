@@ -6,3 +6,7 @@ export interface TransactionsGetPayload {
   from?: string;
   to?: string;
 }
+
+export interface GetTransactionsResults {
+  [key: string]: string | number | Date;
+}

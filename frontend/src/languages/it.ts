@@ -1,10 +1,11 @@
+import { transactions } from './transactions.it';
 import { app } from './app.it';
 import { authentication } from './authentication.it';
 import { indoorMenu } from './indoor-menu.it';
 import { settings } from './settings.it';
-import { transactions } from './transactions.en';
 import { userMenu } from './user-menu.it';
 import { userProfile } from './user-profile.it';
+import { dashboard } from './dashboard.it';
 
 export const it = {
   translation: {
@@ -15,5 +16,6 @@ export const it = {
     ...app.translation,
     ...settings.translation,
     ...transactions.translation,
+    ...dashboard.translation,
   },
 };

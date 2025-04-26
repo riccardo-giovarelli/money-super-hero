@@ -1,9 +1,9 @@
 import { useParams } from 'react-router';
 
 import { Box } from '@mui/material';
-import TransactionsList from '../transactions-list/TransactionsList';
-import TransactionsNew from '../transactions-new/TransactionsNew';
-import TransactionsEdit from '../transactions-edit/TransactionsEdit';
+import TransactionsList from './components/transactions-list/TransactionsList';
+import TransactionsNew from './components/transactions-new/TransactionsNew';
+import TransactionsEdit from './components/transactions-edit/TransactionsEdit';
 import { isValidNumber } from '@/utils/string';
 import { useEffect, useState } from 'react';
 

@@ -6,8 +6,7 @@ import { DEFAULT_TABLE_PAGE_SIZE } from '@/config/constants';
 import useSubcategoriesData from '@/pages/settings/hooks/useSubcategoriesData/useSubcategoriesData';
 import { PaginationModelType } from '@/types/pagination.type';
 import tank from '@/utils/axios';
-import { Box } from '@mui/material';
-import Grid from '@mui/material/Grid2';
+import { Box, Grid } from '@mui/material';
 import { GridRowId, GridSortModel, GridValidRowModel } from '@mui/x-data-grid';
 
 import { useSettingsStore } from '../../stores/SettingsStore';

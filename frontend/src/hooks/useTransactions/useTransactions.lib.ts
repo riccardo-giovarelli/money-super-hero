@@ -1,5 +1,5 @@
 import { TransactionType } from '@/models/transactions';
-import { TransactionsApiResultsType } from './useTransactions.type';
+import { TransactionsApiResultsType } from './useTransactionsTableData.type';
 import { SubategoryType } from '@/models/sub-categories';
 import { CategoryType } from '@/models/categories';
 

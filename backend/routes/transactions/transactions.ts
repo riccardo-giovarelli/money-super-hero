@@ -3,6 +3,7 @@ import pg from "pg";
 
 import { authenticationMiddleware } from "../users/users.lib.ts";
 import type { TransactionsGetPayload } from "./transactions.type.ts";
+import { getAverageValue } from "./transactions.lib.ts";
 
 const router = express.Router();
 const { Client } = pg;
@@ -84,30 +85,34 @@ router.post("/", authenticationMiddleware, async (req, res) => {
 });
 
 /**
- * GET: Retrieve Transactions with Pagination and Ordering
+ * GET: Retrieve Transactions with Pagination, Sorting, and Filtering
  *
- * @description Retrieves a paginated list of transactions for the authenticated user, with optional sorting by columns.
+ * @description Retrieves a paginated list of transactions for the authenticated user. Supports optional sorting
+ *              by columns, filtering by date range, and pagination.
  *
  * @route GET /
  * @access Protected (requires authentication)
  *
  * @query {number} page - The page number for pagination (default is 1).
- * @query {number} limit - The number of items per page (default is 10).
+ * @query {number} limit - The number of items per page (default is 10, maximum is 100).
  * @query {string} sortColumn - The column to sort by (default is 'id').
  * @query {string} sortDirection - The direction to sort ('asc' or 'desc', default is 'asc').
+ * @query {string} from - The start date for filtering transactions (optional, ISO 8601 format).
+ * @query {string} to - The end date for filtering transactions (optional, ISO 8601 format).
  *
- * @returns {object} - A JSON object with the result of the operation.
+ * @returns {object} - A JSON object containing the transactions and the total count.
  */
 router.get("/", authenticationMiddleware, async (req, res) => {
   const client = new Client();
 
   const {
-    page = 1,
-    limit = 10,
+    page,
+    limit,
     sortColumn = "id",
     sortDirection = "asc",
+    from,
+    to,
   } = req.query as TransactionsGetPayload;
-  const offset = (Number(page) - 1) * Number(limit);
 
   try {
     await client.connect();
@@ -128,6 +133,53 @@ router.get("/", authenticationMiddleware, async (req, res) => {
       return;
     }
     const userId = userResults.rows[0].id;
+
+    // Handle pagination
+    let paginationQuery = "";
+    if (limit && page) {
+      const offset = (Number(page) - 1) * Number(limit);
+      if (Number(page) < 1 || Number(limit) < 1) {
+        res.status(400).json({
+          code: "GET_TRANSACTIONS_ERROR",
+          message: "Error retrieving transactions",
+          details: "Invalid pagination parameters",
+        });
+        return;
+      }
+      if (Number(limit) > 100) {
+        res.status(200).json({
+          code: "GET_TRANSACTIONS_ERROR",
+          message: "Error retrieving transactions",
+          details: "Limit exceeds maximum value of 100",
+        });
+        return;
+      }
+      if (Number(offset) < 0) {
+        res.status(200).json({
+          code: "GET_TRANSACTIONS_ERROR",
+          message: "Error retrieving transactions",
+          details: "Invalid offset value",
+        });
+        return;
+      }
+      paginationQuery = `LIMIT ${Number(limit)} OFFSET ${offset}`;
+    }
+
+    // Handle dates filtering
+    const fromDate = from ? new Date(from) : null;
+    const toDate = to ? new Date(to) : null;
+    if (fromDate && toDate && fromDate > toDate) {
+      res.status(200).json({
+        code: "GET_TRANSACTIONS_ERROR",
+        message: "Error retrieving transactions",
+        details: "Invalid date range",
+      });
+      return;
+    }
+    const dateFilter =
+      from && to
+        ? `AND transactions.timestamp BETWEEN '${from}' AND '${to}'`
+        : "";
 
     // Get the total count of transactions
     const countQuery = {
@@ -154,11 +206,11 @@ router.get("/", authenticationMiddleware, async (req, res) => {
     FROM transactions
     LEFT JOIN categories ON transactions.category = categories.id
     LEFT JOIN sub_categories ON transactions.sub_category = sub_categories.id
-    WHERE transactions.user_id = $1
+    WHERE transactions.user_id = $1 ${dateFilter}
     ORDER BY "${sortColumn}" ${sortDirection.toString().toUpperCase()}
-    LIMIT $2 OFFSET $3;
+    ${paginationQuery};
   `,
-      values: [userId, Number(limit), offset],
+      values: [userId],
     };
     const transactionsResults = await client.query(transactionsQuery);
 
@@ -174,7 +226,10 @@ router.get("/", authenticationMiddleware, async (req, res) => {
         code: "GET_TRANSACTIONS_SUCCESS",
         message: "Successfully retrieved transactions",
         details: {
-          results: transactionsResults.rows,
+          results: {
+            transactions: transactionsResults.rows,
+            average: getAverageValue(transactionsResults.rows),
+          },
           count: countResults.rows[0].full_count,
         },
       });

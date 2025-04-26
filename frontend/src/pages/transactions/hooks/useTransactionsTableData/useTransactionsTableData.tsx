@@ -3,15 +3,15 @@ import { useQuery } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { parseCategoriesApiResults, parseSubCategoriesApiResults, parseTransactionsApiResults } from './useTransactions.lib';
+import { parseCategoriesApiResults, parseSubCategoriesApiResults, parseTransactionsApiResults } from './useTransactionsTableData.lib';
 
 import tank from '@/utils/axios';
 import TransactionsTableColumnDirection from '@pages/transactions/components/transactions-table-column-direction/TransactionsTableColumnDirection.tsx';
 import TransactionsTableColumnTools from '@pages/transactions/components/transactions-table-column-tools/TransactionsTableColumnTools.tsx';
 import { TransactionType } from 'src/models/transactions';
-import { TransactionTableType } from './useTransactions.type';
+import { TransactionTableType } from './useTransactionsTableData.type';
 
-const useTransactions = (page: number, pageSize: number, sortModel: GridSortModel = [], refreshKey: boolean) => {
+const useTransactionsTableData = (page: number, pageSize: number, sortModel: GridSortModel = [], refreshKey: boolean) => {
   const { t } = useTranslation();
 
   /**
@@ -150,4 +150,4 @@ const useTransactions = (page: number, pageSize: number, sortModel: GridSortMode
   };
 };
 
-export default useTransactions;
+export default useTransactionsTableData;

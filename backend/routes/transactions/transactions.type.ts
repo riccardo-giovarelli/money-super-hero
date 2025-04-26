@@ -3,4 +3,10 @@ export interface TransactionsGetPayload {
   limit?: number;
   sortColumn?: string;
   sortDirection?: string;
+  from?: string;
+  to?: string;
+}
+
+export interface GetTransactionsResults {
+  [key: string]: string | number | Date;
 }

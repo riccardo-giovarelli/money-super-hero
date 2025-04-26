@@ -1,5 +1,5 @@
-import Signin from '@/pages/authentication/signin';
-import Signup from '@/pages/authentication/signup';
+import { Signin } from '@/pages/authentication';
+import { Signup } from '@/pages/authentication';
 
 import { RoutesOutdoorType } from './routes.type';
 

@@ -139,7 +139,7 @@ router.get("/", authenticationMiddleware, async (req, res) => {
     if (limit && page) {
       const offset = (Number(page) - 1) * Number(limit);
       if (Number(page) < 1 || Number(limit) < 1) {
-        res.status(200).json({
+        res.status(400).json({
           code: "GET_TRANSACTIONS_ERROR",
           message: "Error retrieving transactions",
           details: "Invalid pagination parameters",

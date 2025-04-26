@@ -44,7 +44,7 @@ const Dashboard = () => {
         </LocalizationProvider>
       </Box>
       <Grid container spacing={2} sx={{ marginTop: 2 }}>
-        <Grid size={12}>
+        <Grid item xs={12}>
           <DashboardTransactionsChart transactions={transactions} average={average} whole={whole} />
         </Grid>
       </Grid>

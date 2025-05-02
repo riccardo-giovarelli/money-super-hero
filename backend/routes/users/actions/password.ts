@@ -1,11 +1,9 @@
-import bcrypt from 'bcryptjs';
-import express from 'express';
-import pg from 'pg';
-
-import { authenticationMiddleware } from '../users.lib.ts';
+import bcrypt from "bcryptjs";
+import express from "express";
+import pool from "../../../db.ts"; // Import the connection pool
+import { authenticationMiddleware } from "../users.lib.ts";
 
 const router = express.Router();
-const { Client } = pg;
 
 /**
  * PUT: Update User Password
@@ -19,35 +17,39 @@ const { Client } = pg;
  * @access Protected (requires authentication)
  * @returns {Object} A JSON object with a code and message indicating the result of the update process.
  */
-router.put('/', authenticationMiddleware, async (req, res) => {
-  bcrypt.hash(req.body.password, 10, async (err: Error, hash: string) => {
-    const client = new Client();
-    try {
-      client.connect();
-      if (err) {
-        throw err;
-      }
-      const query = {
-        name: 'update-user-password-by-email',
-        text: 'UPDATE users SET "password" = $1 WHERE "email" = $2;',
-        values: [hash, req.session['username']],
-      };
-      const results = await client.query(query);
-      if (results?.rowCount !== 1) {
-        throw 'Row count invalid';
-      } else {
-        res.status(200).json({
-          code: 'UPDATE_PASSWORD_SUCCESS',
-          message: 'Successfully updated user password',
-          details: `Rows affected: ${results.rowCount}`,
-        });
-      }
-    } catch (err) {
-      res.status(500).json({ code: 'UPDATE_ERROR', message: 'Error while updating user password', details: err });
-    } finally {
-      await client.end();
+router.put("/", authenticationMiddleware, async (req, res) => {
+  try {
+    // Hash the new password
+    const hash = await bcrypt.hash(req.body.password, 10);
+
+    // Update the user's password in the database
+    const query = {
+      name: "update-user-password-by-email",
+      text: 'UPDATE users SET "password" = $1 WHERE "email" = $2;',
+      values: [hash, req.session["username"]],
+    };
+    const results = await pool.query(query);
+
+    if (results?.rowCount !== 1) {
+      res.status(400).json({
+        code: "UPDATE_PASSWORD_ERROR",
+        message: "Failed to update user password",
+        details: "No rows were affected",
+      });
+    } else {
+      res.status(200).json({
+        code: "UPDATE_PASSWORD_SUCCESS",
+        message: "Successfully updated user password",
+        details: `Rows affected: ${results.rowCount}`,
+      });
     }
-  });
+  } catch (err) {
+    res.status(500).json({
+      code: "UPDATE_PASSWORD_ERROR",
+      message: "Error while updating user password",
+      details: err,
+    });
+  }
 });
 
 export default router;

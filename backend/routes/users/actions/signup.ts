@@ -1,9 +1,8 @@
-import bcrypt from 'bcryptjs';
-import express from 'express';
-import pg from 'pg';
+import bcrypt from "bcryptjs";
+import express from "express";
+import pool from "../../../db.ts"; // Import the connection pool
 
 const router = express.Router();
-const { Client } = pg;
 
 /**
  * POST: Sign up
@@ -13,58 +12,60 @@ const { Client } = pg;
  * it responds with a success message. If there is an error, it responds with an error message.
  *
  * @route POST /
- * @access Protected (requires authentication)
+ * @access Public
  * @returns {Object} A JSON object with a code and message indicating the result of the registration process.
  */
-router.post('/', async (req, res) => {
-  // Check if the user already exists
-  const client = new Client();
+router.post("/", async (req, res) => {
   try {
-    client.connect();
-    const query = {
-      name: 'get-user-by-email',
+    // Check if the user already exists
+    const checkUserQuery = {
+      name: "get-user-by-email",
       text: 'SELECT EXISTS(SELECT 1 FROM users WHERE "email" = $1)',
       values: [req.body.email.trim()],
     };
-    const results = await client.query(query);
-    if (results?.rows?.[0]?.exists) {
-      res
-        .status(200)
-        .json({ code: 'USER_EXISTS', message: 'Error while inserting new user', details: 'User already exists' });
+    const checkUserResults = await pool.query(checkUserQuery);
+
+    if (checkUserResults?.rows?.[0]?.exists) {
+      res.status(200).json({
+        code: "USER_EXISTS",
+        message: "Error while inserting new user",
+        details: "User already exists",
+      });
       return;
     }
-  } catch (err) {
-    await client.end();
-    res.status(500).json({ code: 'REGISTRATION_ERROR', message: 'Error while inserting new user', details: err });
-    return;
-  }
 
-  // Insert new user
-  bcrypt.hash(req.body.password, 10, async (err: Error, hash: string) => {
-    const client = new Client();
-    try {
-      client.connect();
-      if (err) {
-        throw err;
-      }
-      const query = {
-        name: 'insert-new-user',
-        text: 'INSERT INTO users("firstName", "lastName", "email", "password") VALUES($1, $2, $3, $4)',
-        values: [req.body.firstName, req.body.lastName, req.body.email, hash],
-      };
-      const results = await client.query(query);
-      if (results?.rowCount !== 1) {
-        throw 'Row count invalid';
-      }
-      res
-        .status(200)
-        .json({ code: 'REGISTRATION_SUCCESSFUL', message: 'New user saved successfully', details: results });
-    } catch (err) {
-      res.status(500).json({ code: 'REGISTRATION_ERROR', message: 'Error while inserting new user', details: err });
-    } finally {
-      await client.end();
+    // Hash the password
+    const hash = await bcrypt.hash(req.body.password, 10);
+
+    // Insert the new user into the database
+    const insertUserQuery = {
+      name: "insert-new-user",
+      text: 'INSERT INTO users("firstName", "lastName", "email", "password") VALUES($1, $2, $3, $4)',
+      values: [
+        req.body.firstName,
+        req.body.lastName,
+        req.body.email.trim(),
+        hash,
+      ],
+    };
+    const insertUserResults = await pool.query(insertUserQuery);
+
+    if (insertUserResults?.rowCount !== 1) {
+      throw new Error("Failed to insert new user");
     }
-  });
+
+    res.status(200).json({
+      code: "REGISTRATION_SUCCESSFUL",
+      message: "New user saved successfully",
+      details: insertUserResults,
+    });
+  } catch (err) {
+    res.status(500).json({
+      code: "REGISTRATION_ERROR",
+      message: "Error while inserting new user",
+      details: err,
+    });
+  }
 });
 
 export default router;

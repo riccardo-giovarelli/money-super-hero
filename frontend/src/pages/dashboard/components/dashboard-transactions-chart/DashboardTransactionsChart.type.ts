@@ -6,9 +6,14 @@ export interface DashboardTransactionsChartPropsType {
   whole: boolean;
 }
 
-export interface DashboardTransactionLineChartType {
-  x: string;
-  y: number;
+export interface DashboardTransactionDataType {
+  datasets: {
+    label: string;
+    data: {
+      x: string;
+      y: number;
+    }[];
+  }[];
 }
 
 export interface DashboardTransactionType {

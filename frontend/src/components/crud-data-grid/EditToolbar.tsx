@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 
 import AddIcon from '@mui/icons-material/Add';
 import { Box, Button } from '@mui/material';
-import { GridRowModes, GridSlotProps, GridToolbarContainer } from '@mui/x-data-grid';
+import { GridRowModes, GridSlotProps, Toolbar } from '@mui/x-data-grid';
 import { randomId } from '@mui/x-data-grid-generator';
 
 const EditToolbar = (props: GridSlotProps['toolbar']) => {
@@ -19,12 +19,12 @@ const EditToolbar = (props: GridSlotProps['toolbar']) => {
   };
 
   return (
-    <GridToolbarContainer>
+    <Toolbar>
       <Box sx={{ flexGrow: 1 }} />
       <Button color="primary" startIcon={<AddIcon />} variant="outlined" onClick={handleClick}>
         {t('app.data_table.add_record')}
       </Button>
-    </GridToolbarContainer>
+    </Toolbar>
   );
 };
 

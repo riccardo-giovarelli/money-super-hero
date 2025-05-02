@@ -120,7 +120,7 @@ const DataTable = ({ data, dataColumns, count, setPaginationModel, setSortModel,
             <GridActionsCellItem
               icon={<SaveIcon />}
               label="Save"
-              sx={{
+              style={{
                 color: 'primary.main',
               }}
               onClick={handleSaveClick(id)}
@@ -177,6 +177,7 @@ const DataTable = ({ data, dataColumns, count, setPaginationModel, setSortModel,
         sortingMode="server"
         paginationMode="server"
         rowCount={Number(count)}
+        showToolbar
       />
       <ConfirmDialog
         open={itemToDelete !== null}

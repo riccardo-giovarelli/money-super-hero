@@ -11,7 +11,7 @@ const useTransactions = ({ page, pageSize, from, to, sortModel }: UseTransaction
    * Fetch transactions data
    */
   const { data: transactionsData, isFetching: transactionsIsFetching } = useQuery({
-    queryKey: [page, pageSize, sortModel],
+    queryKey: [page, pageSize, sortModel, from, to],
     queryFn: async () => {
       const parameters: string[] = [];
 

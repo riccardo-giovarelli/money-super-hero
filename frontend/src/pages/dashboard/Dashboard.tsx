@@ -15,10 +15,14 @@ const Dashboard = () => {
   const to = useDashboardStore((state) => state.to);
   const setFrom = useDashboardStore((state) => state.setFrom);
   const setTo = useDashboardStore((state) => state.setTo);
-  const [whole, setWhole] = useState(false);
+  const [whole, setWhole] = useState(true);
 
   const { t } = useTranslation();
-  const { transactions, average } = useTransactions({ from: dayjs(from).format('YYYY-MM-DD'), to: dayjs(to).format('YYYY-MM-DD') });
+  const { transactions, average } = useTransactions({
+    from: dayjs(from).format('YYYY-MM-DD'),
+    to: dayjs(to).format('YYYY-MM-DD'),
+    sortModel: [{ field: 'timestamp', sort: 'desc' }],
+  });
 
   const handleWholeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setWhole(event.target.checked);
@@ -44,7 +48,7 @@ const Dashboard = () => {
         </LocalizationProvider>
       </Box>
       <Grid container spacing={2} sx={{ marginTop: 2 }}>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <DashboardTransactionsChart transactions={transactions} average={average} whole={whole} />
         </Grid>
       </Grid>

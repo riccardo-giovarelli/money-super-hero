@@ -88,7 +88,7 @@ const useTransactionsTableData = (page: number, pageSize: number, sortModel: Gri
       return tank.get(`/transactions?${parameters.join('&')}`).then((results) => {
         if (results?.data?.code === 'GET_TRANSACTIONS_SUCCESS' && results?.data?.details?.results) {
           return {
-            transactions: parseTransactionsApiResults(results.data.details.results),
+            transactions: parseTransactionsApiResults(results.data.details.results.transactions),
             count: results.data.details.count,
           };
         }

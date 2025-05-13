@@ -7,6 +7,20 @@ const router = express.Router();
 
 /**
  * GET: Retrieve Sub-Categories
+ *
+ * @description Retrieves a list of sub-categories from the database. Supports optional pagination and sorting.
+ * The route is protected by the `authenticationMiddleware`, ensuring that only authenticated users can access it.
+ *
+ * @route GET /
+ * @access Protected (requires authentication)
+ *
+ * @query {number} page - The page number for pagination (default is 1).
+ * @query {number} limit - The number of items per page (default is 10).
+ * @query {string} sortColumn - The column to sort by (default is 'id').
+ * @query {string} sortDirection - The direction to sort ('asc' or 'desc', default is 'asc').
+ *
+ * @returns {Object} A JSON object with a code and message indicating the result of the retrieval process.
+ *
  */
 router.get("/", authenticationMiddleware, async (req, res) => {
   const {
@@ -64,6 +78,17 @@ router.get("/", authenticationMiddleware, async (req, res) => {
 
 /**
  * GET: Retrieve Sub-Categories by Category ID
+ *
+ * @description Retrieves a list of sub-categories associated with a specific category ID from the database.
+ * The route is protected by the `authenticationMiddleware`, ensuring that only authenticated users can access it.
+ *
+ * @route GET /:category_id
+ * @access Protected (requires authentication)
+ *
+ * @param {string} category_id - The ID of the category whose sub-categories are to be retrieved (provided as a URL parameter).
+ *
+ * @returns {Object} A JSON object with a code and message indicating the result of the retrieval process.
+ *
  */
 router.get("/:category_id", authenticationMiddleware, async (req, res) => {
   const { category_id } = req.params;
@@ -108,6 +133,20 @@ router.get("/:category_id", authenticationMiddleware, async (req, res) => {
 
 /**
  * POST: Create a New Sub-Category
+ *
+ * @description Adds a new sub-category to the database. The route is protected by the `authenticationMiddleware`,
+ * ensuring that only authenticated users can access it. The sub-category details, including `name`, `notes`, and
+ * `category_id`, are provided in the request body.
+ *
+ * @route POST /
+ * @access Protected (requires authentication)
+ *
+ * @body {string} name - The name of the new sub-category.
+ * @body {string} notes - Additional notes for the new sub-category (optional).
+ * @body {number} category_id - The ID of the category to which the sub-category belongs.
+ *
+ * @returns {Object} A JSON object with a code and message indicating the result of the creation process.
+ *
  */
 router.post("/", authenticationMiddleware, async (req, res) => {
   const { name, notes, category_id } = req.body;
@@ -147,6 +186,21 @@ router.post("/", authenticationMiddleware, async (req, res) => {
 
 /**
  * PUT: Edit an Existing Sub-Category
+ *
+ * @description Updates the details of a specific sub-category in the database. The route is protected by
+ * the `authenticationMiddleware`, ensuring that only authenticated users can access it. The sub-category
+ * is identified by its ID, and the updated `name`, `notes`, and `category_id` are provided in the request body.
+ *
+ * @route PUT /:id
+ * @access Protected (requires authentication)
+ *
+ * @param {string} id - The ID of the sub-category to update (provided as a URL parameter).
+ * @body {string} name - The updated name of the sub-category.
+ * @body {string} notes - The updated notes for the sub-category (optional).
+ * @body {number} category_id - The updated category ID to which the sub-category belongs.
+ *
+ * @returns {Object} A JSON object with a code and message indicating the result of the update process.
+ *
  */
 router.put("/:id", authenticationMiddleware, async (req, res) => {
   const { id } = req.params;
@@ -189,6 +243,18 @@ router.put("/:id", authenticationMiddleware, async (req, res) => {
 
 /**
  * DELETE: Delete a Sub-Category
+ *
+ * @description Deletes a specific sub-category from the database. The route is protected by
+ * the `authenticationMiddleware`, ensuring that only authenticated users can access it.
+ * The sub-category is identified by its ID, which is provided as a URL parameter.
+ *
+ * @route DELETE /:id
+ * @access Protected (requires authentication)
+ *
+ * @param {string} id - The ID of the sub-category to delete (provided as a URL parameter).
+ *
+ * @returns {Object} A JSON object with a code and message indicating the result of the deletion process.
+ *
  */
 router.delete("/:id", authenticationMiddleware, async (req, res) => {
   const { id } = req.params;

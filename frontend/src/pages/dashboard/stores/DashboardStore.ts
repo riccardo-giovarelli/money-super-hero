@@ -2,13 +2,13 @@ import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
 import { DashboardAction, DashboardState } from './DashboardStore.type';
-import dayjs from 'dayjs';
+import { dashboardStoreDefault } from './DashboardStore.lib';
 
 export const useDashboardStore = create<DashboardState & DashboardAction>()(
   persist(
     (set) => ({
-      from: dayjs().startOf('month'),
-      to: dayjs().endOf('month'),
+      from: dashboardStoreDefault.from,
+      to: dashboardStoreDefault.to,
       setFrom: (from) => set(() => ({ from })),
       setTo: (to) => set(() => ({ to })),
     }),

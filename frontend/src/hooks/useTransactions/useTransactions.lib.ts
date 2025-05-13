@@ -1,7 +1,7 @@
-import { TransactionType } from '@/models/transactions';
-import { TransactionsApiResultsType } from './useTransactionsTableData.type';
-import { SubategoryType } from '@/models/sub-categories';
 import { CategoryType } from '@/models/categories';
+import { SubategoryType } from '@/models/sub-categories';
+import { TransactionType } from '@/models/transactions';
+import { TransactionsApiResultsType } from './useTransactions.type';
 
 /**
  * @function parseTransactionsApiResults

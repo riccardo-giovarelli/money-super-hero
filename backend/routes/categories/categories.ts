@@ -10,6 +10,17 @@ const router = express.Router();
  *
  * @description Retrieves a list of categories from the database. Supports optional pagination and sorting.
  * If no pagination parameters (`page` and `limit`) are provided, all categories are retrieved without pagination.
+ *
+ * @route GET /
+ * @access Protected (requires authentication)
+ *
+ * @query {number} page - The page number for pagination (default is 1).
+ * @query {number} limit - The number of items per page (default is 10).
+ * @query {string} sortColumn - The column to sort by (default is 'id').
+ * @query {string} sortDirection - The direction to sort ('asc' or 'desc', default is 'asc').
+ *
+ * @returns {Object} A JSON object with a code and message indicating the result of the retrieval process.
+ *
  */
 router.get("/", authenticationMiddleware, async (req, res) => {
   const {
@@ -97,6 +108,20 @@ router.get("/", authenticationMiddleware, async (req, res) => {
 
 /**
  * PUT: Update Category by ID
+ *
+ * @description Updates the details of a specific category in the database. The route is protected by
+ * the `authenticationMiddleware`, ensuring that only authenticated users can access it. The category
+ * is identified by its ID, and the updated `name` and `notes` are provided in the request body.
+ *
+ * @route PUT /:id
+ * @access Protected (requires authentication)
+ *
+ * @param {string} id - The ID of the category to update (provided as a URL parameter).
+ * @body {string} name - The updated name of the category.
+ * @body {string} notes - The updated notes for the category.
+ *
+ * @returns {Object} A JSON object with a code and message indicating the result of the update process.
+ *
  */
 router.put("/:id", authenticationMiddleware, async (req, res) => {
   const { id } = req.params;
@@ -137,6 +162,18 @@ router.put("/:id", authenticationMiddleware, async (req, res) => {
 
 /**
  * DELETE: Delete Category by ID
+ *
+ * @description Deletes a specific category from the database. The route is protected by
+ * the `authenticationMiddleware`, ensuring that only authenticated users can access it.
+ * The category is identified by its ID, which is provided as a URL parameter.
+ *
+ * @route DELETE /:id
+ * @access Protected (requires authentication)
+ *
+ * @param {string} id - The ID of the category to delete (provided as a URL parameter).
+ *
+ * @returns {Object} A JSON object with a code and message indicating the result of the deletion process.
+ *
  */
 router.delete("/:id", authenticationMiddleware, async (req, res) => {
   const { id } = req.params;
@@ -174,6 +211,19 @@ router.delete("/:id", authenticationMiddleware, async (req, res) => {
 
 /**
  * POST: Add New Category
+ *
+ * @description Adds a new category to the database. The route is protected by the `authenticationMiddleware`,
+ * ensuring that only authenticated users can access it. The category details, including `name` and `notes`,
+ * are provided in the request body.
+ *
+ * @route POST /
+ * @access Protected (requires authentication)
+ *
+ * @body {string} name - The name of the new category.
+ * @body {string} notes - Additional notes for the new category (optional).
+ *
+ * @returns {Object} A JSON object with a code and message indicating the result of the addition process.
+ *
  */
 router.post("/", authenticationMiddleware, async (req, res) => {
   const { name, notes } = req.body;

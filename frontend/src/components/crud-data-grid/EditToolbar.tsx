@@ -9,6 +9,15 @@ const EditToolbar = (props: GridSlotProps['toolbar']) => {
   const { setRows, setRowModesModel } = props;
   const { t } = useTranslation();
 
+  /**
+   * @function handleClick
+   *
+   * @description Handles the addition of a new row to the data grid. Generates a random ID for the new row,
+   * sets it to edit mode, and focuses on the "name" field. Updates the rows and row modes model state accordingly.
+   *
+   * @returns {void}
+   *
+   */
   const handleClick = () => {
     const id = randomId();
     setRows((oldRows) => [...oldRows, { id, name: '', notes: '', isNew: true }]);

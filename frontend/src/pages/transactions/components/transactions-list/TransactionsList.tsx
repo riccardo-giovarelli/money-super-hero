@@ -33,6 +33,18 @@ const TransactionsList = () => {
     refreshKey
   );
 
+  /**
+   * @function handleConfirmDialogClose
+   *
+   * @description Handles the confirmation dialog for deleting a transaction. If the user confirms the deletion,
+   * it calls the `deleteTransactionById` function to delete the transaction from the database. If the deletion
+   * is successful, it displays a success message and refreshes the transaction list. If the deletion fails,
+   * it displays an error message. Regardless of the user's choice, it resets the `transactionToDelete` state.
+   *
+   * @param {boolean} choice - The user's choice in the confirmation dialog (true for confirm, false for cancel).
+   *
+   * @returns {Promise<void>}
+   */
   const handleConfirmDialogClose = async (choice: boolean) => {
     if (choice && transactionToDelete) {
       deleteTransactionById(transactionToDelete).then((response) => {

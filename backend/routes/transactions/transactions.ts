@@ -8,6 +8,23 @@ const router = express.Router();
 
 /**
  * POST: Add a New Transaction
+ *
+ * @description Adds a new transaction to the database. The route is protected by the `authenticationMiddleware`,
+ * ensuring that only authenticated users can access it. The transaction details, including `amount`, `direction`,
+ * `category`, `subcategory`, and `notes`, are provided in the request body. The transaction is associated with
+ * the currently authenticated user.
+ *
+ * @route POST /
+ * @access Protected (requires authentication)
+ *
+ * @body {number} amount - The amount of the transaction.
+ * @body {string} direction - The direction of the transaction (e.g., "income" or "expense").
+ * @body {number} category - The ID of the category associated with the transaction.
+ * @body {number} subcategory - The ID of the sub-category associated with the transaction (optional).
+ * @body {string} notes - Additional notes for the transaction (optional).
+ *
+ * @returns {Object} A JSON object with a code and message indicating the result of the creation process.
+ *
  */
 router.post("/", authenticationMiddleware, async (req, res) => {
   const { amount, direction, category, subcategory, notes } = req.body;
@@ -70,6 +87,23 @@ router.post("/", authenticationMiddleware, async (req, res) => {
 
 /**
  * GET: Retrieve Transactions with Pagination, Sorting, and Filtering
+ *
+ * @description Retrieves a list of transactions from the database for the currently authenticated user.
+ * Supports optional pagination, sorting, and date range filtering. The route is protected by the
+ * `authenticationMiddleware`, ensuring that only authenticated users can access it.
+ *
+ * @route GET /
+ * @access Protected (requires authentication)
+ *
+ * @query {number} page - The page number for pagination (optional).
+ * @query {number} limit - The number of items per page (optional).
+ * @query {string} sortColumn - The column to sort by (default is 'id').
+ * @query {string} sortDirection - The direction to sort ('asc' or 'desc', default is 'asc').
+ * @query {string} from - The start date for filtering transactions (optional).
+ * @query {string} to - The end date for filtering transactions (optional).
+ *
+ * @returns {Object} A JSON object with a code and message indicating the result of the retrieval process.
+ *
  */
 router.get("/", authenticationMiddleware, async (req, res) => {
   const {
@@ -199,6 +233,19 @@ router.get("/", authenticationMiddleware, async (req, res) => {
 
 /**
  * DELETE: Delete a Transaction by ID
+ *
+ * @description Deletes a specific transaction from the database. The route is protected by the
+ * `authenticationMiddleware`, ensuring that only authenticated users can access it. The transaction
+ * is identified by its ID, which is provided as a URL parameter. The transaction is also verified
+ * to belong to the currently authenticated user.
+ *
+ * @route DELETE /:id
+ * @access Protected (requires authentication)
+ *
+ * @param {string} id - The ID of the transaction to delete (provided as a URL parameter).
+ *
+ * @returns {Object} A JSON object with a code and message indicating the result of the deletion process.
+ *
  */
 router.delete("/:id", authenticationMiddleware, async (req, res) => {
   const { id } = req.params;

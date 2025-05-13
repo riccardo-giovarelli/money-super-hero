@@ -65,6 +65,16 @@ const Signup = () => {
     }
   };
 
+  /**
+   * @function handleFormChange
+   *
+   * @description Handles changes to the form fields. Updates the `profileData` state with the new value
+   * of the input field that triggered the change event.
+   *
+   * @param {React.FormEvent<HTMLInputElement | HTMLTextAreaElement>} event - The change event triggered by the form field.
+   *
+   * @returns {void}
+   */
   const handleFormChange = (event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
     setProfileData({
       ...profileData,
@@ -73,67 +83,67 @@ const Signup = () => {
   };
 
   return (
-    <Box display='flex' flexDirection='column' alignItems='center' justifyContent='center' minHeight='100vh'>
-      <Typography variant='h4' component='h1' gutterBottom>
+    <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" minHeight="100vh">
+      <Typography variant="h4" component="h1" gutterBottom>
         {t('authentication.registration')}
       </Typography>
       <form onSubmit={handleSubmit}>
         <TextField
-          id='first-name'
-          name='firstName'
+          id="first-name"
+          name="firstName"
           label={t('authentication.first_name')}
           onChange={handleFormChange}
           value={profileData?.firstName || ''}
-          variant='outlined'
-          margin='normal'
+          variant="outlined"
+          margin="normal"
           required
           fullWidth
         />
         <TextField
-          id='last-name'
-          name='lastName'
+          id="last-name"
+          name="lastName"
           label={t('authentication.last_name')}
           onChange={handleFormChange}
           value={profileData?.lastName || ''}
-          variant='outlined'
-          margin='normal'
+          variant="outlined"
+          margin="normal"
           fullWidth
         />
         <TextField
-          id='email'
-          name='email'
+          id="email"
+          name="email"
           label={t('authentication.email')}
           onChange={handleFormChange}
           value={profileData?.email || ''}
-          variant='outlined'
-          margin='normal'
+          variant="outlined"
+          margin="normal"
           required
           fullWidth
-          type='email'
+          type="email"
         />
         <TextField
-          id='password'
-          name='password'
+          id="password"
+          name="password"
           label={t('authentication.password')}
           onChange={handleFormChange}
           value={profileData?.password || ''}
-          variant='outlined'
-          margin='normal'
+          variant="outlined"
+          margin="normal"
           required
           fullWidth
-          type='password'
+          type="password"
         />
         <TextField
-          id='re-password'
-          name='rePassword'
+          id="re-password"
+          name="rePassword"
           label={t('authentication.repeat_password')}
           onChange={handleFormChange}
           value={profileData?.rePassword || ''}
-          variant='outlined'
-          margin='normal'
+          variant="outlined"
+          margin="normal"
           required
           fullWidth
-          type='password'
+          type="password"
         />
         {profileData && profileData?.password?.length > 0 && (
           <PasswordChecklist
@@ -146,7 +156,7 @@ const Signup = () => {
             }}
           />
         )}
-        <Button type='submit' fullWidth variant='contained' color='primary' sx={{ mt: 2 }}>
+        <Button type="submit" fullWidth variant="contained" color="primary" sx={{ mt: 2 }}>
           {t('authentication.register')}
         </Button>
         {message && (

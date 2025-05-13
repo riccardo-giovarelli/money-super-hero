@@ -19,6 +19,7 @@ import { Line } from 'react-chartjs-2';
 import { useTranslation } from 'react-i18next';
 import { useDashboardStore } from '../../stores/DashboardStore';
 import { DashboardTransactionsChartPropsType } from './DashboardTransactionsChart.type';
+import { Stack } from '@mui/material';
 
 const DashboardTransactionsChart = ({ transactions, average, whole }: DashboardTransactionsChartPropsType) => {
   const from = useDashboardStore((state) => state.from);
@@ -96,7 +97,21 @@ const DashboardTransactionsChart = ({ transactions, average, whole }: DashboardT
 
   ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, TimeScale, Colors, annotationPlugin);
 
-  return data && <Line options={options} data={data} />;
+  return data ? (
+    <Line options={options} data={data} />
+  ) : (
+    <Stack
+      direction="row"
+      spacing={1}
+      sx={{
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 6,
+      }}
+    >
+      No data
+    </Stack>
+  );
 };
 
 export default DashboardTransactionsChart;
